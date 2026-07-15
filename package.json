@@ -1,0 +1,33 @@
+{
+  "name": "jira-clone",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "^0.5.1",
+    "@vueuse/motion": "^2.2.6",
+    "apexcharts": "^5.16.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "kysely": "^0.27.3",
+    "nuxt": "^3.12.0",
+    "pg": "^8.11.5",
+    "pinia": "^2.1.7",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5",
+    "vue": "latest",
+    "vue3-apexcharts": "^1.11.1",
+    "vuedraggable": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/pg": "^8.11.6"
+  }
+}
