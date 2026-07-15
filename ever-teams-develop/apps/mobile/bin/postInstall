@@ -1,0 +1,45 @@
+#!/usr/bin/env node
+/**
+ * Do all things that need to be done after installing packages (with yarn, npm, pnpm).
+ *
+ * Yes, it slows down package installation a little, but it's nice to not
+ * have to remember these extra steps.
+ */
+
+// Patch any packages that need patching.
+// Resolve patch-package's CLI entry directly and run it with `node`, bypassing the
+// `.bin` shim / npx / nested-yarn resolution. During a yarn-workspaces install lifecycle
+// those compute a doubled `node_modules/node_modules/patch-package/index.js` path on
+// Windows, which throws MODULE_NOT_FOUND and aborts the entire monorepo install.
+try {
+  const patchPackageCli = require.resolve("patch-package/index.js")
+  run(`node "${patchPackageCli}"`)
+} catch (error) {
+  if (error && error.code === "MODULE_NOT_FOUND") {
+    console.log("./bin/postInstall: patch-package not installed, skipping patch step")
+  } else {
+    throw error
+  }
+}
+
+// Kill the metro bundler if it's running.
+if (["darwin", "linux"].includes(process.platform)) {
+  run('pkill -f "cli.js start" || set exit 0')
+}
+
+// On iOS, make sure CocoaPods are installed
+if (process.platform === "darwin") {
+  run('if [ -d "ios" ]; then cd ios && pod install && cd -; fi')
+}
+
+// Run baby run
+function run(command) {
+  console.log(`./bin/postInstall script running: ${command}`)
+
+  try {
+    require("child_process").execSync(command, { stdio: "inherit" })
+  } catch (error) {
+    console.error(`./bin/postInstall failed on command:\n  ${command}`)
+    process.exit(error.status)
+  }
+}

@@ -1,0 +1,335 @@
+import { mergeRefs } from '@/core/lib/helpers/index';
+import {
+	I_TMCardTaskEditHook,
+	I_MemberIdentityHook,
+	I_TeamMemberMutationsHook,
+	I_TeamMemberRoleActionsHook
+} from '@/core/hooks';
+import { IClassName } from '@/core/types/interfaces/common/class-name';
+import { clsxm } from '@/core/lib/utils';
+import { Popover, PopoverButton, PopoverPanel, Transition } from '@headlessui/react';
+import { ConfirmDropdown, SpinnerLoader, Text } from '@/core/components';
+import { TaskUnOrAssignPopover } from '@/core/components/features/tasks/task-assign-popover';
+import { useCallback, useMemo } from 'react';
+import { useTranslations } from 'next-intl';
+import { ThreeCircleOutlineVerticalIcon } from 'assets/svg';
+import { EverCard } from '@/core/components/common/ever-card';
+import { HorizontalSeparator } from '@/core/components/duplicated-components/separator';
+import { TTask } from '@/core/types/schemas/task/task.schema';
+import { Spinner } from '@/core/components/common/spinner';
+import { useFavoriteTasks } from '@/core/hooks/tasks/use-favorites-task';
+import { useSetAtom } from 'jotai';
+import { allPlansModalState } from '@/core/stores/all-plans-modal';
+import { toast } from 'sonner';
+
+type Props = IClassName & {
+	identity: I_MemberIdentityHook;
+	memberTask: TTask | null;
+	mutations: I_TeamMemberMutationsHook;
+	roleActions: I_TeamMemberRoleActionsHook;
+	edition: I_TMCardTaskEditHook;
+};
+
+export function UserTeamCardMenu(props: Props) {
+	return <DropdownMenu {...props} />;
+}
+
+function DropdownMenu({ edition, identity, memberTask, mutations, roleActions }: Props) {
+	const { onAssignTask, onUnAssignTask, onRemoveMember } = useDropdownAction({
+		edition,
+		identity,
+		memberTask,
+		mutations,
+		roleActions
+	});
+	const { toggleFavoriteTask, isFavoriteTask, addTaskToFavoriteLoading, deleteTaskFromFavoritesLoading } =
+		useFavoriteTasks();
+	const t = useTranslations();
+	const loading = edition.loading || roleActions.updateOTeamLoading;
+
+	// Use global modal state instead of local state
+	const setAllPlansModal = useSetAtom(allPlansModalState);
+
+	const openAllPlansModal = useCallback(() => {
+		setAllPlansModal({
+			isOpen: true,
+			employeeId: identity.member?.employeeId ?? null
+		});
+	}, [setAllPlansModal, identity.member?.employeeId]);
+
+	const allMenuItems = useMemo(
+		() => [
+			{
+				name: t('common.EDIT_TASK'),
+				closable: true,
+				onClick: () => {
+					edition.task && edition.setEditMode(true);
+				},
+				active: (identity.isAuthTeamManager || identity.isAuthUser) && edition.task
+			},
+			{
+				name: edition.task ? (
+					addTaskToFavoriteLoading || deleteTaskFromFavoritesLoading ? (
+						<Spinner />
+					) : isFavoriteTask(edition.task?.id) ? (
+						t('common.REMOVE_FAVORITE_TASK')
+					) : (
+						t('common.ADD_FAVORITE_TASK')
+					)
+				) : (
+					t('common.ADD_FAVORITE_TASK')
+				),
+				closable: true,
+				onClick: () => {
+					edition.task && toggleFavoriteTask(edition.task);
+				},
+				active: (identity.isAuthTeamManager || identity.isAuthUser) && edition.task
+			},
+			{
+				name: t('common.ESTIMATE'),
+				closable: true,
+				onClick: () => {
+					edition.task && edition.setEstimateEditMode(true);
+				},
+				active: (identity.isAuthTeamManager || identity.isAuthUser) && edition.task
+			},
+			{
+				name: t('common.ASSIGN_TASK'),
+				action: 'assign',
+				onClick: onAssignTask,
+
+				active:
+					(identity.isAuthTeamManager || identity.isAuthUser) && mutations.memberUnassignTasks.length > 0
+			},
+			{
+				name: t('common.UNASSIGN_TASK'),
+				action: 'unassign',
+				closable: true,
+				onClick: onUnAssignTask,
+
+				active: (identity.isAuthTeamManager || identity.isAuthUser) && !!memberTask
+			},
+			{
+				name: identity.isTeamManager ? t('common.UNMAKE_A_MANAGER') : t('common.MAKE_A_MANAGER'),
+				// Make or unmake member a manager
+				onClick: identity.isTeamManager ? roleActions.unMakeMemberManager : roleActions.makeMemberManager,
+				active: identity.isAuthTeamManager && !identity.isAuthUser && !identity.isTeamCreator,
+				closable: true
+			},
+			{
+				name: t('common.REMOVE'),
+				type: 'danger',
+				action: 'remove',
+				active: identity.isAuthTeamManager && !identity.isAuthUser && !identity.isTeamCreator,
+				onClick: onRemoveMember
+			}
+		],
+		[t, identity, memberTask, mutations, roleActions, edition, isFavoriteTask, onAssignTask, onUnAssignTask, onRemoveMember]
+	);
+
+	// Filter menu items to show only active ones
+	const menu = useMemo(() => allMenuItems.filter((item) => item.active), [allMenuItems]);
+
+	return (
+		<>
+			<Popover
+				className="flex relative flex-col justify-center items-center w-full"
+				ref={mergeRefs([
+					edition.estimateEditIgnoreElement.ignoreElementRef,
+					edition.taskEditIgnoreElement.ignoreElementRef
+				])}
+			>
+				{!loading && (
+					<PopoverButton
+						disabled={menu.length === 0}
+						className={clsxm(
+							'flex items-center outline-hidden border-none',
+							menu.length === 0 && ['opacity-50 hidden']
+						)}
+					>
+						<ThreeCircleOutlineVerticalIcon className="w-6 dark:text-[#B1AEBC]" strokeWidth="1.4" />
+					</PopoverButton>
+				)}
+				{loading && <SpinnerLoader size={20} />}
+
+				<Transition
+					as="div"
+					enter="transition duration-100 ease-out"
+					enterFrom="transform scale-95 opacity-0"
+					enterTo="transform scale-100 opacity-100"
+					leave="transition duration-75 ease-out"
+					leaveFrom="transform scale-100 opacity-100"
+					leaveTo="transform scale-95 opacity-0"
+					className="absolute z-30 -right-5 top-8 min-w-[13.125rem]"
+				>
+					<PopoverPanel>
+						{({ close }) => {
+							return (
+								<EverCard
+									shadow="custom"
+									className="shadow-xl card !py-3 !px-4 dark:bg-[#1B1D22] dark:border dark:border-[#FFFFFF33] w-fit min-w-[10.75rem]"
+								>
+									<ul className="flex flex-col items-start w-full">
+										{menu.map((item, i) => {
+											const text = (
+												<Text
+													className={clsxm(
+														'font-normal whitespace-nowrap text-sm hover:font-semibold hover:transition-all',
+														item.type === 'danger' && ['text-red-500']
+													)}
+												>
+													{item.name}
+												</Text>
+											);
+
+											// When true show combobox component (AssignActionMenu)
+											const assignAction = item.action === 'assign';
+
+											const removeAction = item.action === 'remove';
+
+											return (
+												<li key={i}>
+													{assignAction && (
+														// Show only for item with combobox menu
+														<TaskUnOrAssignPopover
+															tasks={mutations.memberUnassignTasks}
+															onTaskClick={(task, closeCmbx) => {
+																// Can close all open combobox
+																item.onClick &&
+																	item.onClick({
+																		task,
+																		closeCombobox1: closeCmbx,
+																		closeCombobox2: close
+																	});
+															}}
+															userProfile={identity.member}
+															usersTaskCreatedAssignTo={
+																identity.member?.employeeId
+																	? [{ id: identity.member?.employeeId }]
+																	: undefined
+															}
+														>
+															{text}
+														</TaskUnOrAssignPopover>
+													)}
+
+													{removeAction && (
+														<ConfirmDropdown
+															className="right-[110%] top-0"
+															onConfirm={() => {
+																item.onClick && item.onClick({ close });
+															}}
+														>
+															{text}
+														</ConfirmDropdown>
+													)}
+
+													{/* WHen hasn't an action */}
+													{!assignAction && !removeAction && (
+														<button
+															className="mb-2"
+															onClick={() => {
+																item.onClick && item.onClick({});
+																item.closable && close();
+															}}
+														>
+															{text}
+														</button>
+													)}
+												</li>
+											);
+										})}
+										<HorizontalSeparator className="-mx-2" />
+										<ul className="flex flex-col items-start py-1 w-full">
+											<button
+												onClick={openAllPlansModal}
+												className={clsxm(
+													'text-sm font-normal whitespace-nowrap hover:font-semibold hover:transition-all'
+												)}
+											>
+												{t('common.plan.SEE_PLANS')}
+											</button>
+										</ul>
+									</ul>
+								</EverCard>
+							);
+						}}
+					</PopoverPanel>
+				</Transition>
+			</Popover>
+			{/* AllPlansModal is now rendered globally in app-sidebar.tsx */}
+		</>
+	);
+}
+
+type IAssignCall = (params: {
+	task?: TTask;
+	closeCombobox1?: () => void;
+	closeCombobox2?: () => void;
+}) => void | Promise<void>;
+
+export function useDropdownAction({
+	edition,
+	identity,
+	memberTask,
+	mutations,
+	roleActions
+}: Pick<Props, 'edition' | 'identity' | 'memberTask' | 'mutations' | 'roleActions'>) {
+	const t = useTranslations();
+
+	const onAssignTask: IAssignCall = useCallback(
+		async ({ task, closeCombobox1, closeCombobox2 }) => {
+			if (!task) return;
+
+			const memberName = identity.member?.employee?.fullName || identity.member?.employee?.user?.name || '';
+
+			edition.setLoading(true);
+			try {
+				await mutations.assignTask(task);
+				toast.success(t('task.toastMessages.TASK_ASSIGNED'), {
+					description: memberName ? `"${task.title}" → ${memberName}` : `"${task.title}"`,
+					id: 'task-assigned'
+				});
+			} finally {
+				edition.setLoading(false);
+			}
+
+			closeCombobox1?.();
+			closeCombobox2?.();
+		},
+		[edition, identity.member, mutations.assignTask, t]
+	);
+
+	const onUnAssignTask: IAssignCall = useCallback(async () => {
+		if (!memberTask) return;
+
+		const memberName = identity.member?.employee?.fullName || identity.member?.employee?.user?.name || '';
+
+		edition.setLoading(true);
+		try {
+			await mutations.unassignTask(memberTask);
+			toast.success(t('task.toastMessages.TASK_UNASSIGNED'), {
+				description: memberName
+					? `"${memberTask.title}" ← ${memberName}`
+					: `"${memberTask.title}"`,
+				id: 'task-unassigned'
+			});
+		} finally {
+			edition.setLoading(false);
+		}
+	}, [memberTask, identity.member, mutations.unassignTask, edition, t]);
+
+	const onRemoveMember = useCallback(
+		({ close }: { close?: () => void }) => {
+			roleActions.removeMemberFromTeam();
+			close?.();
+		},
+		[roleActions.removeMemberFromTeam]
+	);
+
+	return {
+		onAssignTask,
+		onUnAssignTask,
+		onRemoveMember
+	};
+}

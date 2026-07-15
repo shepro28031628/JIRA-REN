@@ -1,0 +1,113 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@7.2.1
+  pulumi: pulumi/pulumi@2.1.0
+
+aliases:
+  - &install-node
+    name: Install Node with NPM using NVM
+    command: |
+      echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
+      echo ' [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
+      nvm install v24
+      nvm alias default v24
+      echo 'export NODE_OPTIONS=--max-old-space-size=12288' >> $BASH_ENV
+      echo 'export NG_CLI_ANALYTICS=false' >> $BASH_ENV
+      source $BASH_ENV
+      nvm use v24
+      node --version
+
+  - &install-chrome
+    name: Install Chrome
+    command: |
+      nvm use v24
+      sudo apt install -y libappindicator3-1
+      curl -L -o google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+      sudo dpkg -i google-chrome.deb
+      sudo sed -i 's|HERE/chrome\"|HERE/chrome\" --disable-setuid-sandbox|g' /opt/google/chrome/google-chrome
+      rm google-chrome.deb
+
+  - &install-deps
+    name: Install Global Dependencies
+    command: |
+      nvm use v24
+      sudo rm -rf /etc/apt/sources.list.d/heroku.list
+      sudo apt-get update
+      sudo apt install -y npm build-essential unzip openjdk-17-jre python3-pip
+      sudo apt install -y python3-distutils || true
+      sudo apt install -y curl gnupg git libappindicator3-1 ca-certificates binutils icnsutils graphicsmagick
+      python3 -m pip install --break-system-packages packaging setuptools || python3 -m pip install packaging setuptools
+      sudo npm install --quiet node-gyp@10.2.0 -g
+      sudo npm install --quiet ts-node@10.9.2 -g
+      sudo npm config set python /usr/bin/python
+
+  - &install-yarn
+    name: Install Latest Yarn
+    command: |
+      nvm use v24
+      # remove default yarn
+      sudo rm -rf $(dirname $(which yarn))/yarn*
+      # download latest
+      rm -rf ~/.yarn
+      curl -o- -L https://yarnpkg.com/install.sh | bash
+      echo 'export PATH="${PATH}:${HOME}/.yarn/bin:${HOME}/.config/yarn/global/node_modules/.bin"' >> $BASH_ENV
+      source $BASH_ENV
+
+defaults: &defaults
+  working_directory: /tmp/workspace
+  environment:
+    # Increase memory for Node.js
+    NODE_OPTIONS: --max-old-space-size=12288
+    # Disable Angular CLI analytics
+    NG_CLI_ANALYTICS: false
+
+jobs:
+  # ----------------------------------------------------------------------------
+  # Build Monorepo Root (Bootstrap/Install verification)
+  # ----------------------------------------------------------------------------
+  build-monorepo-root:
+    <<: *defaults
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large
+    working_directory: /tmp/workspace/monorepo-root
+    steps:
+      - checkout
+      - run: *install-node
+      - run: *install-deps
+      - run: *install-yarn
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-monorepo-{{ checksum "yarn.lock" }}
+            - yarn-packages-monorepo-
+      - run:
+          name: Verify Node version
+          command: nvm use v24 && node --version
+      - run:
+          name: Install Yarn Dependencies
+          command: nvm use v24 && yarn install --network-timeout 1000000 --frozen-lockfile --ignore-scripts
+          no_output_timeout: 60m
+      - run:
+          name: Run Postinstall Manually
+          command: nvm use v24 && yarn postinstall.manual
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-monorepo-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+
+# ==============================================================================
+# Workflows
+# ==============================================================================
+
+workflows:
+  version: 2
+
+  # ----------------------------------------------------------------------------
+  # Main Build Workflow - Runs on all branches
+  # ----------------------------------------------------------------------------
+  build:
+    jobs:
+      - build-monorepo-root

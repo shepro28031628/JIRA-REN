@@ -1,0 +1,576 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+// import { InputField } from '@/core/components';
+import RichTextEditor from '../text-editor';
+// import { Calendar } from '@/core/components/ui/calendar';
+import { cn } from '@/core/lib/helpers';
+import { CalendarIcon, X, Loader2 } from 'lucide-react';
+import { differenceInDays, format, isAfter, isEqual } from 'date-fns';
+import { FormEvent, useCallback, useMemo, useState } from 'react';
+import { IStepElementProps } from '../container';
+import Image from 'next/image';
+import { isValidUrl } from '@/core/lib/utils';
+import { ScrollArea, ScrollBar } from '@/core/components/common/scroll-area';
+import { useTranslations } from 'next-intl';
+import { useAuthenticateUser } from '@/core/hooks';
+import { useImageAssets } from '@/core/hooks/common/use-image-assets';
+import { Popover, PopoverContent, PopoverTrigger } from '@/core/components/common/popover';
+import { getInitialValue } from '@/core/lib/helpers/create-project';
+import { InputField } from '@/core/components/duplicated-components/_input';
+import { Button as ShadcnButton } from '@/core/components/duplicated-components/_button';
+import { Calendar } from '@/core/components/common/calendar';
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+	loading?: boolean;
+	variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+}
+
+const Button = ({ children, loading, className, ...props }: ButtonProps) => {
+	return (
+		<ShadcnButton className={cn('relative', className)} disabled={loading} {...props}>
+			{loading && <Loader2 className="mr-2 w-4 h-4 animate-spin" />}
+			{children}
+		</ShadcnButton>
+	);
+};
+
+type BasicInfoErrorKeys = 'dateRange' | 'websiteUrl' | 'projectTitle' | 'projectImage' | 'description';
+
+export default function BasicInformationForm(props: IStepElementProps) {
+	const { goToNext, currentData, mode } = props;
+	const [startDate, setStartDate] = useState(() => getInitialValue(currentData, 'startDate', new Date()));
+	const [endDate, setEndDate] = useState(() => getInitialValue(currentData, 'endDate', new Date()));
+	const [projectTitle, setProjectTitle] = useState(() => getInitialValue(currentData, 'name', ''));
+	const [description, setDescription] = useState(() => getInitialValue(currentData, 'description', ''));
+	const [projectImageFile, setProjectImageFile] = useState<File | null>(null);
+	const [websiteUrl, setWebsiteUrl] = useState<string>(() => getInitialValue(currentData, 'projectUrl', ''));
+	const [errors, setErrors] = useState<Map<BasicInfoErrorKeys, string>>(new Map());
+	const [descriptionValid, setDescriptionValid] = useState(true);
+	const t = useTranslations();
+	const { createImageAssets, loading: createImageAssetLoading } = useImageAssets();
+	const { user } = useAuthenticateUser();
+	const [projectImageUrl, setProjectImageUrl] = useState(() => {
+		if (mode == 'edit' && currentData?.imageUrl) {
+			return currentData.imageUrl;
+		}
+
+		if (projectImageFile) {
+			return URL.createObjectURL(projectImageFile);
+		}
+
+		return null;
+	});
+
+	// Validate projectImageFile
+	const isValidImageFile = useCallback(
+		(file: File) => {
+			if (file.size > 5 * 1024 * 1024) {
+				setErrors(
+					(prevErrors) =>
+						new Map(
+							prevErrors.set(
+								'projectImage',
+								t('pages.projects.basicInformationForm.errors.fileSizeLimit')
+							)
+						)
+				);
+				setProjectImageFile(null);
+				return false;
+			}
+
+			if (!['image/jpeg', 'image/png'].includes(file.type)) {
+				setErrors(
+					(prevErrors) =>
+						new Map(
+							prevErrors.set(
+								'projectImage',
+								t('pages.projects.basicInformationForm.errors.fileFormatLimit')
+							)
+						)
+				);
+				setProjectImageFile(null);
+				return false;
+			}
+
+			setErrors((prevErrors) => {
+				const newErrors = new Map(prevErrors);
+				newErrors.delete('projectImage');
+				return newErrors;
+			});
+
+			return true;
+		},
+		[t]
+	);
+
+	// Project image file
+	const handleProjectImageFileChange = useCallback(
+		(event: React.ChangeEvent<HTMLInputElement>) => {
+			const file = event.target.files?.[0];
+
+			if (!file) return;
+
+			// Validation
+			isValidImageFile(file);
+			// setProjectImageUrl(URL.createObjectURL(file));
+			setProjectImageFile(file);
+			setProjectImageUrl(URL.createObjectURL(file));
+		},
+		[isValidImageFile]
+	);
+
+	const validateForm = () => {
+		const newErrors = new Map<BasicInfoErrorKeys, string>(errors);
+
+		// Clean up before next try
+		newErrors.delete('projectImage');
+
+		// Validate projectTitle
+		validateField(
+			'projectTitle',
+			projectTitle,
+			[
+				(value) => (!value?.trim() ? t('pages.projects.basicInformationForm.errors.titleRequired') : null),
+				(value) =>
+					value?.length < 3 || value?.length > 100
+						? 'Project title must be between 3 and 100 characters.'
+						: null
+			],
+			newErrors
+		);
+
+		// Validate startDate (required)
+		validateField(
+			'dateRange',
+			startDate,
+			[(value) => (!value ? t('pages.projects.basicInformationForm.errors.startDateRequired') : null)],
+			newErrors
+		);
+
+		// Validate endDate (required, and endDate must be after startDate)
+		validateField(
+			'dateRange',
+			endDate,
+			[
+				(value) => (!value ? t('pages.projects.basicInformationForm.errors.endDateRequired') : null),
+				(value) => {
+					if (!value || !startDate) return null;
+					const daysDifference = differenceInDays(new Date(value), new Date(startDate));
+					if (daysDifference <= 0) {
+						return t('pages.projects.basicInformationForm.errors.endDateAfterStart');
+					}
+					// Warning for very short projects (less than 1 day)
+					if (daysDifference < 1) {
+						return 'Project duration should be at least 1 day for proper planning.';
+					}
+					return null;
+				}
+			],
+			newErrors
+		);
+
+		// Validate websiteUrl
+		validateField(
+			'websiteUrl',
+			websiteUrl,
+			[
+				(value) =>
+					value && !isValidUrl(value) && t('pages.projects.basicInformationForm.errors.invalidWebsiteUrl')
+			],
+			newErrors
+		);
+
+		// Validate description word limit
+		if (!descriptionValid) {
+			newErrors.set('description', t('pages.projects.basicInformationForm.errors.descriptionWordLimit'));
+		} else {
+			newErrors.delete('description');
+		}
+
+		setErrors(newErrors);
+		return newErrors;
+	};
+
+	const createProjectImage = useCallback(
+		async (file: File) => {
+			return createImageAssets(file, 'project_images').then((image) => {
+				return image;
+			});
+		},
+		[user, createImageAssets]
+	);
+
+	const handleSubmit = async (e: FormEvent) => {
+		e.preventDefault();
+
+		const errors = validateForm();
+
+		if (errors.size > 0) {
+			return;
+		}
+
+		if (projectImageFile) {
+			const image = await createProjectImage(projectImageFile).catch(() => {
+				const newErrors = new Map<BasicInfoErrorKeys, string>(errors);
+
+				newErrors.set('projectImage', t('pages.projects.basicInformationForm.errors.uploadError'));
+
+				setErrors(newErrors);
+			});
+
+			if (!image) {
+				return;
+			}
+
+			goToNext?.({
+				startDate: startDate.toISOString(),
+				endDate: endDate.toISOString(),
+				name: projectTitle,
+				description,
+				projectImage: image,
+				projectUrl: websiteUrl
+			});
+			return;
+		}
+
+		goToNext?.({
+			startDate: startDate.toISOString(),
+			endDate: endDate.toISOString(),
+			name: projectTitle,
+			description,
+			projectUrl: websiteUrl
+		});
+	};
+
+	return (
+		<form onSubmit={handleSubmit} className="pt-4 w-full flex flex-col">
+			<ScrollArea className="w-full max-h-[65vh] pr-4">
+				<div className="space-y-5 pb-32">
+					<div className="flex flex-col gap-2 w-full">
+						<label htmlFor="project_title" className="text-xs font-medium">
+							{t('pages.projects.basicInformationForm.formFields.title')}
+						</label>
+						<div className="w-full">
+							<InputField
+								onChange={(el) => setProjectTitle(el.target.value)}
+								required
+								maxLength={100}
+								minLength={3}
+								value={projectTitle}
+								id="project_title"
+								placeholder={t('pages.projects.basicInformationForm.formFields.titlePlaceholder')}
+								className=" text-xs border dark:border-white   h-[2.2rem] px-4 rounded-lg bg-transparent dark:bg-transparent"
+								noWrapper
+							/>
+						</div>
+					</div>
+					<div className="w-full flex flex-col gap-1">
+						<RichTextEditor
+							defaultValue={description}
+							onChange={(value) => setDescription(value)}
+							onValidityChange={setDescriptionValid}
+						/>
+						{errors?.get('description') && (
+							<p className="text-xs font-light text-red-600">{errors.get('description')}</p>
+						)}
+					</div>
+					<div className="flex flex-col w-full">
+						<div className="flex gap-2 w-full">
+							<div className="flex flex-col gap-1 w-full">
+								<label htmlFor="project_start_date" className="text-xs font-medium">
+									{t('common.START_DATE')}
+								</label>
+								<DatePicker
+									onChange={(date) => {
+										if (date) {
+											setStartDate(date);
+											// Smart logic: adjust End Date if necessary (if no End Date or Start Date >= End Date)
+											if (!endDate || isAfter(date, endDate) || isEqual(date, endDate)) {
+												// If no End Date or Start Date >= End Date,
+												// set End Date to 1 month after Start Date (typical project duration)
+												const suggestedEndDate = new Date(date);
+												suggestedEndDate.setMonth(suggestedEndDate.getMonth() + 1);
+												setEndDate(suggestedEndDate);
+											}
+										}
+									}}
+									required
+									value={startDate}
+									id="project_start_date"
+									placeholder="Pick a date"
+									isStartDate={true}
+								/>
+							</div>
+							<div className="flex flex-col gap-2 w-full">
+								<label htmlFor="project_end_date" className="text-xs font-medium">
+									{t('common.END_DATE')}
+								</label>
+								<DatePicker
+									onChange={(date) => {
+										if (date) {
+											setEndDate(date);
+										}
+									}}
+									required
+									value={endDate}
+									id="project_end_date"
+									placeholder="Pick a date"
+									isStartDate={false}
+									minDate={startDate}
+								/>
+							</div>
+						</div>
+						{errors?.get('dateRange') && (
+							<p className="text-xs font-light text-red-600">{errors.get('dateRange')}</p>
+						)}
+					</div>
+					<div className="flex flex-col gap-2 w-full">
+						<label htmlFor="website_url" className="text-xs font-medium">
+							{t('pages.projects.basicInformationForm.formFields.websiteUrl')}
+						</label>
+						<div className="w-full">
+							<InputField
+								value={websiteUrl}
+								onChange={(e) => setWebsiteUrl(e.target.value)}
+								type="url"
+								id="website_url"
+								placeholder={t('pages.projects.basicInformationForm.formFields.websiteUrlPlaceholder')}
+								className=" text-xs border dark:border-white   h-[2.2rem] px-4 rounded-lg bg-transparent dark:bg-transparent"
+								noWrapper
+							/>
+						</div>
+					</div>
+
+					<div className="flex flex-col gap-2 w-full">
+						<span className="text-xs font-medium">
+							{t('pages.projects.basicInformationForm.formFields.projectThumbnail')}
+						</span>
+						<div className="flex flex-col gap-1 w-full">
+							<div className="flex gap-5 items-center w-full">
+								{projectImageUrl && (
+									<div className="overflow-hidden relative w-20 h-20 rounded-lg group">
+										<Image
+											height={50}
+											width={50}
+											className="object-cover overflow-hidden w-full h-full rounded-lg aspect-square"
+											src={projectImageUrl}
+											alt={projectTitle}
+										/>
+										<div
+											className={cn(
+												' h-[0%] w-[0%] transition-all group-hover:w-full cursor-pointer group-hover:h-full bg-black/30 flex items-center justify-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
+											)}
+										>
+											<X
+												onClick={() => {
+													setProjectImageFile(null);
+													setProjectImageUrl(null);
+													setErrors((prev) => {
+														const newErrors = new Map(prev);
+														newErrors.delete('projectImage');
+														return newErrors;
+													});
+												}}
+												size={20}
+												className={cn('text-white')}
+											/>
+										</div>
+									</div>
+								)}
+
+								<label
+									htmlFor="dropzone-file"
+									className={cn(
+										'flex flex-col justify-center items-center w-full h-20 bg-gray-50 rounded-lg border-2 border-gray-300 border-dashed cursor-pointer grow dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500'
+									)}
+								>
+									<div className="flex gap-3 justify-center items-center grow">
+										<svg
+											className="w-6 h-6 text-gray-500 dark:text-gray-400"
+											aria-hidden="true"
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 20 16"
+										>
+											<path
+												stroke="currentColor"
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												strokeWidth="1"
+												d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+											/>
+										</svg>
+										<p className="text-sm text-gray-500 dark:text-gray-400">
+											<span className="text-xs">
+												{t('pages.projects.basicInformationForm.formFields.uploadPhoto')}
+											</span>
+										</p>
+									</div>
+									<input
+										onChange={handleProjectImageFileChange}
+										id="dropzone-file"
+										type="file"
+										accept="image/jpeg,image/png"
+										className="hidden"
+									/>
+								</label>
+							</div>
+							{errors?.get('projectImage') && (
+								<p className="text-xs font-light text-red-600">{errors?.get('projectImage')}</p>
+							)}
+						</div>
+					</div>
+				</div>
+				<ScrollBar orientation="vertical" />
+			</ScrollArea>
+			<div className="flex justify-end items-center w-full pt-4 border-t">
+				<Button loading={createImageAssetLoading} className=" h-[2.5rem]">
+					{createImageAssetLoading
+						? t('pages.projects.basicInformationForm.common.uploadingImage')
+						: t('common.NEXT')}
+				</Button>
+			</div>
+		</form>
+	);
+}
+
+/**
+ * Field validator
+ */
+export function validateField<ErrorKeys>(
+	field: ErrorKeys,
+	value: any,
+	rules: Array<(value: any) => string | null>,
+	errors: Map<ErrorKeys, string>
+) {
+	let errorMessage = null;
+
+	for (const rule of rules) {
+		errorMessage = rule(value);
+		if (errorMessage) {
+			break;
+		}
+	}
+
+	if (errorMessage) {
+		errors?.set(field, errorMessage);
+	} else {
+		errors?.delete(field);
+	}
+}
+
+/**
+ * ----------------------------------------------------------------
+ * Some common components for the project creation flow.
+ * ----------------------------------------------------------------
+ */
+
+/**
+ * Date picker
+ */
+
+interface IDatePickerProps {
+	className?: string;
+	onChange?: (date?: Date) => void;
+	value?: Date;
+	placeholder?: string;
+	disabled?: boolean;
+	required?: boolean;
+	id?: string;
+	isStartDate?: boolean;
+	minDate?: Date;
+}
+
+export function DatePicker(props: IDatePickerProps) {
+	const { className, onChange, value, placeholder, disabled, required, id, isStartDate, minDate } = props;
+
+	// Smart logic for projects
+	const disabledDays = useMemo(() => {
+		if (!isStartDate && minDate) {
+			// For End Date : disable dates before Start Date
+			return { before: minDate };
+		}
+		// For Start Date : no restriction (total flexibility for projects)
+		return undefined;
+	}, [isStartDate, minDate]);
+
+	// Reasonable year range for projects (5 years in the past, 10 years in the future)
+	const currentYear = new Date().getFullYear();
+	const fromYear = currentYear - 5;
+	const toYear = currentYear + 10;
+
+	return (
+		<Popover>
+			<PopoverTrigger asChild>
+				<Button
+					variant="outline"
+					className={cn(
+						'w-full flex items-center justify-between text-left dark:bg-dark--theme-light',
+						!value && 'text-muted-foreground border dark:border-white ',
+						className
+					)}
+					disabled={disabled}
+				>
+					{value ? format(value, 'PPP') : <span className="text-xs">{placeholder}</span>}
+					<CalendarIcon size={15} />
+				</Button>
+			</PopoverTrigger>
+			<PopoverContent className="p-0 w-auto dark:bg-dark--theme-light" align="start">
+				<Calendar
+					id={id}
+					required={required}
+					disabled={disabled || disabledDays}
+					mode="single"
+					selected={value}
+					onSelect={onChange}
+					initialFocus
+					fromYear={fromYear}
+					toYear={toYear}
+					captionLayout="dropdown-buttons"
+				/>
+			</PopoverContent>
+		</Popover>
+	);
+}
+
+export type { Identifiable } from './select';
+export { Select } from './select';
+
+/**
+ * Show image or identifier letters
+ */
+
+interface IThumbnailProps {
+	imgUrl?: string;
+	identifier: string;
+	size?: number | string;
+	className?: string;
+}
+
+export function Thumbnail(props: IThumbnailProps) {
+	const { imgUrl, identifier, size = 15, className } = props;
+	return (
+		<div
+			style={{
+				width: size,
+				height: size
+			}}
+			className={cn(
+				'rounded-md flex items-center justify-center overflow-hidden',
+				!imgUrl && 'border',
+				className
+			)}
+		>
+			{imgUrl ? (
+				<Image
+					className="object-cover w-full h-full rounded-md"
+					src={imgUrl}
+					alt={identifier}
+					width={40}
+					height={40}
+				/>
+			) : (
+				<span className=" text-[.5rem] uppercase">{identifier.substring(0, 2)}</span>
+			)}
+		</div>
+	);
+}

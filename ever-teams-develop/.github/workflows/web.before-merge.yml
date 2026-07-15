@@ -1,0 +1,75 @@
+name: Web Build Before Merge
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - ".deploy/web/**"
+      - ".github/workflows/web.before-merge.yml"
+      - "apps/web/**"
+      - "package.json"
+      - "yarn.lock"
+      - "README.md"
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ${{ vars.RUNNER_LINUX_X64_4 || 'ubuntu-latest' }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Skip workflow if PR is from develop to main
+        if: github.event.pull_request.head.ref == 'develop' && github.event.pull_request.base.ref == 'main'
+        run: |
+          echo "PR is from develop to main. Skipping the workflow."
+          echo "::set-output name=skipped::true"
+        id: skip_check
+
+      - name: Check if skipped
+        if: steps.skip_check.outputs.skipped == 'true'
+        run: echo "Workflow was skipped" && exit 0
+
+      - name: Free disk space
+        if: runner.environment == 'github-hosted'
+        run: |
+            df -h /
+            sudo swapoff -a
+            sudo apt clean
+            docker image ls -aq
+            if [ "$(docker image ls -aq)" ]; then
+              docker rmi $(docker image ls -aq)
+            fi
+            find ~/work/_temp -name "cache.tgz" -exec rm -f {} \;
+            sudo rm -rf "/usr/local/share/boost"
+            if [ -n "$AGENT_TOOLSDIRECTORY" ]; then sudo rm -rf "$AGENT_TOOLSDIRECTORY"; fi
+            df -h /
+
+      - name: Use Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24.14.0"
+          cache: "yarn"
+
+      - name: Configure Registry
+        shell: bash
+        run: |
+          if [ -n "${{ secrets.VERDACCIO_TOKEN }}" ]; then
+            echo "//packages.ever.co/:_authToken=${{ secrets.VERDACCIO_TOKEN }}" >> .npmrc
+            echo "registry=https://packages.ever.co/" >> .npmrc
+          fi
+
+      - name: Install Packages
+        run: |
+          yarn install --network-timeout 1000000 --frozen-lockfile
+        env:
+          NODE_OPTIONS: '--dns-result-order=ipv4first'
+
+      - name: Build Web
+
+        run: |
+          export SHARP_IGNORE_GLOBAL_LIBVIPS=1
+          export SHARP_FORCE_GLOBAL_LIBVIPS=false
+          yarn build:web

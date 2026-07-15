@@ -1,0 +1,18 @@
+{
+	"npmClient": "yarn",
+	"version": "independent",
+	"changelog": {
+		"repo": "ever-co/ever-teams",
+		"cacheDir": ".changelog",
+		"labels": {}
+	},
+	"useNx": true,
+	"packages": ["libs/*", "apps/web", "apps/server-web", "apps/playground", "packages/*"],
+	"command": {
+		"exec": {},
+		"clean": {
+			"yes": true
+		}
+	},
+	"npmClientArgs": ["--no-package-lock"]
+}

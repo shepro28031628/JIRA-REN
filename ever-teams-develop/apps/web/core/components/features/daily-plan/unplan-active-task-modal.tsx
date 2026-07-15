@@ -1,0 +1,101 @@
+import { useTimerView } from '@/core/hooks';
+import { useUpdateDailyPlan } from '@/core/hooks/daily-plans/use-update-daily-plan';
+import { Button, Modal, Text } from '@/core/components';
+import { useCallback } from 'react';
+import { EverCard } from '../../common/ever-card';
+import { TTask } from '@/core/types/schemas/task/task.schema';
+import { TDailyPlan } from '@/core/types/schemas/task/daily-plan.schema';
+import { useAtomValue } from 'jotai';
+import { timerStatusState } from '@/core/stores';
+
+interface UnplanActiveTaskModalProps {
+	open: boolean;
+	closeModal: () => void;
+	task: TTask;
+	plan: TDailyPlan;
+}
+
+/**
+ * A Modal that gives the possibility to unplan the active task.
+ *
+ * @param {Object} props - The props Object
+ * @param {boolean} props.open - If true open the modal otherwise close the modal
+ * @param {() => void} props.closeModal - A function to close the modal
+ * @param {TTask} props.task - The task to unplan
+ * @param {TDailyPlan} props.plan - The today's plan
+ *
+ * @returns {JSX.Element} The modal element
+ */
+export function UnplanActiveTaskModal(props: UnplanActiveTaskModalProps) {
+	const { closeModal, task, open, plan } = props;
+	const timerStatus = useAtomValue(timerStatusState);
+
+	const { removeTaskFromPlan, removeTaskFromPlanLoading } = useUpdateDailyPlan();
+	const { stopTimer } = useTimerView();
+
+	const handleCloseModal = useCallback(() => {
+		closeModal();
+	}, [closeModal]);
+
+	const handleUnplanTask = useCallback(async () => {
+		// NOTE: Use plan.employeeId/organizationId instead of inferring from the
+		// authenticated user so unplan respects backend filters and works for
+		// other employees' plans as well
+		try {
+			if (plan.id) {
+				await removeTaskFromPlan(
+					{
+						taskId: task.id,
+						employeeId: plan.employeeId ?? undefined,
+						organizationId: plan.organizationId
+					},
+					plan.id
+				);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}, [plan.employeeId, plan.id, plan.organizationId, removeTaskFromPlan, task.id]);
+
+	// The function that will be called when the user clicks on 'YES' button
+	const onYes = useCallback(async () => {
+		if (timerStatus?.running) {
+			stopTimer();
+		}
+		await handleUnplanTask();
+		handleCloseModal();
+	}, [handleCloseModal, handleUnplanTask, stopTimer, timerStatus?.running]);
+
+	return (
+		<Modal isOpen={open} closeModal={closeModal} className="w-[98%] md:w-[530px] relative" showCloseIcon={false}>
+			<EverCard className="w-full" shadow="custom">
+				<div className="flex flex-col justify-between w-full gap-6">
+					<Text.Heading as="h5" className="mb-3 text-center">
+						You are about to unplan the current active task, please confirm the action
+					</Text.Heading>
+					<div className="flex items-center w-full justify-evenly">
+						<Button
+							disabled={removeTaskFromPlanLoading}
+							variant="outline"
+							type="button"
+							onClick={handleCloseModal}
+							className="font-light rounded-md text-md dark:text-white dark:bg-slate-700 dark:border-slate-600"
+						>
+							No
+						</Button>
+						<Button
+							loading={removeTaskFromPlanLoading}
+							disabled={removeTaskFromPlanLoading}
+							onClick={onYes}
+							variant="primary"
+							type="submit"
+							className="font-light rounded-md text-md dark:text-white"
+						>
+							Yes
+						</Button>
+					</div>
+				</div>
+			</EverCard>
+		</Modal>
+	);
+}

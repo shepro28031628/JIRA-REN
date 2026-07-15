@@ -1,0 +1,152 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
+'use client';
+
+import { userTimezone } from '@/core/lib/helpers/date-and-time';
+import { authFormValidate } from '@/core/lib/helpers/validations';
+import { IRegisterDataAPI } from '@/core/types/interfaces/auth/auth';
+import { AxiosError } from 'axios';
+import { useCallback, useMemo, useState } from 'react';
+import { useQueryCall } from '../common/use-query';
+import { RECAPTCHA_SITE_KEY } from '@/core/constants/config/constants';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { authService } from '@/core/services/client/api/auth/auth.service';
+
+// Step 1: User info (name, email, captcha)
+// Step 2: Choose mode (solo or team)
+const FIRST_STEP = 'STEP1' as const;
+const SECOND_STEP = 'STEP2' as const;
+
+// Start mode: solo (default) or team
+export type TStartMode = 'solo' | 'team';
+
+export interface IStepProps {
+	handleOnChange: any;
+	form: IRegisterDataAPI;
+}
+
+const initialValues: IRegisterDataAPI = RECAPTCHA_SITE_KEY
+	? {
+			name: '',
+			email: '',
+			team: '',
+			recaptcha: ''
+		}
+	: {
+			name: '',
+			email: '',
+			team: ''
+		};
+
+export function useAuthenticationTeam() {
+	const query = useSearchParams();
+	const router = useRouter();
+
+	const queryEmail = useMemo(() => {
+		let localEmail: null | string = null;
+
+		if (typeof localStorage !== 'undefined') {
+			localEmail = localStorage?.getItem('ever-teams-start-email');
+		}
+
+		const emailQuery = query?.get('email') || localEmail || '';
+		return emailQuery;
+	}, [query]);
+
+	initialValues.email = queryEmail;
+
+	const [step, setStep] = useState<typeof FIRST_STEP | typeof SECOND_STEP>(FIRST_STEP);
+	const [startMode, setStartMode] = useState<TStartMode>('solo');
+	const [formValues, setFormValues] = useState<IRegisterDataAPI>(initialValues);
+	const [errors, setErrors] = useState(initialValues);
+	const { queryCall, loading, infiniteLoading } = useQueryCall(authService.registerUserTeam);
+
+	/**
+	 * Generate default team name for solo mode
+	 */
+	const generateDefaultTeamName = useCallback((userName: string): string => {
+		const trimmedName = userName.trim();
+		if (!trimmedName) return 'My Team';
+		return `${trimmedName}'s Team`;
+	}, []);
+
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+		// Step 1: Validate user info (name, email, captcha)
+		if (step === FIRST_STEP) {
+			const noRecaptchaArray = ['email', 'name'];
+			const withRecaptchaArray = [...noRecaptchaArray, 'recaptcha'];
+			const validationFields = RECAPTCHA_SITE_KEY ? withRecaptchaArray : noRecaptchaArray;
+
+			const { errors, valid } = authFormValidate(validationFields, formValues);
+			setErrors(errors as any);
+
+			if (valid) {
+				setStep(SECOND_STEP);
+			}
+			return;
+		}
+
+		// Step 2: Validate team name if in team mode, then submit
+		if (startMode === 'team') {
+			const { errors, valid } = authFormValidate(['team'], formValues);
+			if (!valid) {
+				setErrors(errors as any);
+				return;
+			}
+		}
+
+		// Build submission data without mutating state
+		const submissionData: IRegisterDataAPI = {
+			...formValues,
+			team: startMode === 'team' ? formValues.team : generateDefaultTeamName(formValues.name),
+			timezone: userTimezone()
+		};
+
+		// Final submission
+		infiniteLoading.current = true;
+
+		queryCall(submissionData)
+			.then(() => router.push('/'))
+			.catch((err: AxiosError) => {
+				if (err.response?.status === 400) {
+					setErrors((err.response?.data as any)?.errors || {});
+				}
+			});
+	};
+
+	const handleOnChange = useCallback(
+		(e: any) => {
+			const { name, value } = e.target;
+			const key = name as keyof IRegisterDataAPI;
+			if (errors[key]) {
+				errors[key] = '';
+			}
+			setFormValues((prevState) => ({
+				...prevState,
+				[name]: value
+			}));
+		},
+		[errors]
+	);
+
+	const handleStartModeChange = useCallback((mode: TStartMode) => {
+		setStartMode(mode);
+		// Clear team name error when switching modes
+		setErrors((prev) => ({ ...prev, team: '' }));
+	}, []);
+
+	return {
+		handleSubmit,
+		handleOnChange,
+		handleStartModeChange,
+		loading,
+		FIRST_STEP,
+		step,
+		SECOND_STEP,
+		setStep,
+		errors,
+		formValues,
+		startMode
+	};
+}
