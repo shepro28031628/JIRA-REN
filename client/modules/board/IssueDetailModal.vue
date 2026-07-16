@@ -93,6 +93,25 @@
               </div>
             </div>
             
+            <!-- Time Tracking Section -->
+            <div class="sidebar-section">
+              <label>Tiempo</label>
+              <div class="time-info">
+                <div class="time-stats">
+                  <span>Estimado: {{ formatMinutes(localIssue.estimated_minutes) }}</span>
+                  <span>Registrado: {{ formatMinutes(loggedMinutes) }}</span>
+                </div>
+                <div class="progress-bar" style="height:8px;background:#333;border-radius:4px;margin-top:4px;overflow:hidden;">
+                  <div class="progress-fill" :style="{ width: progressPercent + '%', background: progressColor, height: '100%' }"></div>
+                </div>
+              </div>
+              <div class="log-entry" style="margin-top:8px;display:flex;gap:4px;align-items:center;">
+                <input type="number" v-model.number="newLogMinutes" min="0" placeholder="Minutos" class="log-input" style="width:60px;padding:4px;border-radius:4px;border:none;background:#222;color:#fff;" />
+                <input type="text" v-model="newLogDesc" placeholder="Descripción (opcional)" class="log-desc" style="flex:1;padding:4px;border-radius:4px;border:none;background:#222;color:#fff;" />
+                <button class="btn-primary-glow" @click="logTime" style="padding:4px 8px;background:#4facfe;color:#fff;border:none;border-radius:4px;">Registrar</button>
+              </div>
+            </div>
+
             <div class="meta-data">
               <p>Creado: {{ formatDate(issue.created_at) }}</p>
               <p>Actualizado: {{ formatDate(issue.updated_at) }}</p>
@@ -105,7 +124,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
+import { $fetch } from 'ofetch';
 
 const props = defineProps<{
   show: boolean;
@@ -160,6 +180,63 @@ const formatDate = (dateStr: string) => {
     hour: '2-digit', minute: '2-digit' 
   }).format(d);
 };
+
+// Time tracking state
+const loggedMinutes = ref(0);
+const newLogMinutes = ref<number | null>(null);
+const newLogDesc = ref('');
+
+const formatMinutes = (mins: number) => {
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  return h > 0 ? `${h}h ${m}m` : `${m}m`;
+};
+
+const progressPercent = computed(() => {
+  const est = localIssue.value.estimated_minutes || 0;
+  if (est === 0) return 0;
+  return Math.min(100, (loggedMinutes.value / est) * 100);
+});
+
+const progressColor = computed(() => {
+  const p = progressPercent.value;
+  if (p < 70) return '#4facfe'; // greenish blue
+  if (p < 100) return '#ffa500'; // orange
+  return '#ff4500'; // red
+});
+
+const fetchLogs = async () => {
+  try {
+    const logs: any[] = await $fetch(`/api/issues/${localIssue.value.id}/time`);
+    loggedMinutes.value = logs.reduce((sum, log) => sum + (log.duration_minutes || 0), 0);
+  } catch (e) {
+    console.error('Error fetching time logs', e);
+  }
+};
+
+const logTime = async () => {
+  if (!newLogMinutes.value) return;
+  try {
+    await $fetch(`/api/issues/${localIssue.value.id}/time`, {
+      method: 'POST',
+      body: {
+        duration_minutes: newLogMinutes.value,
+        description: newLogDesc.value
+      }
+    });
+    // Reset inputs
+    newLogMinutes.value = null;
+    newLogDesc.value = '';
+    await fetchLogs();
+  } catch (e) {
+    console.error('Error logging time', e);
+  }
+};
+
+// Load logs when issue changes
+watch(() => localIssue.value.id, (id) => {
+  if (id) fetchLogs();
+});
 </script>
 
 <style scoped>

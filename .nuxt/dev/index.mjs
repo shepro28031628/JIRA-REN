@@ -3,48 +3,48 @@ import { Server as Server$1 } from 'node:http';
 import { resolve, dirname, join } from 'node:path';
 import nodeCrypto from 'node:crypto';
 import { parentPort, threadId } from 'node:worker_threads';
-import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, createError, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, setCookie, getResponseStatusText } from 'file://D:/Desktop/JIRA-REN/node_modules/h3/dist/index.mjs';
-import { escapeHtml } from 'file://D:/Desktop/JIRA-REN/node_modules/@vue/shared/dist/shared.cjs.js';
-import viteNodeEntry_mjs from 'file://D:/Desktop/JIRA-REN/node_modules/@nuxt/vite-builder/dist/vite-node-entry.mjs';
-import { viteNodeFetch } from 'file://D:/Desktop/JIRA-REN/node_modules/@nuxt/vite-builder/dist/vite-node.mjs';
-import bcrypt from 'file://D:/Desktop/JIRA-REN/node_modules/bcryptjs/index.js';
-import jwt from 'file://D:/Desktop/JIRA-REN/node_modules/jsonwebtoken/index.js';
-import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file://D:/Desktop/JIRA-REN/node_modules/vue-bundle-renderer/dist/runtime.mjs';
-import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, encodePath, joinRelativeURL } from 'file://D:/Desktop/JIRA-REN/node_modules/ufo/dist/index.mjs';
-import { renderToString } from 'file://D:/Desktop/JIRA-REN/node_modules/vue/server-renderer/index.mjs';
-import { klona } from 'file://D:/Desktop/JIRA-REN/node_modules/klona/dist/index.mjs';
-import destr, { destr as destr$1 } from 'file://D:/Desktop/JIRA-REN/node_modules/destr/dist/index.mjs';
-import { snakeCase } from 'file://D:/Desktop/JIRA-REN/node_modules/scule/dist/index.mjs';
-import { createHead as createHead$1, propsToString, renderSSRHead } from 'file://D:/Desktop/JIRA-REN/node_modules/unhead/dist/server.mjs';
-import { stringify, uneval } from 'file://D:/Desktop/JIRA-REN/node_modules/devalue/index.js';
-import { isVNode, isRef, toValue } from 'file://D:/Desktop/JIRA-REN/node_modules/vue/index.mjs';
-import { DeprecationsPlugin, PromisesPlugin, TemplateParamsPlugin, AliasSortingPlugin } from 'file://D:/Desktop/JIRA-REN/node_modules/unhead/dist/plugins.mjs';
-import { createHooks } from 'file://D:/Desktop/JIRA-REN/node_modules/hookable/dist/index.mjs';
-import { createFetch, Headers as Headers$1 } from 'file://D:/Desktop/JIRA-REN/node_modules/ofetch/dist/node.mjs';
-import { fetchNodeRequestHandler, callNodeRequestHandler } from 'file://D:/Desktop/JIRA-REN/node_modules/node-mock-http/dist/index.mjs';
-import { createStorage, prefixStorage } from 'file://D:/Desktop/JIRA-REN/node_modules/unstorage/dist/index.mjs';
-import unstorage_47drivers_47fs from 'file://D:/Desktop/JIRA-REN/node_modules/unstorage/drivers/fs.mjs';
-import file_58_47_47_47D_58_47Desktop_47JIRA_45REN_47node_modules_47_64nuxt_47nitro_45server_47dist_47runtime_47utils_47cache_45driver_46js from 'file://D:/Desktop/JIRA-REN/node_modules/@nuxt/nitro-server/dist/runtime/utils/cache-driver.js';
-import { digest, hash as hash$1 } from 'file://D:/Desktop/JIRA-REN/node_modules/ohash/dist/index.mjs';
-import { toRouteMatcher, createRouter } from 'file://D:/Desktop/JIRA-REN/node_modules/radix3/dist/index.mjs';
+import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, createError, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, setCookie, getResponseStatusText } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/h3/dist/index.mjs';
+import { escapeHtml } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/@vue/shared/dist/shared.cjs.js';
+import viteNodeEntry_mjs from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/@nuxt/vite-builder/dist/vite-node-entry.mjs';
+import { viteNodeFetch } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/@nuxt/vite-builder/dist/vite-node.mjs';
+import bcrypt from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/bcryptjs/index.js';
+import jwt from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/jsonwebtoken/index.js';
+import { Kysely, PostgresDialect, sql } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/kysely/dist/esm/index.js';
+import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/vue-bundle-renderer/dist/runtime.mjs';
+import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, encodePath, joinRelativeURL } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/ufo/dist/index.mjs';
+import { renderToString } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/vue/server-renderer/index.mjs';
+import { klona } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/klona/dist/index.mjs';
+import destr, { destr as destr$1 } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/destr/dist/index.mjs';
+import { snakeCase } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/scule/dist/index.mjs';
+import { createHead as createHead$1, propsToString, renderSSRHead } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/unhead/dist/server.mjs';
+import { stringify, uneval } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/devalue/index.js';
+import { isVNode, isRef, toValue } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/vue/index.mjs';
+import { DeprecationsPlugin, PromisesPlugin, TemplateParamsPlugin, AliasSortingPlugin } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/unhead/dist/plugins.mjs';
+import { createHooks } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/hookable/dist/index.mjs';
+import { createFetch, Headers as Headers$1 } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/ofetch/dist/node.mjs';
+import { fetchNodeRequestHandler, callNodeRequestHandler } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/node-mock-http/dist/index.mjs';
+import { createStorage, prefixStorage } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/unstorage/dist/index.mjs';
+import unstorage_47drivers_47fs from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/unstorage/drivers/fs.mjs';
+import file_58_47_47_47D_58_47Desktop_47JIRA_45REN_47JIRA_45REN_47node_modules_47_64nuxt_47nitro_45server_47dist_47runtime_47utils_47cache_45driver_46js from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/@nuxt/nitro-server/dist/runtime/utils/cache-driver.js';
+import { digest, hash as hash$1 } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/ohash/dist/index.mjs';
+import { toRouteMatcher, createRouter } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/radix3/dist/index.mjs';
 import { readFile } from 'node:fs/promises';
-import consola, { consola as consola$1 } from 'file://D:/Desktop/JIRA-REN/node_modules/consola/dist/index.mjs';
-import { ErrorParser } from 'file://D:/Desktop/JIRA-REN/node_modules/youch-core/build/index.js';
-import { Youch } from 'file://D:/Desktop/JIRA-REN/node_modules/youch/build/index.js';
-import { SourceMapConsumer } from 'file://D:/Desktop/JIRA-REN/node_modules/source-map/source-map.js';
+import consola, { consola as consola$1 } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/consola/dist/index.mjs';
+import { ErrorParser } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/youch-core/build/index.js';
+import { Youch } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/youch/build/index.js';
+import { SourceMapConsumer } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/source-map/source-map.js';
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { getContext } from 'file://D:/Desktop/JIRA-REN/node_modules/unctx/dist/index.mjs';
-import { captureRawStackTrace, parseRawStackTrace } from 'file://D:/Desktop/JIRA-REN/node_modules/errx/dist/index.js';
-import { Kysely, PostgresDialect } from 'file://D:/Desktop/JIRA-REN/node_modules/kysely/dist/esm/index.js';
-import pg from 'file://D:/Desktop/JIRA-REN/node_modules/pg/esm/index.mjs';
-import { Server } from 'file://D:/Desktop/JIRA-REN/node_modules/socket.io/wrapper.mjs';
-import _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw from 'file://D:/Desktop/JIRA-REN/node_modules/@nuxt/vite-builder/dist/fix-stacktrace.mjs';
+import { getContext } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/unctx/dist/index.mjs';
+import { captureRawStackTrace, parseRawStackTrace } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/errx/dist/index.js';
+import pg from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/pg/esm/index.mjs';
+import { Server } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/socket.io/wrapper.mjs';
+import _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/@nuxt/vite-builder/dist/fix-stacktrace.mjs';
 import { promises } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname as dirname$1, resolve as resolve$1 } from 'file://D:/Desktop/JIRA-REN/node_modules/pathe/dist/index.mjs';
-import { walkResolver } from 'file://D:/Desktop/JIRA-REN/node_modules/unhead/dist/utils.mjs';
+import { dirname as dirname$1, resolve as resolve$1 } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/pathe/dist/index.mjs';
+import { walkResolver } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/unhead/dist/utils.mjs';
 
-const serverAssets = [{"baseName":"server","dir":"D:/Desktop/JIRA-REN/server/assets"}];
+const serverAssets = [{"baseName":"server","dir":"D:/Desktop/JIRA-REN/JIRA-REN/server/assets"}];
 
 const assets$1 = createStorage();
 
@@ -56,12 +56,12 @@ const storage = createStorage({});
 
 storage.mount('/assets', assets$1);
 
-storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"D:/Desktop/JIRA-REN","watchOptions":{"ignored":[null]}}));
-storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"D:/Desktop/JIRA-REN/server","watchOptions":{"ignored":[null]}}));
-storage.mount('cache:nuxt:payload', file_58_47_47_47D_58_47Desktop_47JIRA_45REN_47node_modules_47_64nuxt_47nitro_45server_47dist_47runtime_47utils_47cache_45driver_46js({"driver":"file:///D:/Desktop/JIRA-REN/node_modules/@nuxt/nitro-server/dist/runtime/utils/cache-driver.js","base":"D:/Desktop/JIRA-REN/.nuxt/cache/nuxt/payload"}));
-storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"D:/Desktop/JIRA-REN/.nuxt"}));
-storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"D:/Desktop/JIRA-REN/.nuxt/cache"}));
-storage.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"D:/Desktop/JIRA-REN/.data/kv"}));
+storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"D:/Desktop/JIRA-REN/JIRA-REN","watchOptions":{"ignored":[null]}}));
+storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"D:/Desktop/JIRA-REN/JIRA-REN/server","watchOptions":{"ignored":[null]}}));
+storage.mount('cache:nuxt:payload', file_58_47_47_47D_58_47Desktop_47JIRA_45REN_47JIRA_45REN_47node_modules_47_64nuxt_47nitro_45server_47dist_47runtime_47utils_47cache_45driver_46js({"driver":"file:///D:/Desktop/JIRA-REN/JIRA-REN/node_modules/@nuxt/nitro-server/dist/runtime/utils/cache-driver.js","base":"D:/Desktop/JIRA-REN/JIRA-REN/.nuxt/cache/nuxt/payload"}));
+storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"D:/Desktop/JIRA-REN/JIRA-REN/.nuxt"}));
+storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"D:/Desktop/JIRA-REN/JIRA-REN/.nuxt/cache"}));
+storage.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"D:/Desktop/JIRA-REN/JIRA-REN/.data/kv"}));
 
 function useStorage(base = "") {
   return base ? prefixStorage(storage, base) : storage;
@@ -2115,13 +2115,13 @@ if (!window.__NUXT_DEVTOOLS_TIME_METRIC__) {
 window.__NUXT_DEVTOOLS_TIME_METRIC__.appInit = Date.now()
 `;
 
-const _7d4rmx4M6jw4HoFA2fVT7MvYrAla8_zhjozMrHJh_E = (function(nitro) {
+const _eUQxzi9QYmXXiPQd1t6D9nzXQGo4NFcXvB0w5SGDs8 = (function(nitro) {
   nitro.hooks.hook("render:html", (htmlContext) => {
     htmlContext.head.push(`<script>${script}<\/script>`);
   });
 });
 
-const rootDir = "D:/Desktop/JIRA-REN";
+const rootDir = "D:/Desktop/JIRA-REN/JIRA-REN";
 
 const appHead = {"meta":[{"name":"viewport","content":"width=device-width, initial-scale=1"},{"charset":"utf-8"}],"link":[],"style":[],"script":[],"noscript":[]};
 
@@ -2147,7 +2147,7 @@ const asyncContext = getContext("nuxt-dev", {
 	asyncContext: true,
 	AsyncLocalStorage
 });
-const _3rddRHj1_sjdzlDW14PkaEOnJ1KoqRWMhyWwlwC00us = (nitroApp) => {
+const _1JJYWLp_zZg6gruXNBULg9jNBtgyPCVnFX43rSSnWJI = (nitroApp) => {
 	const handler = nitroApp.h3App.handler;
 	nitroApp.h3App.handler = (event) => {
 		return asyncContext.callAsync({
@@ -2235,10 +2235,20 @@ const db = new Kysely({
   dialect
 });
 
-const _absNICKRc4LSXVPub27pSvJiCbW2CXaRlsyQHTv7w = defineNitroPlugin(async () => {
+const _RRcqz3dUckRdSwWlMU5WLjuffZtxLMdMaPhDMW2YRko = defineNitroPlugin(async () => {
+  console.log("Running DB Migrations for Project Pages...");
+  try {
+    await db.schema.createTable("project_pages").ifNotExists().addColumn("id", "uuid", (col) => col.primaryKey().defaultTo(sql`gen_random_uuid()`)).addColumn("project_id", "uuid", (col) => col.notNull().references("projects.id").onDelete("cascade")).addColumn("parent_id", "uuid", (col) => col.references("project_pages.id").onDelete("cascade")).addColumn("title", "varchar(255)", (col) => col.notNull().defaultTo("Nueva P\xE1gina")).addColumn("content", "jsonb").addColumn("author_id", "varchar(100)").addColumn("created_at", "timestamp", (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`)).addColumn("updated_at", "timestamp", (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`)).execute();
+    console.log("Project Pages Migration Complete");
+  } catch (err) {
+    console.error("Error en migraci\xF3n de Project Pages:", err);
+  }
+});
+
+const _R3F8dNMtwM22UUCN9tYVfessTmHi2Wkk6hRdFVjaVDc = defineNitroPlugin(async () => {
   console.log("Running DB Migrations for Sprints...");
   try {
-    await db.schema.createTable("sprints").ifNotExists().addColumn("id", "uuid", (col) => col.primaryKey().defaultTo(db.raw("gen_random_uuid()"))).addColumn("project_id", "uuid", (col) => col.notNull().references("projects.id").onDelete("cascade")).addColumn("name", "varchar(100)", (col) => col.notNull()).addColumn("goal", "text").addColumn("start_date", "timestamp").addColumn("end_date", "timestamp").addColumn("status", "varchar(20)", (col) => col.notNull().defaultTo("PENDING")).addColumn("created_at", "timestamp", (col) => col.defaultTo(db.raw("CURRENT_TIMESTAMP"))).execute();
+    await db.schema.createTable("sprints").ifNotExists().addColumn("id", "uuid", (col) => col.primaryKey().defaultTo(sql`gen_random_uuid()`)).addColumn("project_id", "uuid", (col) => col.notNull().references("projects.id").onDelete("cascade")).addColumn("name", "varchar(100)", (col) => col.notNull()).addColumn("goal", "text").addColumn("start_date", "timestamp").addColumn("end_date", "timestamp").addColumn("status", "varchar(20)", (col) => col.notNull().defaultTo("PENDING")).addColumn("created_at", "timestamp", (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`)).execute();
     await db.schema.alterTable("issues").addColumn("sprint_id", "uuid", (col) => col.references("sprints.id").onDelete("set null")).execute().catch((e) => {
       if (e.code !== "42701") console.error("Error alterando issues:", e);
     });
@@ -2248,7 +2258,20 @@ const _absNICKRc4LSXVPub27pSvJiCbW2CXaRlsyQHTv7w = defineNitroPlugin(async () =>
   }
 });
 
-const _HgBhuDe1VNDkCNBkruveBzNzUOFI1iGtHPSY8mRIF_Y = defineNitroPlugin((nitroApp) => {
+const _9L1kHehfqShv1cJLlu_3BAczE1x0W3M9XjWHjg2X1Es = defineNitroPlugin(async () => {
+  console.log("Running DB Migrations for Time Tracking...");
+  try {
+    await db.schema.createTable("time_logs").ifNotExists().addColumn("id", "uuid", (col) => col.primaryKey().defaultTo(sql`gen_random_uuid()`)).addColumn("issue_id", "uuid", (col) => col.notNull().references("issues.id").onDelete("cascade")).addColumn("user_id", "varchar(100)").addColumn("duration_minutes", "integer", (col) => col.notNull()).addColumn("description", "text").addColumn("logged_at", "timestamp", (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`)).execute();
+    await db.schema.alterTable("issues").addColumn("estimated_minutes", "integer", (col) => col.defaultTo(0)).execute().catch((e) => {
+      if (e.code !== "42701") console.error("Error alterando issues para estimated_minutes:", e);
+    });
+    console.log("Time Tracking Migration Complete");
+  } catch (err) {
+    console.error("Error en migraci\xF3n de Time Tracking:", err);
+  }
+});
+
+const _K8sJrXOG4A3LwLaPGLWN0AnU57SFjgFTb0QjlXdJo = defineNitroPlugin((nitroApp) => {
   nitroApp.hooks.hook("request", (event) => {
     var _a;
     const req = event.node.req;
@@ -2271,6 +2294,9 @@ const _HgBhuDe1VNDkCNBkruveBzNzUOFI1iGtHPSY8mRIF_Y = defineNitroPlugin((nitroApp
         socket.on("issue:updated", (data) => {
           socket.broadcast.emit("issue:updated", data);
         });
+        socket.on("page:updated", (data) => {
+          socket.broadcast.emit("page:updated", data);
+        });
         socket.on("disconnect", () => {
           console.log("Client disconnected:", socket.id);
         });
@@ -2282,29 +2308,16 @@ const _HgBhuDe1VNDkCNBkruveBzNzUOFI1iGtHPSY8mRIF_Y = defineNitroPlugin((nitroApp
 });
 
 const plugins = [
-  _7d4rmx4M6jw4HoFA2fVT7MvYrAla8_zhjozMrHJh_E,
-_3rddRHj1_sjdzlDW14PkaEOnJ1KoqRWMhyWwlwC00us,
-_absNICKRc4LSXVPub27pSvJiCbW2CXaRlsyQHTv7w,
-_HgBhuDe1VNDkCNBkruveBzNzUOFI1iGtHPSY8mRIF_Y,
+  _eUQxzi9QYmXXiPQd1t6D9nzXQGo4NFcXvB0w5SGDs8,
+_1JJYWLp_zZg6gruXNBULg9jNBtgyPCVnFX43rSSnWJI,
+_RRcqz3dUckRdSwWlMU5WLjuffZtxLMdMaPhDMW2YRko,
+_R3F8dNMtwM22UUCN9tYVfessTmHi2Wkk6hRdFVjaVDc,
+_9L1kHehfqShv1cJLlu_3BAczE1x0W3M9XjWHjg2X1Es,
+_K8sJrXOG4A3LwLaPGLWN0AnU57SFjgFTb0QjlXdJo,
 _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw
 ];
 
-const assets = {
-  "/index.mjs": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": "\"1f95f-Y6L9mEnt0QGoR9+nHg+H+NTj1Os\"",
-    "mtime": "2026-07-15T18:11:49.262Z",
-    "size": 129375,
-    "path": "index.mjs"
-  },
-  "/index.mjs.map": {
-    "type": "application/json",
-    "etag": "\"7c1b3-PdUemRA6mAJdieV3jZCOAWLDhCw\"",
-    "mtime": "2026-07-15T18:11:49.263Z",
-    "size": 508339,
-    "path": "index.mjs.map"
-  }
-};
+const assets = {};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -2329,7 +2342,7 @@ function getAsset (id) {
 
 const METHODS = /* @__PURE__ */ new Set(["HEAD", "GET"]);
 const EncodingMap = { gzip: ".gz", br: ".br" };
-const _HJWJio = eventHandler((event) => {
+const _vEcnOz = eventHandler((event) => {
   if (event.method && !METHODS.has(event.method)) {
     return;
   }
@@ -2835,35 +2848,41 @@ async function getIslandContext(event) {
 	};
 }
 
-const _lazy_VNeLxM = () => Promise.resolve().then(function () { return login_post$1; });
-const _lazy_TTMAQt = () => Promise.resolve().then(function () { return register_post$1; });
-const _lazy_4a6PEq = () => Promise.resolve().then(function () { return _id__patch$3; });
-const _lazy_O1d1J_ = () => Promise.resolve().then(function () { return _id__put$1; });
-const _lazy_4V1x8c = () => Promise.resolve().then(function () { return index$5; });
-const _lazy_U3XbIR = () => Promise.resolve().then(function () { return _id_$1; });
-const _lazy_a5WiqA = () => Promise.resolve().then(function () { return columns$1; });
-const _lazy_wvT3SS = () => Promise.resolve().then(function () { return burndown$1; });
-const _lazy_8oCE0z = () => Promise.resolve().then(function () { return index$3; });
-const _lazy_eVKASL = () => Promise.resolve().then(function () { return index$1; });
-const _lazy_YyWINr = () => Promise.resolve().then(function () { return _id__patch$1; });
-const _lazy_D574Nr = () => Promise.resolve().then(function () { return renderer; });
+const _lazy_1vodvI = () => Promise.resolve().then(function () { return login_post$1; });
+const _lazy_QOYBhH = () => Promise.resolve().then(function () { return register_post$1; });
+const _lazy_iLMfcH = () => Promise.resolve().then(function () { return _id__patch$3; });
+const _lazy_0bMktN = () => Promise.resolve().then(function () { return _id__put$3; });
+const _lazy_ZD_09U = () => Promise.resolve().then(function () { return index$5; });
+const _lazy_xv_pNS = () => Promise.resolve().then(function () { return _id__put$1; });
+const _lazy_CGcwXl = () => Promise.resolve().then(function () { return index_post$1; });
+const _lazy_GQe9Z2 = () => Promise.resolve().then(function () { return _id_$1; });
+const _lazy_VU2H1g = () => Promise.resolve().then(function () { return columns$1; });
+const _lazy_aVwWmL = () => Promise.resolve().then(function () { return pages_get$1; });
+const _lazy_rZDz38 = () => Promise.resolve().then(function () { return burndown$1; });
+const _lazy_2sgdYR = () => Promise.resolve().then(function () { return index$3; });
+const _lazy_pepJKO = () => Promise.resolve().then(function () { return index$1; });
+const _lazy_ROkDpJ = () => Promise.resolve().then(function () { return _id__patch$1; });
+const _lazy_nj8p97 = () => Promise.resolve().then(function () { return renderer; });
 
 const handlers = [
-  { route: '', handler: _HJWJio, lazy: false, middleware: true, method: undefined },
-  { route: '/api/auth/login', handler: _lazy_VNeLxM, lazy: true, middleware: false, method: "post" },
-  { route: '/api/auth/register', handler: _lazy_TTMAQt, lazy: true, middleware: false, method: "post" },
-  { route: '/api/issues/:id', handler: _lazy_4a6PEq, lazy: true, middleware: false, method: "patch" },
-  { route: '/api/issues/:id', handler: _lazy_O1d1J_, lazy: true, middleware: false, method: "put" },
-  { route: '/api/issues', handler: _lazy_4V1x8c, lazy: true, middleware: false, method: undefined },
-  { route: '/api/projects/:id', handler: _lazy_U3XbIR, lazy: true, middleware: false, method: undefined },
-  { route: '/api/projects/:id/columns', handler: _lazy_a5WiqA, lazy: true, middleware: false, method: undefined },
-  { route: '/api/projects/:id/sprints/:sprintId/burndown', handler: _lazy_wvT3SS, lazy: true, middleware: false, method: undefined },
-  { route: '/api/projects/:id/sprints', handler: _lazy_8oCE0z, lazy: true, middleware: false, method: undefined },
-  { route: '/api/projects', handler: _lazy_eVKASL, lazy: true, middleware: false, method: undefined },
-  { route: '/api/sprints/:id', handler: _lazy_YyWINr, lazy: true, middleware: false, method: "patch" },
-  { route: '/__nuxt_error', handler: _lazy_D574Nr, lazy: true, middleware: false, method: undefined },
+  { route: '', handler: _vEcnOz, lazy: false, middleware: true, method: undefined },
+  { route: '/api/auth/login', handler: _lazy_1vodvI, lazy: true, middleware: false, method: "post" },
+  { route: '/api/auth/register', handler: _lazy_QOYBhH, lazy: true, middleware: false, method: "post" },
+  { route: '/api/issues/:id', handler: _lazy_iLMfcH, lazy: true, middleware: false, method: "patch" },
+  { route: '/api/issues/:id', handler: _lazy_0bMktN, lazy: true, middleware: false, method: "put" },
+  { route: '/api/issues', handler: _lazy_ZD_09U, lazy: true, middleware: false, method: undefined },
+  { route: '/api/pages/:id', handler: _lazy_xv_pNS, lazy: true, middleware: false, method: "put" },
+  { route: '/api/pages', handler: _lazy_CGcwXl, lazy: true, middleware: false, method: "post" },
+  { route: '/api/projects/:id', handler: _lazy_GQe9Z2, lazy: true, middleware: false, method: undefined },
+  { route: '/api/projects/:id/columns', handler: _lazy_VU2H1g, lazy: true, middleware: false, method: undefined },
+  { route: '/api/projects/:id/pages', handler: _lazy_aVwWmL, lazy: true, middleware: false, method: "get" },
+  { route: '/api/projects/:id/sprints/:sprintId/burndown', handler: _lazy_rZDz38, lazy: true, middleware: false, method: undefined },
+  { route: '/api/projects/:id/sprints', handler: _lazy_2sgdYR, lazy: true, middleware: false, method: undefined },
+  { route: '/api/projects', handler: _lazy_pepJKO, lazy: true, middleware: false, method: undefined },
+  { route: '/api/sprints/:id', handler: _lazy_ROkDpJ, lazy: true, middleware: false, method: "patch" },
+  { route: '/__nuxt_error', handler: _lazy_nj8p97, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: handler$1, lazy: false, middleware: false, method: undefined },
-  { route: '/**', handler: _lazy_D574Nr, lazy: true, middleware: false, method: undefined }
+  { route: '/**', handler: _lazy_nj8p97, lazy: true, middleware: false, method: undefined }
 ];
 
 function createNitroApp() {
@@ -3391,7 +3410,7 @@ const _id__patch$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProper
   default: _id__patch$2
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const _id__put = defineEventHandler(async (event) => {
+const _id__put$2 = defineEventHandler(async (event) => {
   const issueId = getRouterParam(event, "id");
   const body = await readBody(event);
   if (!issueId) {
@@ -3407,9 +3426,9 @@ const _id__put = defineEventHandler(async (event) => {
   throw createError({ statusCode: 400, statusMessage: "Acci\xF3n no soportada" });
 });
 
-const _id__put$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const _id__put$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: _id__put
+  default: _id__put$2
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const index$4 = defineEventHandler(async (event) => {
@@ -3434,6 +3453,54 @@ const index$4 = defineEventHandler(async (event) => {
 const index$5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: index$4
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const _id__put = defineEventHandler(async (event) => {
+  const pageId = getRouterParam(event, "id");
+  const body = await readBody(event);
+  if (!pageId) {
+    throw createError({ statusCode: 400, statusMessage: "Page ID is required" });
+  }
+  try {
+    const updatedPage = await db.updateTable("project_pages").set({
+      title: body.title,
+      content: body.content,
+      parent_id: body.parent_id,
+      updated_at: sql`CURRENT_TIMESTAMP`
+    }).where("id", "=", pageId).returningAll().executeTakeFirstOrThrow();
+    return updatedPage;
+  } catch (error) {
+    throw createError({ statusCode: 500, statusMessage: error.message });
+  }
+});
+
+const _id__put$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: _id__put
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const index_post = defineEventHandler(async (event) => {
+  const body = await readBody(event);
+  if (!body.project_id || !body.title) {
+    throw createError({ statusCode: 400, statusMessage: "Missing required fields" });
+  }
+  try {
+    const newPage = await db.insertInto("project_pages").values({
+      project_id: body.project_id,
+      parent_id: body.parent_id || null,
+      title: body.title,
+      content: body.content || null,
+      author_id: body.author_id || "anonymous"
+    }).returningAll().executeTakeFirstOrThrow();
+    return newPage;
+  } catch (error) {
+    throw createError({ statusCode: 500, statusMessage: error.message });
+  }
+});
+
+const index_post$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: index_post
 }, Symbol.toStringTag, { value: 'Module' }));
 
 class ProjectService {
@@ -3500,6 +3567,24 @@ const columns = defineEventHandler(async (event) => {
 const columns$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: columns
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const pages_get = defineEventHandler(async (event) => {
+  const projectId = getRouterParam(event, "id");
+  if (!projectId) {
+    throw createError({ statusCode: 400, statusMessage: "Project ID is required" });
+  }
+  try {
+    const pages = await db.selectFrom("project_pages").selectAll().where("project_id", "=", projectId).orderBy("created_at", "asc").execute();
+    return pages;
+  } catch (error) {
+    throw createError({ statusCode: 500, statusMessage: error.message });
+  }
+});
+
+const pages_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: pages_get
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const burndown = defineEventHandler(async (event) => {

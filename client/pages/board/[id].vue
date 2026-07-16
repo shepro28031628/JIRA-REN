@@ -27,8 +27,13 @@
     <div class="board-container" v-if="!loading">
       <div v-for="column in columns" :key="column.id" class="kanban-column">
         <div class="column-header">
-          <h3>{{ column.name }}</h3>
-          <span class="issue-count">{{ getColumnIssues(column.id).length }}</span>
+          <div class="flex items-center gap-2">
+            <h3>{{ column.name }}</h3>
+            <span class="issue-count">{{ getColumnIssues(column.id).length }}</span>
+          </div>
+          <button class="add-issue-btn" @click="openCreateForColumn(column.id)" title="Añadir tarea">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          </button>
         </div>
         
         <!-- Contenedor Draggable -->
@@ -66,7 +71,8 @@
     <CreateIssueModal 
       :show="showCreateModal" 
       :columns="columns"
-      @close="showCreateModal = false"
+      :initial-column="initialColumnForCreate"
+      @close="showCreateModal = false; initialColumnForCreate = null;"
       @create="createIssue"
     />
 
@@ -85,6 +91,10 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute } from '#app';
+
+definePageMeta({
+  layout: 'project'
+});
 import { useBoardStore } from '../../stores/board.store';
 import draggable from 'vuedraggable';
 import IssueCard from '../../modules/board/IssueCard.vue';
@@ -125,10 +135,16 @@ const getColumnIssues = (columnId: string) => {
 const showCreateModal = ref(false);
 const showDetailModal = ref(false);
 const selectedIssue = ref<any>(null);
+const initialColumnForCreate = ref<string | null>(null);
 
 const openIssueDetails = (issue: any) => {
   selectedIssue.value = issue;
   showDetailModal.value = true;
+};
+
+const openCreateForColumn = (columnId: string) => {
+  initialColumnForCreate.value = columnId;
+  showCreateModal.value = true;
 };
 
 const loadData = async () => {
@@ -234,22 +250,19 @@ onMounted(() => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #0d0d12;
-  background-image: radial-gradient(circle at 0% 0%, rgba(79, 172, 254, 0.05) 0%, transparent 40%),
-                    radial-gradient(circle at 100% 100%, rgba(138, 43, 226, 0.05) 0%, transparent 40%);
-  color: #fff;
+  background-color: var(--bg-canvas);
+  color: var(--txt-primary);
   font-family: 'Inter', sans-serif;
   overflow: hidden;
 }
 
 .board-header {
-  padding: 20px 32px;
+  padding: 16px 32px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  background: rgba(13, 13, 18, 0.8);
-  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-surface-1);
   z-index: 10;
 }
 
@@ -260,123 +273,144 @@ onMounted(() => {
 }
 
 .back-link {
-  color: #a1a1aa;
-  padding: 8px;
-  border-radius: 8px;
+  color: var(--txt-secondary);
+  padding: 6px;
+  border-radius: 6px;
   display: flex; align-items: center; justify-content: center;
   transition: all 0.2s;
 }
-.back-link:hover { color: #fff; background: rgba(255, 255, 255, 0.1); }
+.back-link:hover { color: var(--txt-primary); background: var(--bg-surface-2); }
 
 .header-text { display: flex; align-items: center; gap: 12px; }
-.header-text h2 { font-size: 20px; font-weight: 600; color: #fff; letter-spacing: -0.01em; }
+.header-text h2 { font-size: 18px; font-weight: 600; color: var(--txt-primary); letter-spacing: -0.01em; }
 
 .project-key {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 4px 10px;
-  border-radius: 6px;
+  background: var(--bg-surface-2);
+  padding: 4px 8px;
+  border-radius: 4px;
   font-size: 11px;
-  font-weight: 700;
-  color: #a1a1aa;
+  font-weight: 600;
+  color: var(--txt-secondary);
   letter-spacing: 0.5px;
 }
 
 .btn-primary-glow {
-  background: linear-gradient(90deg, #4facfe, #8a2be2);
-  color: white; border: none; padding: 10px 20px;
-  border-radius: 10px; font-size: 14px; font-weight: 600;
-  cursor: pointer; transition: all 0.3s;
+  background: var(--brand-default);
+  color: white; border: none; padding: 8px 16px;
+  border-radius: 6px; font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all 0.2s;
 }
-.btn-primary-glow:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(138, 43, 226, 0.4); }
+.btn-primary-glow:hover { opacity: 0.9; }
 
 .project-nav {
   display: flex;
-  gap: 8px;
-  background: rgba(255,255,255,0.03);
+  gap: 4px;
   padding: 4px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.05);
 }
 
 .nav-item {
-  padding: 8px 16px;
-  border-radius: 8px;
-  color: #a1a1aa;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--txt-secondary);
   font-size: 13px;
   font-weight: 500;
   text-decoration: none;
   transition: 0.2s;
 }
 
-.nav-item:hover { color: #fff; background: rgba(255,255,255,0.05); }
-.nav-item.active { color: #fff; background: rgba(255,255,255,0.1); font-weight: 600; }
+.nav-item:hover { color: var(--txt-primary); background: var(--bg-surface-2); }
+.nav-item.active { color: var(--txt-primary); font-weight: 600; border-bottom: 2px solid var(--brand-default); border-radius: 0; }
 
 .board-container {
   flex: 1;
   display: flex;
-  gap: 24px;
-  padding: 24px 32px;
+  gap: 16px;
+  padding: 24px;
   overflow-x: auto;
   overflow-y: hidden;
   align-items: flex-start;
 }
 
 .kanban-column {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
+  background: transparent;
+  border-right: 1px dashed var(--border-subtle);
+  border-left: 1px dashed transparent;
+  padding: 0 8px;
   width: 320px;
   min-width: 320px;
   max-height: 100%;
   display: flex;
   flex-direction: column;
 }
+.kanban-column:first-child {
+  border-left: none;
+}
+.kanban-column:last-child {
+  border-right: none;
+}
 
 .column-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 8px 12px;
+  margin-bottom: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
+.add-issue-btn {
+  background: transparent;
+  color: var(--txt-secondary);
+  border: none;
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0;
+}
+.column-header:hover .add-issue-btn {
+  opacity: 1;
+}
+.add-issue-btn:hover {
+  background: var(--bg-surface-2);
+  color: var(--txt-primary);
+}
+
 .column-header h3 {
-  font-size: 14px;
-  font-weight: 600;
-  color: #e4e4e7;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--txt-primary);
+  text-transform: capitalize;
 }
 
 .issue-count {
-  background: rgba(255, 255, 255, 0.1);
-  color: #a1a1aa;
-  font-size: 12px;
-  font-weight: 600;
+  background: var(--bg-surface-2);
+  color: var(--txt-secondary);
+  font-size: 11px;
+  font-weight: 500;
   padding: 2px 8px;
   border-radius: 12px;
 }
 
 .column-body {
-  padding: 16px;
+  padding: 12px;
   flex: 1;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   min-height: 150px;
 }
 
 /* Clases de Drag & Drop (vuedraggable) */
 .ghost-card {
-  opacity: 0.4;
-  background: rgba(79, 172, 254, 0.1) !important;
-  border: 1px dashed #4facfe !important;
+  opacity: 0.5;
+  background: var(--bg-surface-2) !important;
+  border: 1px dashed var(--border-strong) !important;
 }
 
 .drag-card {
-  transform: rotate(3deg);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  transform: rotate(2deg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 /* Skeleton Loading */

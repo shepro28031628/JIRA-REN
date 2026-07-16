@@ -1,5 +1,6 @@
 import { defineNitroPlugin } from 'nitropack/runtime/plugin';
 import { db } from '../database/client';
+import { sql } from 'kysely';
 
 export default defineNitroPlugin(async () => {
   console.log('Running DB Migrations for Sprints...');
@@ -7,14 +8,14 @@ export default defineNitroPlugin(async () => {
     // 1. Crear tabla Sprints si no existe
     await db.schema.createTable('sprints')
       .ifNotExists()
-      .addColumn('id', 'uuid', (col) => col.primaryKey().defaultTo(db.raw('gen_random_uuid()')))
+      .addColumn('id', 'uuid', (col) => col.primaryKey().defaultTo(sql`gen_random_uuid()`))
       .addColumn('project_id', 'uuid', (col) => col.notNull().references('projects.id').onDelete('cascade'))
       .addColumn('name', 'varchar(100)', (col) => col.notNull())
       .addColumn('goal', 'text')
       .addColumn('start_date', 'timestamp')
       .addColumn('end_date', 'timestamp')
       .addColumn('status', 'varchar(20)', (col) => col.notNull().defaultTo('PENDING'))
-      .addColumn('created_at', 'timestamp', (col) => col.defaultTo(db.raw('CURRENT_TIMESTAMP')))
+      .addColumn('created_at', 'timestamp', (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`))
       .execute();
 
     // 2. Modificar la tabla issues para soportar sprint_id (solo si no existe)

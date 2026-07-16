@@ -71,6 +71,7 @@ import { reactive, watch } from 'vue';
 const props = defineProps<{
   show: boolean;
   columns: any[];
+  initialColumn?: string | null;
   loading?: boolean;
 }>();
 
@@ -84,10 +85,14 @@ const form = reactive({
   column_id: ''
 });
 
-// Inicializar column_id por defecto con la primera columna
-watch(() => props.columns, (cols) => {
-  if (cols && cols.length > 0 && !form.column_id) {
-    form.column_id = cols[0].id;
+// Inicializar column_id por defecto
+watch([() => props.columns, () => props.show, () => props.initialColumn], ([cols, isShow, initCol]) => {
+  if (isShow && cols && cols.length > 0) {
+    if (initCol) {
+      form.column_id = initCol;
+    } else if (!form.column_id) {
+      form.column_id = cols[0].id;
+    }
   }
 }, { immediate: true });
 

@@ -16,11 +16,20 @@ declare module "nitropack/types" {
     '/api/issues': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/issues/index').default>>>>
     }
+    '/api/pages/:id': {
+      'put': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/pages/[id].put').default>>>>
+    }
+    '/api/pages': {
+      'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/pages/index.post').default>>>>
+    }
     '/api/projects/:id': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/projects/[id]').default>>>>
     }
     '/api/projects/:id/columns': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/projects/[id]/columns').default>>>>
+    }
+    '/api/projects/:id/pages': {
+      'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/projects/[id]/pages.get').default>>>>
     }
     '/api/projects/:id/sprints/:sprintId/burndown': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/projects/[id]/sprints/[sprintId]/burndown').default>>>>

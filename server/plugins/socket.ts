@@ -29,6 +29,10 @@ export default defineNitroPlugin((nitroApp) => {
           socket.broadcast.emit('issue:updated', data);
         });
 
+        socket.on('page:updated', (data) => {
+          socket.broadcast.emit('page:updated', data);
+        });
+
         socket.on('disconnect', () => {
           console.log('Client disconnected:', socket.id);
         });

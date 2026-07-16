@@ -3,7 +3,8 @@ export default defineNuxtConfig({
   serverDir: 'server/',
   modules: [
     '@pinia/nuxt',
-    '@vueuse/motion/nuxt'
+    '@vueuse/motion/nuxt',
+    '@nuxtjs/tailwindcss'
   ],
   css: ['~/assets/css/main.css'],
   devtools: { enabled: true },
