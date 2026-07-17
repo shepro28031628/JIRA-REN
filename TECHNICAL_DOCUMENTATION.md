@@ -102,4 +102,123 @@ Accesible mediante el atajo universal **`Shift + C`**, esta terminal flotante of
 *   Atajo secreto de estrés **`Ctrl + Shift + D`** para QA y Profiling Visual.
 
 ---
+
+## 📁 8. Especificación de Arquitectura de Código (Documentos SRC)
+
+La estructura del proyecto en Nuxt 3 / Nitro Server está meticulosamente organizada para mantener una separación de responsabilidades estricta. El código base consolida las lógicas canibalizadas de plane, platform y ever-teams.
+
+### `client/modules/board/`
+Responsable del flujo de trabajo ágil. Contiene la lógica del Kanban (Drag & Drop), la planificación de Sprints, visualización en diagramas de Gantt y Calendario corporativo. Está altamente optimizado para el renderizado de múltiples tarjetas a 60 FPS utilizando técnicas de virtualización y transformaciones GPU.
+
+### `client/modules/wiki/`
+Aloja el "Editor Zen", un entorno de documentación libre de distracciones. Implementa CRDT (Conflict-free Replicated Data Type) para garantizar la coherencia durante la edición concurrente y gestiona la capa de presencia multiusuario en tiempo real.
+
+### `client/modules/support/`
+Módulo dedicado a la atención al cliente interno/externo. Maneja la Bandeja de Triaje de Cristal, la gestión de tickets de Mesa de Ayuda y contiene el motor de cálculo y evaluación de SLA (Service Level Agreement), disparando alertas como el "Gatillo Carmín" ante posibles incumplimientos.
+
+### `server/api/` y `server/middleware/`
+Constituyen el corazón del Nitro Server. Aquí reside el "Control del Usuario Maestro" (Edinsson Gonzalez) mediante middlewares de validación de roles y permisos. Además, orquesta la inyección en caliente de Feature Flags, determinando qué módulos están disponibles para cada proyecto o usuario sin requerir reinicios del sistema.
+
+---
+
+## 📊 9. Diagramas de Arquitectura y Flujos (JIRA-REN)
+
+### 9.1 Diagrama de Arquitectura General del Sistema
+
+```mermaid
+graph TD
+    %% Estilos Globales
+    classDef client fill:#fdfdfd,stroke:#e2e8f0,stroke-width:2px,color:#334155;
+    classDef server fill:#f8fafc,stroke:#94a3b8,stroke-width:2px,color:#0f172a;
+    classDef database fill:#f1f5f9,stroke:#64748b,stroke-width:2px,color:#020617;
+    classDef author fill:#f3e8ff,stroke:#a855f7,stroke-width:2px,color:#581c87;
+
+    %% Nodos
+    User((Navegador Cliente))
+    UI["UI de Cristal (Vue 3 + Tailwind)"]:::client
+    WebSocket["Servidor WebSockets (Tiempo Real)"]:::server
+    
+    AuthMiddleware{"Middleware Validación<br>Usuario Maestro<br>(Edinsson Gonzalez)"}:::author
+    FeatureFlags[("JSON de enabled_features")]:::database
+    
+    NitroAPI["Nitro Server API (Nuxt 3)"]:::server
+    PostgreSQL[("Base de Datos PostgreSQL<br>(Distribuida + Kysely)")]:::database
+
+    %% Conexiones
+    User -->|Solicita UI| UI
+    User <-->|Presencia / Eventos| WebSocket
+    UI -->|Petición HTTP| AuthMiddleware
+    AuthMiddleware -->|Valida Config| FeatureFlags
+    AuthMiddleware -->|Autorizado| NitroAPI
+    NitroAPI <-->|Query 100% tipada| PostgreSQL
+    WebSocket <-->|Sincronización| NitroAPI
+```
+
+### 9.2 Ciclo de Vida: Tarea de Desarrollo vs Ticket de Soporte
+
+```mermaid
+stateDiagram-v2
+    %% Estados de Desarrollo
+    state "Flujo de Desarrollo" as DevFlow {
+        [*] --> Backlog
+        Backlog --> En_Progreso : Iniciar Tarea
+        En_Progreso --> En_Progreso : Time Tracking Activo
+        En_Progreso --> Listo : Completar Tarea
+        Listo --> [*]
+    }
+
+    %% Estados de Soporte
+    state "Flujo de Soporte" as SuppFlow {
+        [*] --> Entrada_Externa
+        Entrada_Externa --> Bandeja_Triaje : Ingreso
+        state "Bandeja de Triaje de Cristal" as Bandeja_Triaje
+        Bandeja_Triaje --> Evaluacion_SLA : Análisis
+        
+        state Evaluacion_SLA {
+            [*] --> Gatillo_Carmin : SLA Expira
+            [*] --> Asignacion : SLA Ok
+        }
+        
+        Evaluacion_SLA --> Kanban : Asignar a Equipo
+        Evaluacion_SLA --> Rechazo : Ticket Inválido
+        Rechazo --> [*]
+        Kanban --> [*]
+    }
+```
+
+### 9.3 Secuencia: Presencia en Tiempo Real (Editor Zen)
+
+```mermaid
+sequenceDiagram
+    participant U1 as Usuario A
+    participant UI as Editor Zen (Wiki)
+    participant WS as Servidor WebSockets (Platform)
+    participant U2 as Usuario B
+
+    U1->>UI: Ingresa al documento Wiki
+    UI->>WS: Emitir paquete: [join_document, doc_id: 123]
+    WS-->>U1: Confirmación de conexión (CRDT Init)
+    WS->>U2: Broadcast: Usuario A está presente
+    
+    U2->>UI: Ingresa al mismo documento
+    UI->>WS: Emitir paquete: [join_document, doc_id: 123]
+    WS->>U1: Broadcast: Usuario B está presente
+    
+    U1->>UI: Enfoca campo de Título (Focus)
+    UI->>WS: Emitir paquete: [lock_field, field: title]
+    WS->>U2: Broadcast: Bloquear campo Título (Usuario A)
+    UI-->>U2: Muestra Micro-icono de Lock 🔒 en Título
+    
+    U1->>UI: Escribe contenido... (Mutación CRDT)
+    UI->>WS: Emitir paquete: [sync_delta, delta: {...}]
+    WS->>U2: Broadcast: [sync_delta]
+    UI-->>U2: Actualiza contenido en tiempo real
+    
+    U1->>UI: Quita el foco del Título (Blur)
+    UI->>WS: Emitir paquete: [unlock_field, field: title]
+    WS->>U2: Broadcast: Desbloquear campo Título
+    UI-->>U2: Oculta Micro-icono de Lock 🔒
+```
+
+---
 *Documento estructurado y emitido por el Arquitecto Principal del Ecosistema.*

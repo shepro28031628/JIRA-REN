@@ -1,6 +1,6 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/vue/vue.png" width="80" alt="Vue Logo" />
-  <h1 align="center">JIRA-REN (UI/UX Pro Max Ecosistema SaaS)</h1>
+  <h1 align="center">JIRA-REN</h1>
 
   <p align="center">
     <strong>Un clon premium de Jira con estética Light-Glassmorphism optimizado a 60 FPS.</strong>
