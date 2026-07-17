@@ -15,7 +15,7 @@
       <!-- Sidebar Header -->
       <div class="flex items-center justify-between h-14 px-4 border-b border-white/50 shrink-0">
         <div class="flex items-center gap-3 overflow-hidden">
-          <div class="w-6 h-6 rounded-md bg-gradient-to-br from-[#4facfe] to-[#8a2be2] shrink-0"></div>
+          <img src="/logo.png" alt="Logo" class="w-6 h-6 object-contain shrink-0" />
           <span
             v-show="!isCollapsed"
             class="font-semibold text-sm whitespace-nowrap opacity-100 transition-opacity duration-200 text-slate-800"

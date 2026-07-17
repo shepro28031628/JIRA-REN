@@ -4,25 +4,7 @@
     <nav class="premium-navbar">
       <div class="nav-left">
         <div class="logo-box">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="url(#paint0_linear)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M2 17L12 22L22 17" stroke="url(#paint1_linear)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M2 12L12 17L22 12" stroke="url(#paint2_linear)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <defs>
-              <linearGradient id="paint0_linear" x1="2" y1="7" x2="22" y2="7" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#4facfe"/>
-                <stop offset="1" stop-color="#8a2be2"/>
-              </linearGradient>
-              <linearGradient id="paint1_linear" x1="2" y1="19.5" x2="22" y2="19.5" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#4facfe"/>
-                <stop offset="1" stop-color="#8a2be2"/>
-              </linearGradient>
-              <linearGradient id="paint2_linear" x1="2" y1="14.5" x2="22" y2="14.5" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#4facfe"/>
-                <stop offset="1" stop-color="#8a2be2"/>
-              </linearGradient>
-            </defs>
-          </svg>
+          <img src="/logo.png" alt="Logo" class="w-6 h-6 object-contain" />
         </div>
         <span class="brand-name">Jira Clone</span>
       </div>
@@ -32,7 +14,7 @@
           <span class="user-name">{{ authStore.user?.name || 'Usuario' }}</span>
         </div>
         <button class="btn-icon" @click="authStore.logout()" title="Cerrar Sesión">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          <LogOut :size="20" />
         </button>
       </div>
     </nav>
@@ -45,7 +27,7 @@
           <p class="page-subtitle">Selecciona un proyecto para continuar tu trabajo o crea uno nuevo.</p>
         </div>
         <button class="btn-primary-glow" @click="showCreateModal = true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          <Plus :size="18" />
           Nuevo Proyecto
         </button>
       </header>
@@ -62,7 +44,7 @@
           <div class="card-content">
             <div class="card-header">
               <div class="project-badge">{{ project.key }}</div>
-              <button class="btn-icon subtle"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+              <button class="btn-icon subtle"><MoreHorizontal :size="18" /></button>
             </div>
             <h3 class="project-name">{{ project.name }}</h3>
             <p class="project-desc">{{ project.description || 'Sin descripción detallada.' }}</p>
@@ -100,7 +82,7 @@
         <div class="premium-modal">
           <div class="modal-header">
             <h3>Crear Nuevo Proyecto</h3>
-            <button class="btn-icon" @click="showCreateModal = false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            <button class="btn-icon" @click="showCreateModal = false"><X :size="20" /></button>
           </div>
           <form @submit.prevent="createProject" class="modal-form">
             <div class="input-group">
@@ -130,6 +112,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useAuthStore } from '~/stores/auth.store';
+import { LogOut, Plus, FolderPlus, MoreHorizontal, X } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
 const projects = ref<any[]>([]);

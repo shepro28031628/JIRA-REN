@@ -38,3 +38,4 @@ export { useBoardStore } from '../client/stores/board.store';
 export { useThemeStore, Theme } from '../client/stores/theme.store';
 export { reactiveStyle, reactiveTransform, useElementStyle, useElementTransform, useMotion, useMotionControls, useMotionProperties, useMotions, useMotionTransitions, useMotionVariants, useSpring, useReducedMotion } from '../../node_modules/@vueuse/motion/dist/nuxt/runtime/composables/index';
 export { defineStore, acceptHMRUpdate, usePinia, storeToRefs } from '../../node_modules/@pinia/nuxt/dist/runtime/composables';
+export { useNuxtDevTools } from '../../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools';

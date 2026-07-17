@@ -8,25 +8,7 @@
       :enter="{ opacity: 1, y: 0, transition: { duration: 600, type: 'spring', damping: 20 } }"
     >
       <div class="logo-box">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="url(#paint0_linear)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M2 17L12 22L22 17" stroke="url(#paint1_linear)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M2 12L12 17L22 12" stroke="url(#paint2_linear)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <defs>
-            <linearGradient id="paint0_linear" x1="2" y1="7" x2="22" y2="7" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#4facfe"/>
-              <stop offset="1" stop-color="#8a2be2"/>
-            </linearGradient>
-            <linearGradient id="paint1_linear" x1="2" y1="19.5" x2="22" y2="19.5" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#4facfe"/>
-              <stop offset="1" stop-color="#8a2be2"/>
-            </linearGradient>
-            <linearGradient id="paint2_linear" x1="2" y1="14.5" x2="22" y2="14.5" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#4facfe"/>
-              <stop offset="1" stop-color="#8a2be2"/>
-            </linearGradient>
-          </defs>
-        </svg>
+        <img src="/logo.png" alt="Logo" class="w-8 h-8 object-contain" />
         <span class="brand-name">Jira Clone</span>
       </div>
       

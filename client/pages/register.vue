@@ -4,11 +4,7 @@
     <div class="auth-visual">
       <div class="visual-content" v-motion :initial="{ opacity: 0, x: -50 }" :enter="{ opacity: 1, x: 0, transition: { duration: 800, ease: 'easeOut' } }">
         <div class="logo-box-large">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M2 17L12 22L22 17" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M2 12L12 17L22 12" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <img src="/logo.png" alt="Logo" class="w-full h-full object-contain p-2" />
         </div>
         <h1 class="visual-title">Tu equipo merece herramientas de clase mundial.</h1>
         <p class="visual-subtitle">Miles de desarrolladores confían en Jira Clone para mantener sus proyectos alineados, sin distracciones.</p>
@@ -38,7 +34,7 @@
       <div class="form-wrapper" v-motion :initial="{ opacity: 0, y: 30 }" :enter="{ opacity: 1, y: 0, transition: { duration: 600, delay: 200, type: 'spring' } }">
         
         <div class="mobile-logo">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7L12 12L22 7L12 2Z"/><path d="M2 17L12 22L22 17"/><path d="M2 12L12 17L22 12"/></svg>
+          <img src="/logo.png" alt="Logo" class="w-8 h-8 object-contain" />
         </div>
 
         <div class="header">
@@ -51,30 +47,30 @@
           <div class="input-field">
             <input v-model="name" type="text" id="name" required placeholder=" " />
             <label for="name">Nombre completo</label>
-            <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <User class="icon" :size="18" />
           </div>
 
           <div class="input-field">
             <input v-model="email" type="email" id="email" required placeholder=" " />
             <label for="email">Correo electrónico</label>
-            <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <Mail class="icon" :size="18" />
           </div>
           
           <div class="input-field">
             <input v-model="password" type="password" id="password" required placeholder=" " minlength="6" />
             <label for="password">Contraseña (Mín. 6 caracteres)</label>
-            <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <Lock class="icon" :size="18" />
           </div>
 
           <div v-if="error" class="error-banner" v-motion :initial="{ opacity: 0, scale: 0.95 }" :enter="{ opacity: 1, scale: 1 }">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <AlertCircle :size="16" />
             {{ error }}
           </div>
 
           <button type="submit" class="btn-submit" :disabled="loading">
             <span v-if="!loading">Crear Cuenta</span>
             <span v-else class="loader"></span>
-            <svg v-if="!loading" class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            <ArrowRight v-if="!loading" class="arrow" :size="18" />
           </button>
         </form>
 
@@ -90,6 +86,7 @@
 import { ref } from 'vue';
 import { useRouter } from '#app';
 import { useAuthStore } from '~/stores/auth.store';
+import { User, Mail, Lock, AlertCircle, ArrowRight } from 'lucide-vue-next';
 
 const router = useRouter();
 const authStore = useAuthStore();

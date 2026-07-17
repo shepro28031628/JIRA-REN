@@ -3,22 +3,22 @@
     <aside :class="['sidebar', { 'is-collapsed': isCollapsed }]">
       <div class="sidebar-header">
         <div class="logo">
-          <div class="logo-icon"></div>
+          <img src="/logo.png" alt="Logo" class="logo-icon" />
           <span v-if="!isCollapsed" class="brand-name">Jira Clone</span>
         </div>
         <button class="collapse-btn" @click="toggleSidebar">
-          <svg v-if="!isCollapsed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-          <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          <PanelLeftClose v-if="!isCollapsed" class="w-5 h-5" stroke-width="2" />
+          <PanelLeft v-else class="w-5 h-5" stroke-width="2" />
         </button>
       </div>
       
       <nav class="sidebar-nav">
         <NuxtLink to="/projects" class="nav-item">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <LayoutGrid class="w-5 h-5" stroke-width="2" />
           <span v-if="!isCollapsed">Proyectos</span>
         </NuxtLink>
         <div class="nav-item">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+          <CheckSquare class="w-5 h-5" stroke-width="2" />
           <span v-if="!isCollapsed">Mis Tareas</span>
         </div>
       </nav>
@@ -32,6 +32,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import { PanelLeftClose, PanelLeft, LayoutGrid, CheckSquare } from 'lucide-vue-next';
 
 const isCollapsed = ref(false);
 
@@ -79,8 +80,7 @@ const toggleSidebar = () => {
 .logo-icon {
   width: 24px;
   height: 24px;
-  border-radius: 6px;
-  background: linear-gradient(135deg, #4facfe, #8a2be2);
+  object-fit: contain;
 }
 
 .brand-name {
