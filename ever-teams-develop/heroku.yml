@@ -1,6 +1,0 @@
-build:
-  docker:
-    web: .deploy/web/Dockerfile
-
-run:
-  web: node apps/web/server.js

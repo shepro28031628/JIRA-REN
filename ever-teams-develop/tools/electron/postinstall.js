@@ -1,1 +1,0 @@
-// Postinstall Script for Electron build
