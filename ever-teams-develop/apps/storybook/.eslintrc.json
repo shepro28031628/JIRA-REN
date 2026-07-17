@@ -1,6 +1,0 @@
-{
- "extends": [
-  "@ever-teams/eslint-config/nextjs.json",
-  "plugin:storybook/recommended"
- ]
-}
