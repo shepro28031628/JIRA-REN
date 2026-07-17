@@ -77,7 +77,7 @@
         <!-- Equipos/Tiempos (Teams) -->
         <NuxtLink
           v-if="projectFeatures.teams"
-          :to="`/projects/${projectId}/teams`"
+          :to="`/projects/${projectId}/team`"
           class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-500 hover:bg-white/60 hover:text-purple-600 transition-all duration-300 group relative overflow-hidden"
           active-class="bg-white/80 !text-purple-700 shadow-sm border border-white/60 font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1.5 before:bg-gradient-to-b before:from-purple-400 before:to-purple-600 before:rounded-r-md"
         >

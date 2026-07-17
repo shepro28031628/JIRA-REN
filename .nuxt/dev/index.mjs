@@ -3,46 +3,46 @@ import { Server as Server$1 } from 'node:http';
 import { resolve, dirname, join } from 'node:path';
 import nodeCrypto from 'node:crypto';
 import { parentPort, threadId } from 'node:worker_threads';
-import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, createError, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, setCookie, getResponseStatusText } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/h3/dist/index.mjs';
-import { escapeHtml } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/@vue/shared/dist/shared.cjs.js';
-import viteNodeEntry_mjs from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/@nuxt/vite-builder/dist/vite-node-entry.mjs';
-import { viteNodeFetch } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/@nuxt/vite-builder/dist/vite-node.mjs';
-import bcrypt from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/bcryptjs/index.js';
-import jwt from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/jsonwebtoken/index.js';
-import { Kysely, PostgresDialect, sql } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/kysely/dist/esm/index.js';
-import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/vue-bundle-renderer/dist/runtime.mjs';
-import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, encodePath, joinRelativeURL } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/ufo/dist/index.mjs';
-import { renderToString } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/vue/server-renderer/index.mjs';
-import { klona } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/klona/dist/index.mjs';
-import destr, { destr as destr$1 } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/destr/dist/index.mjs';
-import { snakeCase } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/scule/dist/index.mjs';
-import { createHead as createHead$1, propsToString, renderSSRHead } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/unhead/dist/server.mjs';
-import { stringify, uneval } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/devalue/index.js';
-import { isVNode, isRef, toValue } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/vue/index.mjs';
-import { DeprecationsPlugin, PromisesPlugin, TemplateParamsPlugin, AliasSortingPlugin } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/unhead/dist/plugins.mjs';
-import { createHooks } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/hookable/dist/index.mjs';
-import { createFetch, Headers as Headers$1 } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/ofetch/dist/node.mjs';
-import { fetchNodeRequestHandler, callNodeRequestHandler } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/node-mock-http/dist/index.mjs';
-import { createStorage, prefixStorage } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/unstorage/dist/index.mjs';
-import unstorage_47drivers_47fs from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/unstorage/drivers/fs.mjs';
-import file_58_47_47_47D_58_47Desktop_47JIRA_45REN_47JIRA_45REN_47node_modules_47_64nuxt_47nitro_45server_47dist_47runtime_47utils_47cache_45driver_46js from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/@nuxt/nitro-server/dist/runtime/utils/cache-driver.js';
-import { digest, hash as hash$1 } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/ohash/dist/index.mjs';
-import { toRouteMatcher, createRouter } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/radix3/dist/index.mjs';
+import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, createError, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, setCookie, getResponseStatusText } from 'file://D:/Desktop/JIRA-REN/node_modules/h3/dist/index.mjs';
+import { escapeHtml } from 'file://D:/Desktop/JIRA-REN/node_modules/@vue/shared/dist/shared.cjs.js';
+import viteNodeEntry_mjs from 'file://D:/Desktop/JIRA-REN/node_modules/@nuxt/vite-builder/dist/vite-node-entry.mjs';
+import { viteNodeFetch } from 'file://D:/Desktop/JIRA-REN/node_modules/@nuxt/vite-builder/dist/vite-node.mjs';
+import bcrypt from 'file://D:/Desktop/JIRA-REN/node_modules/bcryptjs/index.js';
+import jwt from 'file://D:/Desktop/JIRA-REN/node_modules/jsonwebtoken/index.js';
+import { Kysely, PostgresDialect, sql } from 'file://D:/Desktop/JIRA-REN/node_modules/kysely/dist/esm/index.js';
+import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file://D:/Desktop/JIRA-REN/node_modules/vue-bundle-renderer/dist/runtime.mjs';
+import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, encodePath, joinRelativeURL } from 'file://D:/Desktop/JIRA-REN/node_modules/ufo/dist/index.mjs';
+import { renderToString } from 'file://D:/Desktop/JIRA-REN/node_modules/vue/server-renderer/index.mjs';
+import { klona } from 'file://D:/Desktop/JIRA-REN/node_modules/klona/dist/index.mjs';
+import destr, { destr as destr$1 } from 'file://D:/Desktop/JIRA-REN/node_modules/destr/dist/index.mjs';
+import { snakeCase } from 'file://D:/Desktop/JIRA-REN/node_modules/scule/dist/index.mjs';
+import { createHead as createHead$1, propsToString, renderSSRHead } from 'file://D:/Desktop/JIRA-REN/node_modules/unhead/dist/server.mjs';
+import { stringify, uneval } from 'file://D:/Desktop/JIRA-REN/node_modules/devalue/index.js';
+import { isVNode, isRef, toValue } from 'file://D:/Desktop/JIRA-REN/node_modules/vue/index.mjs';
+import { DeprecationsPlugin, PromisesPlugin, TemplateParamsPlugin, AliasSortingPlugin } from 'file://D:/Desktop/JIRA-REN/node_modules/unhead/dist/plugins.mjs';
+import { createHooks } from 'file://D:/Desktop/JIRA-REN/node_modules/hookable/dist/index.mjs';
+import { createFetch, Headers as Headers$1 } from 'file://D:/Desktop/JIRA-REN/node_modules/ofetch/dist/node.mjs';
+import { fetchNodeRequestHandler, callNodeRequestHandler } from 'file://D:/Desktop/JIRA-REN/node_modules/node-mock-http/dist/index.mjs';
+import { createStorage, prefixStorage } from 'file://D:/Desktop/JIRA-REN/node_modules/unstorage/dist/index.mjs';
+import unstorage_47drivers_47fs from 'file://D:/Desktop/JIRA-REN/node_modules/unstorage/drivers/fs.mjs';
+import file_58_47_47_47D_58_47Desktop_47JIRA_45REN_47node_modules_47_64nuxt_47nitro_45server_47dist_47runtime_47utils_47cache_45driver_46js from 'file://D:/Desktop/JIRA-REN/node_modules/@nuxt/nitro-server/dist/runtime/utils/cache-driver.js';
+import { digest, hash as hash$1 } from 'file://D:/Desktop/JIRA-REN/node_modules/ohash/dist/index.mjs';
+import { toRouteMatcher, createRouter } from 'file://D:/Desktop/JIRA-REN/node_modules/radix3/dist/index.mjs';
 import { readFile } from 'node:fs/promises';
-import consola, { consola as consola$1 } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/consola/dist/index.mjs';
-import { ErrorParser } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/youch-core/build/index.js';
-import { Youch } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/youch/build/index.js';
-import { SourceMapConsumer } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/source-map/source-map.js';
+import consola, { consola as consola$1 } from 'file://D:/Desktop/JIRA-REN/node_modules/consola/dist/index.mjs';
+import { ErrorParser } from 'file://D:/Desktop/JIRA-REN/node_modules/youch-core/build/index.js';
+import { Youch } from 'file://D:/Desktop/JIRA-REN/node_modules/youch/build/index.js';
+import { SourceMapConsumer } from 'file://D:/Desktop/JIRA-REN/node_modules/source-map/source-map.js';
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { getContext } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/unctx/dist/index.mjs';
-import { captureRawStackTrace, parseRawStackTrace } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/errx/dist/index.js';
-import pg from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/pg/esm/index.mjs';
-import { Server } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/socket.io/wrapper.mjs';
-import _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/@nuxt/vite-builder/dist/fix-stacktrace.mjs';
+import { getContext } from 'file://D:/Desktop/JIRA-REN/node_modules/unctx/dist/index.mjs';
+import { captureRawStackTrace, parseRawStackTrace } from 'file://D:/Desktop/JIRA-REN/node_modules/errx/dist/index.js';
+import pg from 'file://D:/Desktop/JIRA-REN/node_modules/pg/esm/index.mjs';
+import { Server } from 'file://D:/Desktop/JIRA-REN/node_modules/socket.io/wrapper.mjs';
+import _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw from 'file://D:/Desktop/JIRA-REN/node_modules/@nuxt/vite-builder/dist/fix-stacktrace.mjs';
 import { promises } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname as dirname$1, resolve as resolve$1 } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/pathe/dist/index.mjs';
-import { walkResolver } from 'file://D:/Desktop/JIRA-REN/JIRA-REN/node_modules/unhead/dist/utils.mjs';
+import { dirname as dirname$1, resolve as resolve$1 } from 'file://D:/Desktop/JIRA-REN/node_modules/pathe/dist/index.mjs';
+import { walkResolver } from 'file://D:/Desktop/JIRA-REN/node_modules/unhead/dist/utils.mjs';
 
 const serverAssets = [{"baseName":"server","dir":"D:/Desktop/JIRA-REN/JIRA-REN/server/assets"}];
 
@@ -58,7 +58,7 @@ storage.mount('/assets', assets$1);
 
 storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"D:/Desktop/JIRA-REN/JIRA-REN","watchOptions":{"ignored":[null]}}));
 storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"D:/Desktop/JIRA-REN/JIRA-REN/server","watchOptions":{"ignored":[null]}}));
-storage.mount('cache:nuxt:payload', file_58_47_47_47D_58_47Desktop_47JIRA_45REN_47JIRA_45REN_47node_modules_47_64nuxt_47nitro_45server_47dist_47runtime_47utils_47cache_45driver_46js({"driver":"file:///D:/Desktop/JIRA-REN/JIRA-REN/node_modules/@nuxt/nitro-server/dist/runtime/utils/cache-driver.js","base":"D:/Desktop/JIRA-REN/JIRA-REN/.nuxt/cache/nuxt/payload"}));
+storage.mount('cache:nuxt:payload', file_58_47_47_47D_58_47Desktop_47JIRA_45REN_47node_modules_47_64nuxt_47nitro_45server_47dist_47runtime_47utils_47cache_45driver_46js({"driver":"file:///D:/Desktop/JIRA-REN/node_modules/@nuxt/nitro-server/dist/runtime/utils/cache-driver.js","base":"D:/Desktop/JIRA-REN/JIRA-REN/.nuxt/cache/nuxt/payload"}));
 storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"D:/Desktop/JIRA-REN/JIRA-REN/.nuxt"}));
 storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"D:/Desktop/JIRA-REN/JIRA-REN/.nuxt/cache"}));
 storage.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"D:/Desktop/JIRA-REN/JIRA-REN/.data/kv"}));
@@ -2115,7 +2115,7 @@ if (!window.__NUXT_DEVTOOLS_TIME_METRIC__) {
 window.__NUXT_DEVTOOLS_TIME_METRIC__.appInit = Date.now()
 `;
 
-const _eUQxzi9QYmXXiPQd1t6D9nzXQGo4NFcXvB0w5SGDs8 = (function(nitro) {
+const _7d4rmx4M6jw4HoFA2fVT7MvYrAla8_zhjozMrHJh_E = (function(nitro) {
   nitro.hooks.hook("render:html", (htmlContext) => {
     htmlContext.head.push(`<script>${script}<\/script>`);
   });
@@ -2147,7 +2147,7 @@ const asyncContext = getContext("nuxt-dev", {
 	asyncContext: true,
 	AsyncLocalStorage
 });
-const _1JJYWLp_zZg6gruXNBULg9jNBtgyPCVnFX43rSSnWJI = (nitroApp) => {
+const _3rddRHj1_sjdzlDW14PkaEOnJ1KoqRWMhyWwlwC00us = (nitroApp) => {
 	const handler = nitroApp.h3App.handler;
 	nitroApp.h3App.handler = (event) => {
 		return asyncContext.callAsync({
@@ -2308,8 +2308,8 @@ const _K8sJrXOG4A3LwLaPGLWN0AnU57SFjgFTb0QjlXdJo = defineNitroPlugin((nitroApp) 
 });
 
 const plugins = [
-  _eUQxzi9QYmXXiPQd1t6D9nzXQGo4NFcXvB0w5SGDs8,
-_1JJYWLp_zZg6gruXNBULg9jNBtgyPCVnFX43rSSnWJI,
+  _7d4rmx4M6jw4HoFA2fVT7MvYrAla8_zhjozMrHJh_E,
+_3rddRHj1_sjdzlDW14PkaEOnJ1KoqRWMhyWwlwC00us,
 _RRcqz3dUckRdSwWlMU5WLjuffZtxLMdMaPhDMW2YRko,
 _R3F8dNMtwM22UUCN9tYVfessTmHi2Wkk6hRdFVjaVDc,
 _9L1kHehfqShv1cJLlu_3BAczE1x0W3M9XjWHjg2X1Es,
@@ -2317,22 +2317,7 @@ _K8sJrXOG4A3LwLaPGLWN0AnU57SFjgFTb0QjlXdJo,
 _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw
 ];
 
-const assets = {
-  "/index.mjs": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": "\"23fe3-ZL0nJXixpcvPPopWDgNNXc6jgA0\"",
-    "mtime": "2026-07-17T16:27:36.193Z",
-    "size": 147427,
-    "path": "index.mjs"
-  },
-  "/index.mjs.map": {
-    "type": "application/json",
-    "etag": "\"8a06a-9dAm+bSseo3nqeXJji0GQbF88ik\"",
-    "mtime": "2026-07-17T16:27:36.195Z",
-    "size": 565354,
-    "path": "index.mjs.map"
-  }
-};
+const assets = {};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -2357,7 +2342,7 @@ function getAsset (id) {
 
 const METHODS = /* @__PURE__ */ new Set(["HEAD", "GET"]);
 const EncodingMap = { gzip: ".gz", br: ".br" };
-const _vEcnOz = eventHandler((event) => {
+const _HJWJio = eventHandler((event) => {
   if (event.method && !METHODS.has(event.method)) {
     return;
   }
@@ -2884,10 +2869,10 @@ const _lazy_SKfZoy = () => Promise.resolve().then(function () { return team_get$
 const _lazy_pepJKO = () => Promise.resolve().then(function () { return index$1; });
 const _lazy_ROkDpJ = () => Promise.resolve().then(function () { return _id__patch$1; });
 const _lazy_ha3DcZ = () => Promise.resolve().then(function () { return github_post$1; });
-const _lazy_nj8p97 = () => Promise.resolve().then(function () { return renderer; });
+const _lazy_D574Nr = () => Promise.resolve().then(function () { return renderer; });
 
 const handlers = [
-  { route: '', handler: _vEcnOz, lazy: false, middleware: true, method: undefined },
+  { route: '', handler: _HJWJio, lazy: false, middleware: true, method: undefined },
   { route: '/api/auth/login', handler: _lazy_1vodvI, lazy: true, middleware: false, method: "post" },
   { route: '/api/auth/register', handler: _lazy_QOYBhH, lazy: true, middleware: false, method: "post" },
   { route: '/api/issues/:id', handler: _lazy_iLMfcH, lazy: true, middleware: false, method: "patch" },
@@ -2909,9 +2894,9 @@ const handlers = [
   { route: '/api/projects', handler: _lazy_pepJKO, lazy: true, middleware: false, method: undefined },
   { route: '/api/sprints/:id', handler: _lazy_ROkDpJ, lazy: true, middleware: false, method: "patch" },
   { route: '/api/webhooks/github', handler: _lazy_ha3DcZ, lazy: true, middleware: false, method: "post" },
-  { route: '/__nuxt_error', handler: _lazy_nj8p97, lazy: true, middleware: false, method: undefined },
+  { route: '/__nuxt_error', handler: _lazy_D574Nr, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: handler$1, lazy: false, middleware: false, method: undefined },
-  { route: '/**', handler: _lazy_nj8p97, lazy: true, middleware: false, method: undefined }
+  { route: '/**', handler: _lazy_D574Nr, lazy: true, middleware: false, method: undefined }
 ];
 
 function createNitroApp() {

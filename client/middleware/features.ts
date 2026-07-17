@@ -16,7 +16,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     if (path.includes('/docs') && features.docs === false) {
       return navigateTo(`/board/${projectId}`);
     }
-    if (path.includes('/teams') && features.teams === false) {
+    if (path.includes('/team') && features.teams === false) {
       return navigateTo(`/board/${projectId}`);
     }
     if (path.includes('/reports') && features.reports === false) {

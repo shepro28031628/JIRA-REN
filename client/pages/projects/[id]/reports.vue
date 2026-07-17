@@ -17,7 +17,7 @@
         <NuxtLink :to="`/board/${projectId}`" class="nav-item">Tablero</NuxtLink>
         <NuxtLink :to="`/projects/${projectId}/backlog`" class="nav-item">Planificación</NuxtLink>
         <NuxtLink :to="`/projects/${projectId}/docs`" class="nav-item">Documentos</NuxtLink>
-        <NuxtLink :to="`/projects/${projectId}/teams`" class="nav-item">Equipos</NuxtLink>
+        <NuxtLink :to="`/projects/${projectId}/team`" class="nav-item">Equipos</NuxtLink>
         <NuxtLink :to="`/projects/${projectId}/reports`" class="nav-item active">Reportes</NuxtLink>
       </nav>
 
