@@ -49,12 +49,64 @@
           <FeatureGrid />
         </div>
         
-        <div v-if="activeTab === 'workflows'" class="p-6 bg-white/40 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm text-center py-12">
-          <div class="text-4xl mb-4">⚙️</div>
-          <h2 class="text-xl font-bold text-slate-800 mb-2">Motor de Workflows</h2>
-          <p class="text-slate-500 mb-6 max-w-md mx-auto">Configura transiciones permitidas, condiciones de rol y automatizaciones (post-acciones) usando el nuevo Enterprise Workflow Engine.</p>
-          <div class="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-lg text-sm font-semibold">
-            <span>Próximamente en la UI (API Backend lista)</span>
+        <!-- Motor de Automatizaciones Sin Código -->
+        <div v-if="activeTab === 'automations'" class="p-6 bg-white/40 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm">
+          <div class="flex justify-between items-center mb-6">
+            <div>
+              <h2 class="text-xl font-bold text-slate-800">Motor de Automatizaciones Sin Código (If-This-Then-That)</h2>
+              <p class="text-xs text-slate-500">Crea reglas automatizadas basadas en disparadores, condiciones y acciones compuestas.</p>
+            </div>
+          </div>
+
+          <!-- Formulario de Creación de Regla -->
+          <div class="bg-white/60 p-4 rounded-xl border border-purple-100 mb-6 flex flex-col gap-3 shadow-2xs">
+            <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Crear Nueva Regla</span>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1">Nombre de la Regla</label>
+                <input v-model="newRuleName" placeholder="Ej: Autocompletar Historia al terminar Subtareas" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-700 outline-none focus:border-purple-400" />
+              </div>
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1">Disparador (Trigger)</label>
+                <select v-model="newRuleTrigger" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-700 outline-none focus:border-purple-400">
+                  <option value="SUBTASK_TOGGLED">SI una Subtarea cambia a Done</option>
+                  <option value="STATUS_CHANGED">SI el Estado de la tarea cambia</option>
+                  <option value="ISSUE_CREATED">SI una Incidencia es creada</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs font-bold text-slate-700 block mb-1">Acción (Action)</label>
+                <select v-model="newRuleAction" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-700 outline-none focus:border-purple-400">
+                  <option value="MOVE_PARENT_TO_REVIEW">Mover Historia Padre a 'En Revisión' / 'Listo'</option>
+                  <option value="ASSIGN_TO_REPORTER">Reasignar automáticamente al Reportador</option>
+                </select>
+              </div>
+            </div>
+            <div class="flex justify-end">
+              <button @click="createAutomationRule" class="btn-primary-glow text-xs py-1.5 px-4 font-bold" :disabled="!newRuleName.trim()">
+                + Crear Regla de Automatización
+              </button>
+            </div>
+          </div>
+
+          <!-- Lista de Reglas Configuradas -->
+          <div class="flex flex-col gap-2">
+            <div v-for="rule in automationRules" :key="rule.id" class="p-4 rounded-xl bg-white/70 border border-slate-200/70 flex items-center justify-between shadow-2xs">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <Zap class="w-4 h-4 text-amber-500" />
+                  <span class="text-sm font-bold text-slate-800">{{ rule.name }}</span>
+                  <span class="text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-md">Activa</span>
+                </div>
+                <p class="text-xs text-slate-500 font-mono">Disparador: {{ rule.trigger_event }}</p>
+              </div>
+              <button @click="deleteAutomationRule(rule.id)" class="text-slate-400 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-50 transition-colors">
+                <Trash2 class="w-4 h-4" />
+              </button>
+            </div>
+            <div v-if="automationRules.length === 0" class="text-center py-8 text-xs text-slate-400 italic">
+              No hay reglas de automatización personalizadas creadas.
+            </div>
           </div>
         </div>
 
@@ -178,7 +230,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute } from '#app';
 import { useToast } from '../../../composables/useToast';
-import { ArrowLeft, Settings, ShieldAlert, Users, Database, GitMerge, FileText, Package, Lock, Bell, Trash2 } from 'lucide-vue-next';
+import { ArrowLeft, Settings, ShieldAlert, Users, Database, GitMerge, FileText, Package, Lock, Bell, Trash2, Zap } from 'lucide-vue-next';
 import FeatureGrid from '../../../modules/settings/components/FeatureGrid.vue';
 import DataImporter from '../../../modules/settings/components/DataImporter.vue';
 import ReleasesConfig from '../../../modules/settings/components/ReleasesConfig.vue';
@@ -199,12 +251,53 @@ const activeTab = ref('general');
 
 const tabs = ref([
   { id: 'general', name: 'General', icon: Settings },
+  { id: 'automations', name: 'Automatizaciones Sin Código', icon: Zap },
   { id: 'permissions', name: 'Esquema de Permisos', icon: Lock },
   { id: 'notifications', name: 'Esquema de Notificaciones', icon: Bell },
   { id: 'custom-fields', name: 'Campos Personalizados', icon: FileText },
   { id: 'releases', name: 'Versiones (Releases)', icon: Package },
   { id: 'import', name: 'Importar Datos', icon: Database }
 ]);
+
+// --- Motor de Automatizaciones Sin Código ---
+const automationRules = ref<any[]>([]);
+const newRuleName = ref('');
+const newRuleTrigger = ref('SUBTASK_TOGGLED');
+const newRuleAction = ref('MOVE_PARENT_TO_REVIEW');
+
+const fetchAutomationRules = async () => {
+  try {
+    automationRules.value = await $fetch(`/api/projects/${projectId}/automations`);
+  } catch (e) { console.error(e); }
+};
+
+const createAutomationRule = async () => {
+  if (!newRuleName.value.trim()) return;
+  try {
+    const created = await $fetch(`/api/projects/${projectId}/automations`, {
+      method: 'POST',
+      body: {
+        name: newRuleName.value.trim(),
+        trigger_event: newRuleTrigger.value,
+        action_config: { action_type: newRuleAction.value }
+      }
+    });
+    automationRules.value.unshift(created);
+    newRuleName.value = '';
+    toast.success('Regla de automatización creada');
+  } catch (e) { toast.error('Error al crear regla'); }
+};
+
+const deleteAutomationRule = async (id: string) => {
+  try {
+    await $fetch(`/api/projects/${projectId}/automations`, {
+      method: 'DELETE',
+      body: { ruleId: id }
+    });
+    automationRules.value = automationRules.value.filter(r => r.id !== id);
+    toast.success('Regla eliminada');
+  } catch (e) { toast.error('Error al eliminar'); }
+};
 
 // --- Campos Personalizados ---
 const customFields = ref<any[]>([]);
@@ -303,6 +396,7 @@ const loadData = async () => {
   try {
     project.value = await $fetch(`/api/projects/${projectId}`);
     await Promise.all([
+      fetchAutomationRules(),
       fetchCustomFields(),
       fetchPermissions(),
       fetchNotifications()

@@ -25,6 +25,9 @@ export interface Database {
   project_pages: ProjectPagesTable;
   permission_schemes: PermissionSchemesTable;
   notification_schemes: NotificationSchemesTable;
+  saved_filters: SavedFiltersTable;
+  automation_rules: AutomationRulesTable;
+  issue_watchers: IssueWatchersTable;
 }
 
 export interface UsersTable {
@@ -243,5 +246,32 @@ export interface NotificationSchemesTable {
   project_id: string;
   event_key: string;
   recipients: Generated<any>;
+  created_at: Generated<Date>;
+}
+
+export interface SavedFiltersTable {
+  id: Generated<string>;
+  project_id: string;
+  name: string;
+  jql_query: string;
+  is_shared: Generated<boolean>;
+  created_by: string | null;
+  created_at: Generated<Date>;
+}
+
+export interface AutomationRulesTable {
+  id: Generated<string>;
+  project_id: string;
+  name: string;
+  trigger_event: string;
+  condition_config: Generated<any>;
+  action_config: Generated<any>;
+  is_active: Generated<boolean>;
+  created_at: Generated<Date>;
+}
+
+export interface IssueWatchersTable {
+  issue_id: string;
+  user_id: string;
   created_at: Generated<Date>;
 }

@@ -26,13 +26,19 @@ El modelo relacional fue diseñado para soportar jerarquías corporativas comple
 * `projects`: Entidad central. Posee un atributo JSONB `enabled_features` para el control modular (Feature Flags).
 * `project_members`: Tabla pivote que gestiona la matriz de roles (`ADMIN`, `MEMBER`, `VIEWER`) por proyecto.
 * `board_columns`: Estructura dinámica de las columnas del Kanban.
-* `issues`: Los "Tickets" del sistema. Almacenan estado, estimaciones, sprint asignado, reportero y responsable.
+* `issues`: Los "Tickets" del sistema. Almacenan estado, estimaciones, story_points, sprint asignado, reportero y responsable.
+* `issue_subtasks`: Jerarquía de subtareas con checklist y barra de progreso interactiva.
 * `sprints`: Gestor de ciclos ágiles, relaciona un periodo de tiempo con un conjunto de `issues`.
-* `project_pages`: Jerarquía de documentos tipo Wiki (Árbol relacional) asociada a cada proyecto.
-* `time_logs`: Registro cronológico de horas invertidas en cada tarea.
-* `notifications`: Sistema de alertas en tiempo real (Menciones, Asignaciones, Cambios de Estado).
+* `permission_schemes`: Matriz granular de permisos (RBAC) por rol e id de proyecto.
+* `notification_schemes`: Esquemas de notificación configurables según el tipo de evento y los roles/notificadores involucrados.
+* `saved_filters`: Guardado y reutilización de consultas complejas en JQL (Jira Query Language).
+* `automation_rules`: Reglas de automatización sin código (*If-This-Then-That*) activadas por eventos.
+* `issue_watchers`: Relación de usuarios observadores (*Watchers*) suscritos a eventos de cada incidencia.
+* `custom_fields` e `issue_custom_values`: Creador dinámico de campos personalizados por proyecto y almacenamiento de sus valores por ticket.
+* `time_logs`: Registro cronológico y detallado (*Worklogs*) de horas invertidas en cada tarea.
+* `activity_logs`: Registro inmutable de auditoría (*Audit Trail*) mostrando campos modificados, fechas y autores.
 
-> *El esquema completo y tipado se encuentra en `server/database/types.ts` y las migraciones en `server/plugins/db-init.ts`.*
+> *El esquema completo y tipado se encuentra en `server/database/types.ts` y el esquema SQL en `server/database/schema.sql`.*
 
 ---
 

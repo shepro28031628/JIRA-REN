@@ -8,8 +8,18 @@
             <span class="separator">/</span>
             <span class="issue-key">{{ projectKey }}-{{ issue.key_number }}</span>
           </div>
-          <div class="header-actions">
-            <button type="button" class="btn-icon" title="Eliminar (Próximamente)">
+          <div class="header-actions flex items-center gap-2">
+            <button 
+              type="button" 
+              @click="toggleWatch" 
+              class="px-2.5 py-1 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer"
+              :class="isWatching ? 'bg-purple-100 text-purple-700 border-purple-200' : 'bg-white/80 text-slate-600 border-slate-200 hover:bg-white'"
+            >
+              <Eye class="w-3.5 h-3.5" />
+              <span>{{ isWatching ? 'Siguiendo' : 'Observar' }}</span>
+              <span class="bg-white/80 text-slate-500 text-[10px] px-1.5 rounded-full border border-slate-200 font-mono">{{ watchersCount }}</span>
+            </button>
+            <button type="button" class="btn-icon" title="Eliminar Incidencia">
               <Trash2 class="w-4 h-4" stroke-width="1.5" />
             </button>
             <button type="button" class="btn-icon" @click="close">
@@ -31,7 +41,8 @@
             <!-- Tabs Navigation -->
             <div class="tabs-nav">
               <button class="tab-btn" :class="{active: activeTab === 'details'}" @click="activeTab = 'details'">Detalles</button>
-              <button class="tab-btn" :class="{active: activeTab === 'activity'}" @click="activeTab = 'activity'">Actividad</button>
+              <button class="tab-btn" :class="{active: activeTab === 'worklogs'}" @click="activeTab = 'worklogs'">Registro de Tiempo</button>
+              <button class="tab-btn" :class="{active: activeTab === 'activity'}" @click="activeTab = 'activity'">Auditoría (Audit Trail)</button>
             </div>
 
             <!-- Panel Detalles -->
@@ -121,6 +132,39 @@
                       class="bg-white/70 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 outline-none focus:border-purple-400 shadow-2xs" 
                     />
                   </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panel Registro de Tiempo (Worklogs) -->
+            <div v-show="activeTab === 'worklogs'" class="tab-pane">
+              <div class="bg-white/60 p-4 rounded-xl border border-purple-100 mb-4 shadow-2xs">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2 flex items-center gap-1.5">
+                  <Clock class="w-4 h-4 text-purple-600" /> Registrar Trabajo (Worklog)
+                </h4>
+                <div class="flex flex-wrap gap-2 items-center">
+                  <input type="number" v-model.number="newLogMinutes" placeholder="Minutos (ej: 60)" class="w-32 bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-700 outline-none focus:border-purple-400" />
+                  <input v-model="newLogNote" placeholder="Descripción de la tarea realizada..." class="flex-1 min-w-[200px] bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-700 outline-none focus:border-purple-400" />
+                  <button @click="addWorklog" class="btn-primary-glow text-xs py-1.5 px-4" :disabled="!newLogMinutes">
+                    + Registrar
+                  </button>
+                </div>
+              </div>
+
+              <!-- Historial de registros -->
+              <div class="flex flex-col gap-2">
+                <div v-for="wl in issueWorklogs" :key="wl.id" class="p-3 rounded-xl bg-white/70 border border-slate-200/70 flex justify-between items-center shadow-2xs">
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-bold text-slate-800">{{ wl.user_name || 'Usuario' }}</span>
+                      <span class="text-xs font-mono font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded-md">{{ wl.duration_minutes }} min</span>
+                    </div>
+                    <p class="text-xs text-slate-600 mt-1">{{ wl.description || 'Sin notas adicionadas' }}</p>
+                  </div>
+                  <span class="text-[11px] text-slate-400 font-mono">{{ new Date(wl.logged_at).toLocaleDateString() }}</span>
+                </div>
+                <div v-if="issueWorklogs.length === 0" class="text-center py-6 text-xs text-slate-400 italic">
+                  No hay registros de tiempo detallados para esta incidencia.
                 </div>
               </div>
             </div>
@@ -380,7 +424,7 @@
 import { ref, watch, computed, onBeforeUnmount } from 'vue';
 import { $fetch } from 'ofetch';
 import { cn } from '../../utils/cn';
-import { Trash2, X, ChevronDown, Clock, Play, Pause, GitBranch, ArrowRight, CheckSquare, Zap, Tag, Hash, FileText } from 'lucide-vue-next';
+import { Trash2, X, ChevronDown, Clock, Play, Pause, GitBranch, ArrowRight, CheckSquare, Zap, Tag, Hash, FileText, Eye } from 'lucide-vue-next';
 import AuditTimeline from '../../components/history/AuditTimeline.vue';
 
 const props = defineProps<{
@@ -538,12 +582,67 @@ const saveCustomValue = async (customFieldId: string) => {
   }
 };
 
+// Watchers State
+const isWatching = ref(false);
+const watchersCount = ref(0);
+
+const fetchWatchers = async () => {
+  if (!localIssue.value?.id) return;
+  try {
+    const res: any = await $fetch(`/api/issues/${localIssue.value.id}/watchers`);
+    watchersCount.value = res.count;
+    isWatching.value = res.watchers.some((w: any) => w.id === localIssue.value.assignee_id);
+  } catch (e) { console.error(e); }
+};
+
+const toggleWatch = async () => {
+  if (!localIssue.value?.id) return;
+  try {
+    const res: any = await $fetch(`/api/issues/${localIssue.value.id}/watchers`, {
+      method: 'POST',
+      body: { userId: localIssue.value.assignee_id || localIssue.value.reporter_id }
+    });
+    isWatching.value = res.watching;
+    watchersCount.value += res.watching ? 1 : -1;
+  } catch (e) { console.error(e); }
+};
+
+// Worklogs State
+const issueWorklogs = ref<any[]>([]);
+const newLogMinutes = ref<number | null>(null);
+const newLogNote = ref('');
+
+const fetchWorklogs = async () => {
+  if (!localIssue.value?.id) return;
+  try {
+    issueWorklogs.value = await $fetch(`/api/issues/${localIssue.value.id}/timelogs`);
+  } catch (e) { console.error(e); }
+};
+
+const addWorklog = async () => {
+  if (!newLogMinutes.value || !localIssue.value?.id) return;
+  try {
+    const created = await $fetch(`/api/issues/${localIssue.value.id}/timelogs`, {
+      method: 'POST',
+      body: {
+        duration_minutes: newLogMinutes.value,
+        description: newLogNote.value
+      }
+    });
+    issueWorklogs.value.unshift(created);
+    newLogMinutes.value = null;
+    newLogNote.value = '';
+  } catch (e) { console.error(e); }
+};
+
 watch(() => props.issue, (newVal) => {
   if (newVal) {
     localIssue.value = JSON.parse(JSON.stringify(newVal));
     fetchSubtasks();
     fetchLabels();
     fetchCustomFieldsAndValues();
+    fetchWatchers();
+    fetchWorklogs();
   }
 }, { immediate: true, deep: true });
 
@@ -584,7 +683,6 @@ const formatDate = (dateStr: string) => {
 
 // Time tracking state
 const loggedMinutes = ref(0);
-const newLogMinutes = ref<number | null>(null);
 const newLogDesc = ref('');
 
 const formatMinutes = (mins: number) => {

@@ -74,6 +74,46 @@
         </button>
         
         <div class="h-4 w-[1px] bg-white/50 mx-1"></div>
+        
+        <!-- Filtros Guardados Popover -->
+        <div class="relative flex items-center">
+          <button 
+            @click="activePopover = activePopover === 'saved-filters' ? null : 'saved-filters'" 
+            class="filter-btn group px-2 py-1.5" 
+            title="Filtros JQL Guardados"
+          >
+            <Bookmark class="w-4 h-4 text-purple-600" />
+            <span class="text-xs font-semibold">Filtros</span>
+            <ChevronDown class="w-3 h-3 opacity-50" />
+          </button>
+          
+          <!-- Popover de Filtros Guardados -->
+          <div v-if="activePopover === 'saved-filters'" class="absolute left-0 top-full mt-2 w-64 bg-white/95 backdrop-blur-xl border border-purple-100 rounded-xl shadow-xl z-50 p-3 flex flex-col gap-2">
+            <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Filtros JQL Guardados</span>
+            <div class="flex flex-col gap-1 max-h-48 overflow-y-auto">
+              <button 
+                v-for="sf in savedFilters" 
+                :key="sf.id" 
+                @click="applySavedFilter(sf)" 
+                class="text-left px-2.5 py-1.5 rounded-lg hover:bg-purple-50 transition-colors flex items-center justify-between group"
+              >
+                <div>
+                  <span class="text-xs font-bold text-slate-800 block">{{ sf.name }}</span>
+                  <span class="text-[10px] text-slate-400 font-mono block truncate max-w-[170px]">{{ sf.jql_query }}</span>
+                </div>
+                <Bookmark class="w-3 h-3 text-purple-400 opacity-0 group-hover:opacity-100" />
+              </button>
+              <div v-if="savedFilters.length === 0" class="text-[11px] text-slate-400 italic py-2 text-center">
+                No hay filtros guardados aún.
+              </div>
+            </div>
+            <div v-if="jqlQuery.trim()" class="border-t border-purple-100 pt-2 flex flex-col gap-1">
+              <input v-model="newFilterName" placeholder="Nombre del filtro..." class="bg-white border border-slate-200 rounded-md px-2 py-1 text-xs text-slate-700 outline-none" />
+              <button @click="saveCurrentJQLFilter" class="btn-primary-glow text-[11px] py-1 px-2 font-bold">+ Guardar Filtro Actual</button>
+            </div>
+          </div>
+        </div>
+
         <div class="relative flex-1 flex items-center">
           <input 
              v-model="jqlQuery"
@@ -198,7 +238,7 @@ definePageMeta({
 import { useBoardStore } from '../../stores/board.store';
 import { useToast } from '../../composables/useToast';
 import draggable from 'vuedraggable';
-import { ArrowLeft, Plus, Search, Users, AlertCircle, Tag, ChevronDown, Check, BrainCircuit, Sparkles, AlertTriangle } from 'lucide-vue-next';
+import { ArrowLeft, Plus, Search, Users, AlertCircle, Tag, ChevronDown, Check, BrainCircuit, Sparkles, AlertTriangle, Bookmark } from 'lucide-vue-next';
 import IssueCard from '../../modules/board/IssueCard.vue';
 import CreateIssueModal from '../../modules/board/CreateIssueModal.vue';
 import IssueDetailModal from '../../modules/board/IssueDetailModal.vue';
@@ -217,14 +257,70 @@ const loading = ref(true);
 
 const activeView = ref<'kanban' | 'calendar' | 'gantt'>('kanban');
 
+// Controladores de Modales y Popovers
+const showCreateModal = ref(false);
+const showDetailModal = ref(false);
+const selectedIssue = ref<any>(null);
+const initialColumnForCreate = ref<string | null>(null);
+const showPredictive = ref(false);
+
+const activePopover = ref<string | null>(null);
+const jqlQuery = ref('');
+
+const savedFilters = ref<any[]>([]);
+const newFilterName = ref('');
+
+const toggleSearch = () => {
+  window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }));
+};
+
+const executeJQL = async () => {
+  if (!jqlQuery.value.trim()) {
+    return loadData();
+  }
+  try {
+    const results = await $fetch<any[]>(`/api/projects/${projectId}/search?jql=${encodeURIComponent(jqlQuery.value)}`);
+    boardStore.issues = results;
+  } catch (e: any) {
+    console.error('Error JQL:', e);
+    toast.error(e.response?.data?.statusMessage || e.response?.data?.message || 'Error en sintaxis JQL');
+  }
+};
+
+const fetchSavedFilters = async () => {
+  try {
+    savedFilters.value = await $fetch(`/api/projects/${projectId}/saved-filters`);
+  } catch (e) { console.error(e); }
+};
+
+const applySavedFilter = (sf: any) => {
+  jqlQuery.value = sf.jql_query;
+  executeJQL();
+  activePopover.value = null;
+};
+
+const saveCurrentJQLFilter = async () => {
+  if (!newFilterName.value.trim() || !jqlQuery.value.trim()) return;
+  try {
+    const created = await $fetch(`/api/projects/${projectId}/saved-filters`, {
+      method: 'POST',
+      body: {
+        name: newFilterName.value.trim(),
+        jql_query: jqlQuery.value.trim()
+      }
+    });
+    savedFilters.value.unshift(created);
+    newFilterName.value = '';
+    activePopover.value = null;
+    toast.success('Filtro JQL guardado con éxito');
+  } catch (e) { toast.error('Error al guardar filtro'); }
+};
+
 const columns = computed(() => boardStore.columns);
 const allIssues = computed(() => boardStore.issues);
-const projectUsers = ref<any[]>([]); // To populate assignee dropdown
-
-// Para vuedraggable, necesitamos listas reactivas por columna que se actualicen al cambiar
+const projectUsers = ref<any[]>([]);
 const localColumnIssues = ref<Record<string, any[]>>({});
 
-// Sincronizar store a local
 const dragOptions = {
   animation: 200,
   easing: "cubic-bezier(1, 0, 0, 1)"
@@ -235,6 +331,7 @@ watch(() => boardStore.issues, (newIssues) => {
     map[col.id] = [...newIssues.filter(i => i.column_id === col.id).sort((a, b) => a.position - b.position)];
   });
   localColumnIssues.value = map;
+});
 const epicsList = computed(() => boardStore.issues.filter((i: any) => i.type === 'EPIC'));
 
 const getColumnIssues = (columnId: string) => {
@@ -245,12 +342,10 @@ const getColumnIssues = (columnId: string) => {
   if (activeFilters.value.priority.length > 0) {
     issues = issues.filter(i => activeFilters.value.priority.includes(i.priority));
   }
-  // add other filters here when available
   return issues;
 };
 
 // State for Smart Filters
-const activePopover = ref<string | null>(null);
 const activeFilters = ref({
   priority: [] as string[],
   assignee: [] as string[],
@@ -277,34 +372,7 @@ const clearFilters = () => {
   loadData();
 };
 
-const toggleSearch = () => {
-  // Disparar evento para CommandMenu global
-  window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }));
-};
-
-const jqlQuery = ref('');
-const executeJQL = async () => {
-  if (!jqlQuery.value.trim()) {
-    return loadData(); // reset if empty
-  }
-  try {
-    const results = await $fetch(`/api/projects/${projectId}/search?jql=${encodeURIComponent(jqlQuery.value)}`);
-    boardStore.issues = results as any[];
-  } catch (e: any) {
-    console.error('Error JQL:', e);
-    toast.error(e.response?.data?.statusMessage || e.response?.data?.message || 'Error en sintaxis JQL');
-  }
-};
-
-// Ocultar popovers al hacer click fuera (mocked for simplicity)
 const closePopovers = () => { activePopover.value = null; };
-
-// Controladores de Modales
-const showCreateModal = ref(false);
-const showDetailModal = ref(false);
-const selectedIssue = ref<any>(null);
-const initialColumnForCreate = ref<string | null>(null);
-const showPredictive = ref(false);
 
 const openIssueDetails = (issue: any) => {
   selectedIssue.value = issue;
@@ -327,6 +395,7 @@ const loadData = async () => {
     project.value = p;
     boardStore.columns = cols as any[];
     boardStore.issues = ists as any[];
+    await fetchSavedFilters();
     
     // Mock de usuarios del proyecto por ahora (idealmente vendría de la API)
     // projectUsers.value = await $fetch(`/api/projects/${projectId}/members`);

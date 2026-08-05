@@ -49,9 +49,43 @@ export default defineEventHandler(async (event) => {
       .returningAll()
       .executeTakeFirstOrThrow();
 
-    // Notificar al assignee (y a todos si hay menciones, pero simplificamos al assignee por ahora)
-    const issue = await db.selectFrom('issues').select('assignee_id').where('id', '=', issueId).executeTakeFirst();
+    // Notificar al assignee y a los watchers
+    const issue = await db.selectFrom('issues').select(['assignee_id', 'reporter_id']).where('id', '=', issueId).executeTakeFirst();
     
+    // Process @mentions
+    const mentionMatches = body.content.match(/@([a-zA-Z0-9_\.\-]+)/g) || [];
+    if (mentionMatches.length > 0) {
+      const cleanNames = mentionMatches.map((m: string) => m.substring(1).toLowerCase());
+      const mentionedUsers = await db.selectFrom('users')
+        .select('id')
+        .where((eb) => eb.or(cleanNames.map((n: string) => eb('name', 'ilike', `%${n}%`))))
+        .execute();
+
+      for (const u of mentionedUsers) {
+        if (u.id !== senderId) {
+          await db.insertInto('notifications').values({
+            user_id: u.id,
+            sender_id: senderId,
+            issue_id: issueId,
+            type: 'MENTION'
+          }).execute();
+        }
+      }
+    }
+
+    // Notificar a todos los watchers
+    const watchers = await db.selectFrom('issue_watchers').select('user_id').where('issue_id', '=', issueId).execute();
+    for (const w of watchers) {
+      if (w.user_id !== senderId) {
+        await db.insertInto('notifications').values({
+          user_id: w.user_id,
+          sender_id: senderId,
+          issue_id: issueId,
+          type: 'COMMENT'
+        }).execute();
+      }
+    }
+
     if (issue && issue.assignee_id && issue.assignee_id !== senderId) {
       await db.insertInto('notifications')
         .values({
@@ -63,9 +97,7 @@ export default defineEventHandler(async (event) => {
         .execute();
     }
 
-    // Retornamos el comentario con info del usuario para el frontend
     const user = await db.selectFrom('users').select(['name', 'avatar_url']).where('id', '=', senderId).executeTakeFirst();
-    
     return {
       id: newComment.id,
       content: newComment.content,
