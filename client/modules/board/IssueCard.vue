@@ -1,5 +1,10 @@
 <template>
   <div class="issue-card group transform-gpu" :class="`border-l-priority-${issue.priority.toLowerCase()}`" @click="$emit('click', issue)">
+    <!-- Insignia de Épica -->
+    <div v-if="issue.epic_name || issue.epic_title" class="mb-1.5 flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-purple-700 bg-purple-100/80 border border-purple-200 px-2 py-0.5 rounded-md w-max shadow-2xs">
+      <Zap class="w-3 h-3 text-purple-600" />
+      <span>{{ issue.epic_name || issue.epic_title }}</span>
+    </div>
     <h4 class="issue-title">{{ issue.title }}</h4>
     <div class="issue-footer mt-3 flex items-center justify-between">
       <div class="footer-left flex items-center gap-2">

@@ -4,8 +4,20 @@ export interface Database {
   users: UsersTable;
   projects: ProjectsTable;
   project_members: ProjectMembersTable;
+  workflows: WorkflowsTable;
+  workflow_transitions: WorkflowTransitionsTable;
+  workflow_rules: WorkflowRulesTable;
   board_columns: BoardColumnsTable;
+  project_versions: ProjectVersionsTable;
+  issue_types: IssueTypesTable;
+  custom_fields: CustomFieldsTable;
   issues: IssuesTable;
+  issue_subtasks: IssueSubtasksTable;
+  labels: LabelsTable;
+  issue_labels: IssueLabelsTable;
+  components: ComponentsTable;
+  issue_components: IssueComponentsTable;
+  issue_custom_values: IssueCustomValuesTable;
   sprints: SprintsTable;
   time_logs: TimeLogsTable;
   issue_comments: IssueCommentsTable;
@@ -30,6 +42,7 @@ export interface ProjectsTable {
   description: string | null;
   owner_id: string | null;
   enabled_features: Generated<any>;
+  default_workflow_id: string | null;
   created_at: Generated<Date>;
 }
 
@@ -37,6 +50,59 @@ export interface ProjectMembersTable {
   project_id: string;
   user_id: string;
   role: 'ADMIN' | 'MEMBER' | 'VIEWER';
+}
+
+export interface WorkflowsTable {
+  id: Generated<string>;
+  project_id: string;
+  name: string;
+  created_at: Generated<Date>;
+}
+
+export interface WorkflowTransitionsTable {
+  id: Generated<string>;
+  workflow_id: string;
+  from_column_id: string;
+  to_column_id: string;
+  name: string;
+  created_at: Generated<Date>;
+}
+
+export interface WorkflowRulesTable {
+  id: Generated<string>;
+  transition_id: string;
+  rule_type: 'CONDITION' | 'POST_ACTION';
+  action_key: string;
+  value: any;
+  created_at: Generated<Date>;
+}
+
+export interface ProjectVersionsTable {
+  id: Generated<string>;
+  project_id: string;
+  name: string;
+  description: string | null;
+  status: Generated<'UNRELEASED' | 'RELEASED' | 'ARCHIVED'>;
+  release_date: Date | null;
+  created_at: Generated<Date>;
+}
+
+export interface IssueTypesTable {
+  id: Generated<string>;
+  project_id: string;
+  name: string;
+  icon: string | null;
+  workflow_id: string | null;
+  created_at: Generated<Date>;
+}
+
+export interface CustomFieldsTable {
+  id: Generated<string>;
+  project_id: string;
+  name: string;
+  field_type: 'TEXT' | 'NUMBER' | 'DATE' | 'SELECT' | 'USER';
+  options: any | null;
+  created_at: Generated<Date>;
 }
 
 export interface BoardColumnsTable {
@@ -53,16 +119,63 @@ export interface IssuesTable {
   key_number: number;
   title: string;
   description: string | null;
-  type: Generated<'STORY' | 'TASK' | 'BUG' | 'EPIC'>;
+  issue_type_id: string;
   priority: Generated<'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'>;
   column_id: string | null;
-  sprint_id: string | null; // Added sprint_id
+  version_id: string | null;
+  sprint_id: string | null;
+  epic_id: string | null;
+  parent_id: string | null;
   position: number;
   reporter_id: string | null;
   assignee_id: string | null;
   estimated_minutes: number | null;
   created_at: Generated<Date>;
   updated_at: Generated<Date>;
+}
+
+export interface IssueSubtasksTable {
+  id: Generated<string>;
+  issue_id: string;
+  title: string;
+  completed: Generated<boolean>;
+  position: Generated<number>;
+  created_at: Generated<Date>;
+}
+
+export interface LabelsTable {
+  id: Generated<string>;
+  project_id: string;
+  name: string;
+  color: Generated<string>;
+  created_at: Generated<Date>;
+}
+
+export interface IssueLabelsTable {
+  issue_id: string;
+  label_id: string;
+}
+
+export interface ComponentsTable {
+  id: Generated<string>;
+  project_id: string;
+  name: string;
+  description: string | null;
+  lead_id: string | null;
+  created_at: Generated<Date>;
+}
+
+export interface IssueComponentsTable {
+  issue_id: string;
+  component_id: string;
+}
+
+export interface IssueCustomValuesTable {
+  issue_id: string;
+  custom_field_id: string;
+  value_text: string | null;
+  value_number: number | null;
+  value_date: Date | null;
 }
 
 export interface SprintsTable {

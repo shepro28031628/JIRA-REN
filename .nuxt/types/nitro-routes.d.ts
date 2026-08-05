@@ -44,6 +44,9 @@ declare module "nitropack/types" {
     '/api/projects/:id/pages': {
       'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/projects/[id]/pages.get').default>>>>
     }
+    '/api/projects/:id/search': {
+      'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/projects/[id]/search.get').default>>>>
+    }
     '/api/projects/:id/sprints/:sprintId/burndown': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/projects/[id]/sprints/[sprintId]/burndown').default>>>>
     }
@@ -52,6 +55,12 @@ declare module "nitropack/types" {
     }
     '/api/projects/:id/team': {
       'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/projects/[id]/team.get').default>>>>
+    }
+    '/api/projects/:id/versions/:vid/release-notes': {
+      'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/projects/[id]/versions/[vid]/release-notes.get').default>>>>
+    }
+    '/api/projects/:id/versions': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/projects/[id]/versions/index').default>>>>
     }
     '/api/projects': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/projects/index').default>>>>
@@ -63,7 +72,7 @@ declare module "nitropack/types" {
       'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/webhooks/github.post').default>>>>
     }
     '/__nuxt_error': {
-      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../../node_modules/@nuxt/nitro-server/dist/runtime/handlers/renderer').default>>>>
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../node_modules/@nuxt/nitro-server/dist/runtime/handlers/renderer').default>>>>
     }
     '/__nuxt_island/**': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/#internal/nuxt/island-renderer').default>>>>

@@ -62,6 +62,17 @@ Para los power-users, JIRA-REN esconde una Terminal de Comandos Flotante. Pulsan
 
 ---
 
+## 🎯 Funcionalidades para clonar Jira Software
+
+Como parte del proceso de evolución de la herramienta hacia un sistema Enterprise comparable con Jira Software, se contemplan las siguientes capacidades extendidas:
+
+* **Motor de JQL (Jira Query Language):** Implementa un parseador que permita hacer búsquedas avanzadas en la barra o en la CommandConsole con sintaxis como: `project = "REN" AND status = "En Progreso" AND assignee = currentUser()`.
+* **Flujos de trabajo personalizados (Workflows Engine):** Diseña un creador de flujos donde las tareas no solo pasen de columna en columna, sino que tengan transiciones restringidas, condiciones (ej. solo el asignado puede mover a QA) y post-acciones (ej. cambiar automáticamente el asignado al mover a "Review").
+* **Tipos de incidencias y campos personalizados (Custom Fields):** Soporte para múltiples tipos de tickets (Épica, Tarea, Subtarea, Bug) con campos dinámicos específicos (listas desplegables, fechas, campos numéricos).
+* **Gestión de Versiones y Releases:** Un módulo para agrupar issues bajo números de versión (ej. v1.0.0) y generar informes de notas de lanzamiento (Release Notes).
+
+---
+
 ## 🚀 Stack Tecnológico y Optimizaciones UX
 
 Para asegurar que los efectos de cristal difuminado (Backdrop Blur) no comprometieran los FPS, el ecosistema utiliza un stack altamente curado:

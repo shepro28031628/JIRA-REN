@@ -49,6 +49,28 @@
           <FeatureGrid />
         </div>
         
+        <div v-if="activeTab === 'workflows'" class="p-6 bg-white/40 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm text-center py-12">
+          <div class="text-4xl mb-4">⚙️</div>
+          <h2 class="text-xl font-bold text-slate-800 mb-2">Motor de Workflows</h2>
+          <p class="text-slate-500 mb-6 max-w-md mx-auto">Configura transiciones permitidas, condiciones de rol y automatizaciones (post-acciones) usando el nuevo Enterprise Workflow Engine.</p>
+          <div class="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-lg text-sm font-semibold">
+            <span>Próximamente en la UI (API Backend lista)</span>
+          </div>
+        </div>
+
+        <div v-if="activeTab === 'custom-fields'" class="p-6 bg-white/40 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm text-center py-12">
+          <div class="text-4xl mb-4">📋</div>
+          <h2 class="text-xl font-bold text-slate-800 mb-2">Campos Personalizados</h2>
+          <p class="text-slate-500 mb-6 max-w-md mx-auto">Define nuevos campos (texto, fecha, números) y asócialos a Tipos de Incidencia específicos.</p>
+          <div class="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-lg text-sm font-semibold">
+            <span>Próximamente en la UI (Esquema BD listo)</span>
+          </div>
+        </div>
+
+        <div v-if="activeTab === 'releases'" class="transition-all duration-300">
+          <ReleasesConfig />
+        </div>
+
         <div v-if="activeTab === 'import'" class="transition-all duration-300">
           <DataImporter />
         </div>
@@ -60,9 +82,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRoute } from '#app';
-import { ArrowLeft, Settings, ShieldAlert, Users, Database } from 'lucide-vue-next';
+import { ArrowLeft, Settings, ShieldAlert, Users, Database, GitMerge, FileText, Package } from 'lucide-vue-next';
 import FeatureGrid from '../../../modules/settings/components/FeatureGrid.vue';
 import DataImporter from '../../../modules/settings/components/DataImporter.vue';
+import ReleasesConfig from '../../../modules/settings/components/ReleasesConfig.vue';
 import { useAuthStore } from '../../../stores/auth.store';
 
 definePageMeta({
@@ -79,6 +102,9 @@ const activeTab = ref('general');
 
 const tabs = ref([
   { id: 'general', name: 'General', icon: Settings },
+  { id: 'workflows', name: 'Workflows', icon: GitMerge },
+  { id: 'custom-fields', name: 'Campos Personalizados', icon: FileText },
+  { id: 'releases', name: 'Versiones (Releases)', icon: Package },
   { id: 'import', name: 'Importar Datos', icon: Database }
 ]);
 

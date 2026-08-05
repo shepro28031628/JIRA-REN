@@ -16,17 +16,15 @@ async function setup() {
   
   try {
     await clientMaster.connect();
+    console.log('Eliminando la base de datos "jira" si existe (recreación forzada)...');
+    await clientMaster.query('DROP DATABASE IF EXISTS jira WITH (FORCE);');
     console.log('Creando la base de datos "jira"...');
     await clientMaster.query('CREATE DATABASE jira;');
     console.log('Base de datos creada exitosamente.');
   } catch (e) {
-    if (e.code === '42P04') {
-      console.log('La base de datos "jira" ya existe. Omitiendo creación.');
-    } else {
-      console.error('Error conectando a PostgreSQL:', e.message);
-      console.log('\nAsegúrate de que la contraseña del usuario postgres sea "postgres". Si es otra, actualiza este archivo temporalmente.');
-      process.exit(1);
-    }
+    console.error('Error conectando a PostgreSQL:', e.message);
+    console.log('\nAsegúrate de que la contraseña del usuario postgres sea "postgres". Si es otra, actualiza este archivo temporalmente.');
+    process.exit(1);
   } finally {
     await clientMaster.end();
   }

@@ -10,13 +10,13 @@ export default defineEventHandler(async (event) => {
   }
 
   // Sanitizamos el body para solo permitir campos válidos para PATCH
-  const allowedFields = ['title', 'description', 'type', 'priority', 'assignee_id', 'column_id', 'sprint_id'];
+  const allowedFields = ['title', 'description', 'type', 'priority', 'assignee_id', 'column_id', 'sprint_id', 'epic_id', 'parent_id', 'estimated_minutes'];
   const updates: any = {};
 
   for (const key of Object.keys(body)) {
     if (allowedFields.includes(key)) {
-      // Manejamos strings vacíos como nulos para foreign keys (ej. assignee_id)
-      if (body[key] === '' && (key === 'assignee_id' || key === 'column_id' || key === 'sprint_id')) {
+      // Manejamos strings vacíos como nulos para foreign keys
+      if (body[key] === '' && ['assignee_id', 'column_id', 'sprint_id', 'epic_id', 'parent_id'].includes(key)) {
         updates[key] = null;
       } else {
         updates[key] = body[key];

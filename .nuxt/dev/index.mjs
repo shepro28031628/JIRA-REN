@@ -3,48 +3,48 @@ import { Server as Server$1 } from 'node:http';
 import { resolve, dirname, join } from 'node:path';
 import nodeCrypto from 'node:crypto';
 import { parentPort, threadId } from 'node:worker_threads';
-import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, createError, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, setCookie, getResponseStatusText } from 'file://D:/Desktop/JIRA-REN/node_modules/h3/dist/index.mjs';
-import { escapeHtml } from 'file://D:/Desktop/JIRA-REN/node_modules/@vue/shared/dist/shared.cjs.js';
-import viteNodeEntry_mjs from 'file://D:/Desktop/JIRA-REN/node_modules/@nuxt/vite-builder/dist/vite-node-entry.mjs';
-import { viteNodeFetch } from 'file://D:/Desktop/JIRA-REN/node_modules/@nuxt/vite-builder/dist/vite-node.mjs';
-import bcrypt from 'file://D:/Desktop/JIRA-REN/node_modules/bcryptjs/index.js';
-import jwt from 'file://D:/Desktop/JIRA-REN/node_modules/jsonwebtoken/index.js';
-import { Kysely, PostgresDialect, sql } from 'file://D:/Desktop/JIRA-REN/node_modules/kysely/dist/esm/index.js';
-import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file://D:/Desktop/JIRA-REN/node_modules/vue-bundle-renderer/dist/runtime.mjs';
-import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, encodePath, joinRelativeURL } from 'file://D:/Desktop/JIRA-REN/node_modules/ufo/dist/index.mjs';
-import { renderToString } from 'file://D:/Desktop/JIRA-REN/node_modules/vue/server-renderer/index.mjs';
-import { klona } from 'file://D:/Desktop/JIRA-REN/node_modules/klona/dist/index.mjs';
-import destr, { destr as destr$1 } from 'file://D:/Desktop/JIRA-REN/node_modules/destr/dist/index.mjs';
-import { snakeCase } from 'file://D:/Desktop/JIRA-REN/node_modules/scule/dist/index.mjs';
-import { createHead as createHead$1, propsToString, renderSSRHead } from 'file://D:/Desktop/JIRA-REN/node_modules/unhead/dist/server.mjs';
-import { stringify, uneval } from 'file://D:/Desktop/JIRA-REN/node_modules/devalue/index.js';
-import { isVNode, isRef, toValue } from 'file://D:/Desktop/JIRA-REN/node_modules/vue/index.mjs';
-import { DeprecationsPlugin, PromisesPlugin, TemplateParamsPlugin, AliasSortingPlugin } from 'file://D:/Desktop/JIRA-REN/node_modules/unhead/dist/plugins.mjs';
-import { createHooks } from 'file://D:/Desktop/JIRA-REN/node_modules/hookable/dist/index.mjs';
-import { createFetch, Headers as Headers$1 } from 'file://D:/Desktop/JIRA-REN/node_modules/ofetch/dist/node.mjs';
-import { fetchNodeRequestHandler, callNodeRequestHandler } from 'file://D:/Desktop/JIRA-REN/node_modules/node-mock-http/dist/index.mjs';
-import { createStorage, prefixStorage } from 'file://D:/Desktop/JIRA-REN/node_modules/unstorage/dist/index.mjs';
-import unstorage_47drivers_47fs from 'file://D:/Desktop/JIRA-REN/node_modules/unstorage/drivers/fs.mjs';
-import file_58_47_47_47D_58_47Desktop_47JIRA_45REN_47node_modules_47_64nuxt_47nitro_45server_47dist_47runtime_47utils_47cache_45driver_46js from 'file://D:/Desktop/JIRA-REN/node_modules/@nuxt/nitro-server/dist/runtime/utils/cache-driver.js';
-import { digest, hash as hash$1 } from 'file://D:/Desktop/JIRA-REN/node_modules/ohash/dist/index.mjs';
-import { toRouteMatcher, createRouter } from 'file://D:/Desktop/JIRA-REN/node_modules/radix3/dist/index.mjs';
+import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, createError, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getResponseStatus, getRouterParam, setCookie, getResponseStatusText } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/h3/dist/index.mjs';
+import { escapeHtml } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/@vue/shared/dist/shared.cjs.js';
+import viteNodeEntry_mjs from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/@nuxt/vite-builder/dist/vite-node-entry.mjs';
+import { viteNodeFetch } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/@nuxt/vite-builder/dist/vite-node.mjs';
+import bcrypt from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/bcryptjs/index.js';
+import jwt from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/jsonwebtoken/index.js';
+import { Kysely, PostgresDialect, sql } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/kysely/dist/esm/index.js';
+import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/vue-bundle-renderer/dist/runtime.mjs';
+import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, decodePath, withLeadingSlash, withoutTrailingSlash, encodePath, joinRelativeURL } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/ufo/dist/index.mjs';
+import { renderToString } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/vue/server-renderer/index.mjs';
+import { klona } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/klona/dist/index.mjs';
+import destr, { destr as destr$1 } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/destr/dist/index.mjs';
+import { snakeCase } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/scule/dist/index.mjs';
+import { createHead as createHead$1, propsToString, renderSSRHead } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/unhead/dist/server.mjs';
+import { stringify, uneval } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/devalue/index.js';
+import { isVNode, isRef, toValue } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/vue/index.mjs';
+import { DeprecationsPlugin, PromisesPlugin, TemplateParamsPlugin, AliasSortingPlugin } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/unhead/dist/plugins.mjs';
+import { createHooks } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/hookable/dist/index.mjs';
+import { createFetch, Headers as Headers$1 } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/ofetch/dist/node.mjs';
+import { fetchNodeRequestHandler, callNodeRequestHandler } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/node-mock-http/dist/index.mjs';
+import { createStorage, prefixStorage } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/unstorage/dist/index.mjs';
+import unstorage_47drivers_47fs from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/unstorage/drivers/fs.mjs';
+import file_58_47_47_47D_58_47Documents_47GitHub_47JIRA_45REN_47node_modules_47_64nuxt_47nitro_45server_47dist_47runtime_47utils_47cache_45driver_46js from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/@nuxt/nitro-server/dist/runtime/utils/cache-driver.js';
+import { digest, hash as hash$1 } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/ohash/dist/index.mjs';
+import { toRouteMatcher, createRouter } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/radix3/dist/index.mjs';
 import { readFile } from 'node:fs/promises';
-import consola, { consola as consola$1 } from 'file://D:/Desktop/JIRA-REN/node_modules/consola/dist/index.mjs';
-import { ErrorParser } from 'file://D:/Desktop/JIRA-REN/node_modules/youch-core/build/index.js';
-import { Youch } from 'file://D:/Desktop/JIRA-REN/node_modules/youch/build/index.js';
-import { SourceMapConsumer } from 'file://D:/Desktop/JIRA-REN/node_modules/source-map/source-map.js';
+import consola, { consola as consola$1 } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/consola/dist/index.mjs';
+import { ErrorParser } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/youch-core/build/index.js';
+import { Youch } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/youch/build/index.js';
+import { SourceMapConsumer } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/source-map/source-map.js';
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { getContext } from 'file://D:/Desktop/JIRA-REN/node_modules/unctx/dist/index.mjs';
-import { captureRawStackTrace, parseRawStackTrace } from 'file://D:/Desktop/JIRA-REN/node_modules/errx/dist/index.js';
-import pg from 'file://D:/Desktop/JIRA-REN/node_modules/pg/esm/index.mjs';
-import { Server } from 'file://D:/Desktop/JIRA-REN/node_modules/socket.io/wrapper.mjs';
-import _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw from 'file://D:/Desktop/JIRA-REN/node_modules/@nuxt/vite-builder/dist/fix-stacktrace.mjs';
+import { getContext } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/unctx/dist/index.mjs';
+import { captureRawStackTrace, parseRawStackTrace } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/errx/dist/index.js';
+import { Server } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/socket.io/wrapper.mjs';
+import _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/@nuxt/vite-builder/dist/fix-stacktrace.mjs';
 import { promises } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname as dirname$1, resolve as resolve$1 } from 'file://D:/Desktop/JIRA-REN/node_modules/pathe/dist/index.mjs';
-import { walkResolver } from 'file://D:/Desktop/JIRA-REN/node_modules/unhead/dist/utils.mjs';
+import { dirname as dirname$1, resolve as resolve$1 } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/pathe/dist/index.mjs';
+import { walkResolver } from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/unhead/dist/utils.mjs';
+import pg from 'file://D:/Documents/GitHub/JIRA-REN/node_modules/pg/esm/index.mjs';
 
-const serverAssets = [{"baseName":"server","dir":"D:/Desktop/JIRA-REN/JIRA-REN/server/assets"}];
+const serverAssets = [{"baseName":"server","dir":"D:/Documents/GitHub/JIRA-REN/server/assets"}];
 
 const assets$1 = createStorage();
 
@@ -56,12 +56,12 @@ const storage = createStorage({});
 
 storage.mount('/assets', assets$1);
 
-storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"D:/Desktop/JIRA-REN/JIRA-REN","watchOptions":{"ignored":[null]}}));
-storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"D:/Desktop/JIRA-REN/JIRA-REN/server","watchOptions":{"ignored":[null]}}));
-storage.mount('cache:nuxt:payload', file_58_47_47_47D_58_47Desktop_47JIRA_45REN_47node_modules_47_64nuxt_47nitro_45server_47dist_47runtime_47utils_47cache_45driver_46js({"driver":"file:///D:/Desktop/JIRA-REN/node_modules/@nuxt/nitro-server/dist/runtime/utils/cache-driver.js","base":"D:/Desktop/JIRA-REN/JIRA-REN/.nuxt/cache/nuxt/payload"}));
-storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"D:/Desktop/JIRA-REN/JIRA-REN/.nuxt"}));
-storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"D:/Desktop/JIRA-REN/JIRA-REN/.nuxt/cache"}));
-storage.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"D:/Desktop/JIRA-REN/JIRA-REN/.data/kv"}));
+storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"D:/Documents/GitHub/JIRA-REN","watchOptions":{"ignored":[null]}}));
+storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"D:/Documents/GitHub/JIRA-REN/server","watchOptions":{"ignored":[null]}}));
+storage.mount('cache:nuxt:payload', file_58_47_47_47D_58_47Documents_47GitHub_47JIRA_45REN_47node_modules_47_64nuxt_47nitro_45server_47dist_47runtime_47utils_47cache_45driver_46js({"driver":"file:///D:/Documents/GitHub/JIRA-REN/node_modules/@nuxt/nitro-server/dist/runtime/utils/cache-driver.js","base":"D:/Documents/GitHub/JIRA-REN/.nuxt/cache/nuxt/payload"}));
+storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"D:/Documents/GitHub/JIRA-REN/.nuxt"}));
+storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"D:/Documents/GitHub/JIRA-REN/.nuxt/cache"}));
+storage.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"D:/Documents/GitHub/JIRA-REN/.data/kv"}));
 
 function useStorage(base = "") {
   return base ? prefixStorage(storage, base) : storage;
@@ -2115,13 +2115,13 @@ if (!window.__NUXT_DEVTOOLS_TIME_METRIC__) {
 window.__NUXT_DEVTOOLS_TIME_METRIC__.appInit = Date.now()
 `;
 
-const _7d4rmx4M6jw4HoFA2fVT7MvYrAla8_zhjozMrHJh_E = (function(nitro) {
+const _ESUtPTQa2nsjFElhsDaLxkKj2QujotcaUJ0H6VsgzRw = (function(nitro) {
   nitro.hooks.hook("render:html", (htmlContext) => {
     htmlContext.head.push(`<script>${script}<\/script>`);
   });
 });
 
-const rootDir = "D:/Desktop/JIRA-REN/JIRA-REN";
+const rootDir = "D:/Documents/GitHub/JIRA-REN";
 
 const appHead = {"meta":[{"name":"viewport","content":"width=device-width, initial-scale=1"},{"charset":"utf-8"}],"link":[],"style":[],"script":[],"noscript":[]};
 
@@ -2147,7 +2147,7 @@ const asyncContext = getContext("nuxt-dev", {
 	asyncContext: true,
 	AsyncLocalStorage
 });
-const _3rddRHj1_sjdzlDW14PkaEOnJ1KoqRWMhyWwlwC00us = (nitroApp) => {
+const _0HbKkhesa3t7XyVgG1JsaK9oA4DDSH8G2euJtQf8o = (nitroApp) => {
 	const handler = nitroApp.h3App.handler;
 	nitroApp.h3App.handler = (event) => {
 		return asyncContext.callAsync({
@@ -2235,7 +2235,7 @@ const db = new Kysely({
   dialect
 });
 
-const _RRcqz3dUckRdSwWlMU5WLjuffZtxLMdMaPhDMW2YRko = defineNitroPlugin(async () => {
+const _ET5QfGv8MJ7ygRZWoGESwbh7xcDP1WS8lvMmg8VYFA = defineNitroPlugin(async () => {
   console.log("Running DB Migrations for Project Pages...");
   try {
     await db.schema.createTable("project_pages").ifNotExists().addColumn("id", "uuid", (col) => col.primaryKey().defaultTo(sql`gen_random_uuid()`)).addColumn("project_id", "uuid", (col) => col.notNull().references("projects.id").onDelete("cascade")).addColumn("parent_id", "uuid", (col) => col.references("project_pages.id").onDelete("cascade")).addColumn("title", "varchar(255)", (col) => col.notNull().defaultTo("Nueva P\xE1gina")).addColumn("content", "jsonb").addColumn("author_id", "varchar(100)").addColumn("created_at", "timestamp", (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`)).addColumn("updated_at", "timestamp", (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`)).execute();
@@ -2245,7 +2245,7 @@ const _RRcqz3dUckRdSwWlMU5WLjuffZtxLMdMaPhDMW2YRko = defineNitroPlugin(async () 
   }
 });
 
-const _R3F8dNMtwM22UUCN9tYVfessTmHi2Wkk6hRdFVjaVDc = defineNitroPlugin(async () => {
+const __ETCBjwtwVKQCj0Jza_HnMO3QvOmqJC1zFxzSIgwo = defineNitroPlugin(async () => {
   console.log("Running DB Migrations for Sprints...");
   try {
     await db.schema.createTable("sprints").ifNotExists().addColumn("id", "uuid", (col) => col.primaryKey().defaultTo(sql`gen_random_uuid()`)).addColumn("project_id", "uuid", (col) => col.notNull().references("projects.id").onDelete("cascade")).addColumn("name", "varchar(100)", (col) => col.notNull()).addColumn("goal", "text").addColumn("start_date", "timestamp").addColumn("end_date", "timestamp").addColumn("status", "varchar(20)", (col) => col.notNull().defaultTo("PENDING")).addColumn("created_at", "timestamp", (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`)).execute();
@@ -2258,7 +2258,7 @@ const _R3F8dNMtwM22UUCN9tYVfessTmHi2Wkk6hRdFVjaVDc = defineNitroPlugin(async () 
   }
 });
 
-const _9L1kHehfqShv1cJLlu_3BAczE1x0W3M9XjWHjg2X1Es = defineNitroPlugin(async () => {
+const _vRCE0lwAK2f1h1Jx2MRUZ0A0tOoixAXt4uDZOOc1VGs = defineNitroPlugin(async () => {
   console.log("Running DB Migrations for Time Tracking...");
   try {
     await db.schema.createTable("time_logs").ifNotExists().addColumn("id", "uuid", (col) => col.primaryKey().defaultTo(sql`gen_random_uuid()`)).addColumn("issue_id", "uuid", (col) => col.notNull().references("issues.id").onDelete("cascade")).addColumn("user_id", "varchar(100)").addColumn("duration_minutes", "integer", (col) => col.notNull()).addColumn("description", "text").addColumn("logged_at", "timestamp", (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`)).execute();
@@ -2271,7 +2271,7 @@ const _9L1kHehfqShv1cJLlu_3BAczE1x0W3M9XjWHjg2X1Es = defineNitroPlugin(async () 
   }
 });
 
-const _K8sJrXOG4A3LwLaPGLWN0AnU57SFjgFTb0QjlXdJo = defineNitroPlugin((nitroApp) => {
+const _d3jMW6yGe19iMHUQ3XkSfKQqS7t7pY7RvKfWg_9huls = defineNitroPlugin((nitroApp) => {
   nitroApp.hooks.hook("request", (event) => {
     var _a;
     const req = event.node.req;
@@ -2308,12 +2308,12 @@ const _K8sJrXOG4A3LwLaPGLWN0AnU57SFjgFTb0QjlXdJo = defineNitroPlugin((nitroApp) 
 });
 
 const plugins = [
-  _7d4rmx4M6jw4HoFA2fVT7MvYrAla8_zhjozMrHJh_E,
-_3rddRHj1_sjdzlDW14PkaEOnJ1KoqRWMhyWwlwC00us,
-_RRcqz3dUckRdSwWlMU5WLjuffZtxLMdMaPhDMW2YRko,
-_R3F8dNMtwM22UUCN9tYVfessTmHi2Wkk6hRdFVjaVDc,
-_9L1kHehfqShv1cJLlu_3BAczE1x0W3M9XjWHjg2X1Es,
-_K8sJrXOG4A3LwLaPGLWN0AnU57SFjgFTb0QjlXdJo,
+  _ESUtPTQa2nsjFElhsDaLxkKj2QujotcaUJ0H6VsgzRw,
+_0HbKkhesa3t7XyVgG1JsaK9oA4DDSH8G2euJtQf8o,
+_ET5QfGv8MJ7ygRZWoGESwbh7xcDP1WS8lvMmg8VYFA,
+__ETCBjwtwVKQCj0Jza_HnMO3QvOmqJC1zFxzSIgwo,
+_vRCE0lwAK2f1h1Jx2MRUZ0A0tOoixAXt4uDZOOc1VGs,
+_d3jMW6yGe19iMHUQ3XkSfKQqS7t7pY7RvKfWg_9huls,
 _wH6JrtIxmaSoA8lCPWFnE9z4lQeXW6H5z3l5aymEQw
 ];
 
@@ -2342,7 +2342,7 @@ function getAsset (id) {
 
 const METHODS = /* @__PURE__ */ new Set(["HEAD", "GET"]);
 const EncodingMap = { gzip: ".gz", br: ".br" };
-const _HJWJio = eventHandler((event) => {
+const _X9T0n5 = eventHandler((event) => {
   if (event.method && !METHODS.has(event.method)) {
     return;
   }
@@ -2848,55 +2848,61 @@ async function getIslandContext(event) {
 	};
 }
 
-const _lazy_1vodvI = () => Promise.resolve().then(function () { return login_post$1; });
-const _lazy_QOYBhH = () => Promise.resolve().then(function () { return register_post$1; });
-const _lazy_iLMfcH = () => Promise.resolve().then(function () { return _id__patch$3; });
-const _lazy_0bMktN = () => Promise.resolve().then(function () { return _id__put$3; });
-const _lazy_N0F9av = () => Promise.resolve().then(function () { return comments$1; });
-const _lazy_Azt8DY = () => Promise.resolve().then(function () { return time_get$1; });
-const _lazy_t1Xump = () => Promise.resolve().then(function () { return time_post$1; });
-const _lazy_ZD_09U = () => Promise.resolve().then(function () { return index$5; });
-const _lazy_jWzu6W = () => Promise.resolve().then(function () { return notifications$1; });
-const _lazy_xv_pNS = () => Promise.resolve().then(function () { return _id__put$1; });
-const _lazy_CGcwXl = () => Promise.resolve().then(function () { return index_post$1; });
-const _lazy_GQe9Z2 = () => Promise.resolve().then(function () { return _id_$1; });
-const _lazy_VU2H1g = () => Promise.resolve().then(function () { return columns$1; });
-const _lazy_7bIXFr = () => Promise.resolve().then(function () { return features_patch$1; });
-const _lazy_aVwWmL = () => Promise.resolve().then(function () { return pages_get$1; });
-const _lazy_rZDz38 = () => Promise.resolve().then(function () { return burndown$1; });
-const _lazy_2sgdYR = () => Promise.resolve().then(function () { return index$3; });
-const _lazy_SKfZoy = () => Promise.resolve().then(function () { return team_get$1; });
-const _lazy_pepJKO = () => Promise.resolve().then(function () { return index$1; });
-const _lazy_ROkDpJ = () => Promise.resolve().then(function () { return _id__patch$1; });
-const _lazy_ha3DcZ = () => Promise.resolve().then(function () { return github_post$1; });
-const _lazy_D574Nr = () => Promise.resolve().then(function () { return renderer; });
+const _lazy_8ZQXkV = () => Promise.resolve().then(function () { return login_post$1; });
+const _lazy_pmNFgO = () => Promise.resolve().then(function () { return register_post$1; });
+const _lazy_nr1tTP = () => Promise.resolve().then(function () { return _id__patch$3; });
+const _lazy_oM1F9D = () => Promise.resolve().then(function () { return _id__put$3; });
+const _lazy_ijhkAX = () => Promise.resolve().then(function () { return comments$1; });
+const _lazy_iq6CgU = () => Promise.resolve().then(function () { return time_get$1; });
+const _lazy_GezDXP = () => Promise.resolve().then(function () { return time_post$1; });
+const _lazy_92xtMC = () => Promise.resolve().then(function () { return index$7; });
+const _lazy__xY_yf = () => Promise.resolve().then(function () { return notifications$1; });
+const _lazy_dUJQof = () => Promise.resolve().then(function () { return _id__put$1; });
+const _lazy_X77Wer = () => Promise.resolve().then(function () { return index_post$1; });
+const _lazy_Icc056 = () => Promise.resolve().then(function () { return _id_$1; });
+const _lazy_SSR1Z_ = () => Promise.resolve().then(function () { return columns$1; });
+const _lazy_egdE_4 = () => Promise.resolve().then(function () { return features_patch$1; });
+const _lazy_Cnk5Nn = () => Promise.resolve().then(function () { return pages_get$1; });
+const _lazy_Ysxjxg = () => Promise.resolve().then(function () { return search_get$1; });
+const _lazy_IkarJO = () => Promise.resolve().then(function () { return burndown$1; });
+const _lazy_KnNfLY = () => Promise.resolve().then(function () { return index$5; });
+const _lazy_QFzCto = () => Promise.resolve().then(function () { return team_get$1; });
+const _lazy_u27dPM = () => Promise.resolve().then(function () { return releaseNotes_get$1; });
+const _lazy_GIb4qU = () => Promise.resolve().then(function () { return index$3; });
+const _lazy_TzM3XV = () => Promise.resolve().then(function () { return index$1; });
+const _lazy_zufyBs = () => Promise.resolve().then(function () { return _id__patch$1; });
+const _lazy_Dg1Zj4 = () => Promise.resolve().then(function () { return github_post$1; });
+const _lazy_lDJPXr = () => Promise.resolve().then(function () { return renderer; });
 
 const handlers = [
-  { route: '', handler: _HJWJio, lazy: false, middleware: true, method: undefined },
-  { route: '/api/auth/login', handler: _lazy_1vodvI, lazy: true, middleware: false, method: "post" },
-  { route: '/api/auth/register', handler: _lazy_QOYBhH, lazy: true, middleware: false, method: "post" },
-  { route: '/api/issues/:id', handler: _lazy_iLMfcH, lazy: true, middleware: false, method: "patch" },
-  { route: '/api/issues/:id', handler: _lazy_0bMktN, lazy: true, middleware: false, method: "put" },
-  { route: '/api/issues/:id/comments', handler: _lazy_N0F9av, lazy: true, middleware: false, method: undefined },
-  { route: '/api/issues/:id/time', handler: _lazy_Azt8DY, lazy: true, middleware: false, method: "get" },
-  { route: '/api/issues/:id/time', handler: _lazy_t1Xump, lazy: true, middleware: false, method: "post" },
-  { route: '/api/issues', handler: _lazy_ZD_09U, lazy: true, middleware: false, method: undefined },
-  { route: '/api/notifications', handler: _lazy_jWzu6W, lazy: true, middleware: false, method: undefined },
-  { route: '/api/pages/:id', handler: _lazy_xv_pNS, lazy: true, middleware: false, method: "put" },
-  { route: '/api/pages', handler: _lazy_CGcwXl, lazy: true, middleware: false, method: "post" },
-  { route: '/api/projects/:id', handler: _lazy_GQe9Z2, lazy: true, middleware: false, method: undefined },
-  { route: '/api/projects/:id/columns', handler: _lazy_VU2H1g, lazy: true, middleware: false, method: undefined },
-  { route: '/api/projects/:id/features', handler: _lazy_7bIXFr, lazy: true, middleware: false, method: "patch" },
-  { route: '/api/projects/:id/pages', handler: _lazy_aVwWmL, lazy: true, middleware: false, method: "get" },
-  { route: '/api/projects/:id/sprints/:sprintId/burndown', handler: _lazy_rZDz38, lazy: true, middleware: false, method: undefined },
-  { route: '/api/projects/:id/sprints', handler: _lazy_2sgdYR, lazy: true, middleware: false, method: undefined },
-  { route: '/api/projects/:id/team', handler: _lazy_SKfZoy, lazy: true, middleware: false, method: "get" },
-  { route: '/api/projects', handler: _lazy_pepJKO, lazy: true, middleware: false, method: undefined },
-  { route: '/api/sprints/:id', handler: _lazy_ROkDpJ, lazy: true, middleware: false, method: "patch" },
-  { route: '/api/webhooks/github', handler: _lazy_ha3DcZ, lazy: true, middleware: false, method: "post" },
-  { route: '/__nuxt_error', handler: _lazy_D574Nr, lazy: true, middleware: false, method: undefined },
+  { route: '', handler: _X9T0n5, lazy: false, middleware: true, method: undefined },
+  { route: '/api/auth/login', handler: _lazy_8ZQXkV, lazy: true, middleware: false, method: "post" },
+  { route: '/api/auth/register', handler: _lazy_pmNFgO, lazy: true, middleware: false, method: "post" },
+  { route: '/api/issues/:id', handler: _lazy_nr1tTP, lazy: true, middleware: false, method: "patch" },
+  { route: '/api/issues/:id', handler: _lazy_oM1F9D, lazy: true, middleware: false, method: "put" },
+  { route: '/api/issues/:id/comments', handler: _lazy_ijhkAX, lazy: true, middleware: false, method: undefined },
+  { route: '/api/issues/:id/time', handler: _lazy_iq6CgU, lazy: true, middleware: false, method: "get" },
+  { route: '/api/issues/:id/time', handler: _lazy_GezDXP, lazy: true, middleware: false, method: "post" },
+  { route: '/api/issues', handler: _lazy_92xtMC, lazy: true, middleware: false, method: undefined },
+  { route: '/api/notifications', handler: _lazy__xY_yf, lazy: true, middleware: false, method: undefined },
+  { route: '/api/pages/:id', handler: _lazy_dUJQof, lazy: true, middleware: false, method: "put" },
+  { route: '/api/pages', handler: _lazy_X77Wer, lazy: true, middleware: false, method: "post" },
+  { route: '/api/projects/:id', handler: _lazy_Icc056, lazy: true, middleware: false, method: undefined },
+  { route: '/api/projects/:id/columns', handler: _lazy_SSR1Z_, lazy: true, middleware: false, method: undefined },
+  { route: '/api/projects/:id/features', handler: _lazy_egdE_4, lazy: true, middleware: false, method: "patch" },
+  { route: '/api/projects/:id/pages', handler: _lazy_Cnk5Nn, lazy: true, middleware: false, method: "get" },
+  { route: '/api/projects/:id/search', handler: _lazy_Ysxjxg, lazy: true, middleware: false, method: "get" },
+  { route: '/api/projects/:id/sprints/:sprintId/burndown', handler: _lazy_IkarJO, lazy: true, middleware: false, method: undefined },
+  { route: '/api/projects/:id/sprints', handler: _lazy_KnNfLY, lazy: true, middleware: false, method: undefined },
+  { route: '/api/projects/:id/team', handler: _lazy_QFzCto, lazy: true, middleware: false, method: "get" },
+  { route: '/api/projects/:id/versions/:vid/release-notes', handler: _lazy_u27dPM, lazy: true, middleware: false, method: "get" },
+  { route: '/api/projects/:id/versions', handler: _lazy_GIb4qU, lazy: true, middleware: false, method: undefined },
+  { route: '/api/projects', handler: _lazy_TzM3XV, lazy: true, middleware: false, method: undefined },
+  { route: '/api/sprints/:id', handler: _lazy_zufyBs, lazy: true, middleware: false, method: "patch" },
+  { route: '/api/webhooks/github', handler: _lazy_Dg1Zj4, lazy: true, middleware: false, method: "post" },
+  { route: '/__nuxt_error', handler: _lazy_lDJPXr, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: handler$1, lazy: false, middleware: false, method: undefined },
-  { route: '/**', handler: _lazy_D574Nr, lazy: true, middleware: false, method: undefined }
+  { route: '/**', handler: _lazy_lDJPXr, lazy: true, middleware: false, method: undefined }
 ];
 
 function createNitroApp() {
@@ -3366,12 +3372,29 @@ class IssueService {
       }).returningAll().executeTakeFirst();
     });
   }
-  static async updateIssuePosition(issueId, toColumnId, newPosition) {
-    return await db.updateTable("issues").set({
+  static async updateIssuePosition(issueId, toColumnId, newPosition, currentUserId) {
+    const issue = await db.selectFrom("issues").select("column_id").where("id", "=", issueId).executeTakeFirst();
+    if (!issue) throw new Error("Issue no encontrado");
+    let postActions = [];
+    if (issue.column_id && issue.column_id !== toColumnId && currentUserId) {
+      const { WorkflowEngine } = await Promise.resolve().then(function () { return workflowEngine; });
+      postActions = await WorkflowEngine.executeTransition(issueId, issue.column_id, toColumnId, currentUserId) || [];
+    }
+    let updateData = {
       column_id: toColumnId,
       position: newPosition,
       updated_at: /* @__PURE__ */ new Date()
-    }).where("id", "=", issueId).returningAll().executeTakeFirst();
+    };
+    if (postActions.length > 0) {
+      for (const action of postActions) {
+        if (action.action_key === "ASSIGN_TO_CURRENT_USER" && currentUserId) {
+          updateData.assignee_id = currentUserId;
+        } else if (action.action_key === "UNASSIGN") {
+          updateData.assignee_id = null;
+        }
+      }
+    }
+    return await db.updateTable("issues").set(updateData).where("id", "=", issueId).returningAll().executeTakeFirst();
   }
   static async updateIssue(issueId, updates) {
     if (Object.keys(updates).length === 0) return null;
@@ -3542,7 +3565,7 @@ const time_post$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePropert
   default: time_post
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const index$4 = defineEventHandler(async (event) => {
+const index$6 = defineEventHandler(async (event) => {
   const method = event.node.req.method;
   if (method === "GET") {
     const query = getQuery$1(event);
@@ -3564,9 +3587,9 @@ const index$4 = defineEventHandler(async (event) => {
   }
 });
 
-const index$5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const index$7 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: index$4
+  default: index$6
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const notifications = defineEventHandler(async (event) => {
@@ -3773,6 +3796,88 @@ const pages_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePropert
   default: pages_get
 }, Symbol.toStringTag, { value: 'Module' }));
 
+class JQLParser {
+  /**
+   * Transpila un string JQL a fragmentos SQL para Kysely.
+   * Soporta sintaxis básica: field = "value" AND field2 = "value2"
+   * @param jqlString string ej: 'project = "REN" AND status = "En Progreso" AND assignee = currentUser()'
+   * @param currentUserId string opcional para resolver currentUser()
+   */
+  static parse(jqlString, currentUserId) {
+    if (!jqlString || jqlString.trim() === "") {
+      return sql`1 = 1`;
+    }
+    const tokenRegex = /(\w+)\s*(=|!=|>|<|>=|<=)\s*(".*?"|'.*?'|\w+\(\)|\w+)\s*(AND|OR)?/gi;
+    let match;
+    const parts = [];
+    while ((match = tokenRegex.exec(jqlString)) !== null) {
+      let [, field, operator, value, logicOp] = match;
+      if (value.startsWith('"') || value.startsWith("'")) {
+        value = value.substring(1, value.length - 1);
+      }
+      if (value.toLowerCase() === "currentuser()") {
+        value = currentUserId || "";
+      }
+      let sqlField = `issues.${field}`;
+      if (field.toLowerCase() === "status") {
+        sqlField = `board_columns.name`;
+      } else if (field.toLowerCase() === "project") {
+        sqlField = `projects.key`;
+      } else if (field.toLowerCase() === "assignee") {
+        if (value === currentUserId) {
+          sqlField = `issues.assignee_id`;
+        } else {
+          sqlField = `assignee_user.name`;
+        }
+      }
+      parts.push(sql.raw(`${sqlField} ${operator} `));
+      parts.push(value);
+      if (logicOp) {
+        parts.push(sql.raw(` ${logicOp.toUpperCase()} `));
+      }
+    }
+    if (parts.length === 0) {
+      return sql`1 = 1`;
+    }
+    return sql.join(parts, sql``);
+  }
+}
+
+const search_get = defineEventHandler(async (event) => {
+  const projectId = getRouterParam(event, "id");
+  const query = getQuery$1(event);
+  const jql = query.jql;
+  if (!projectId) {
+    throw createError({ statusCode: 400, statusMessage: "Se requiere ID del proyecto" });
+  }
+  const user = event.context.user;
+  const currentUserId = user == null ? void 0 : user.id;
+  let jqlCondition;
+  try {
+    jqlCondition = JQLParser.parse(jql, currentUserId);
+  } catch (e) {
+    throw createError({ statusCode: 400, statusMessage: "Error de sintaxis JQL: " + e.message });
+  }
+  let baseQuery = db.selectFrom("issues").leftJoin("board_columns", "issues.column_id", "board_columns.id").leftJoin("projects", "issues.project_id", "projects.id").leftJoin("users as assignee_user", "issues.assignee_id", "assignee_user.id").selectAll("issues").select([
+    "board_columns.name as column_name",
+    "assignee_user.name as assignee_name",
+    "projects.key as project_key"
+  ]).where("issues.project_id", "=", projectId);
+  if (jql && jql.trim() !== "") {
+    baseQuery = baseQuery.where(jqlCondition);
+  }
+  const results = await baseQuery.execute();
+  return {
+    results,
+    count: results.length
+  };
+});
+
+const search_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: search_get
+}, Symbol.toStringTag, { value: 'Module' }));
+
 const burndown = defineEventHandler(async (event) => {
   const sprintId = getRouterParam(event, "sprintId");
   if (!sprintId) {
@@ -3845,7 +3950,7 @@ class SprintService {
   }
 }
 
-const index$2 = defineEventHandler(async (event) => {
+const index$4 = defineEventHandler(async (event) => {
   const method = event.node.req.method;
   const projectId = getRouterParam(event, "id");
   if (!projectId) {
@@ -3872,9 +3977,9 @@ const index$2 = defineEventHandler(async (event) => {
   }
 });
 
-const index$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const index$5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: index$2
+  default: index$4
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const team_get = defineEventHandler(async (event) => {
@@ -3918,6 +4023,96 @@ const team_get = defineEventHandler(async (event) => {
 const team_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: team_get
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const releaseNotes_get = defineEventHandler(async (event) => {
+  const versionId = getRouterParam(event, "vid");
+  const projectId = getRouterParam(event, "id");
+  if (!versionId || !projectId) {
+    throw createError({ statusCode: 400, statusMessage: "Se requiere ID de versi\xF3n y proyecto" });
+  }
+  const version = await db.selectFrom("project_versions").selectAll().where("id", "=", versionId).where("project_id", "=", projectId).executeTakeFirst();
+  if (!version) {
+    throw createError({ statusCode: 404, statusMessage: "Versi\xF3n no encontrada" });
+  }
+  const issues = await db.selectFrom("issues").leftJoin("issue_types", "issues.issue_type_id", "issue_types.id").select([
+    "issues.key_number",
+    "issues.title",
+    "issue_types.name as type_name"
+  ]).where("issues.version_id", "=", versionId).execute();
+  let markdown = `# Release Notes - ${version.name}
+
+`;
+  if (version.description) {
+    markdown += `${version.description}
+
+`;
+  }
+  markdown += `**Fecha de Lanzamiento:** ${version.release_date ? new Date(version.release_date).toLocaleDateString() : "Por definir"}
+
+`;
+  markdown += `## Cambios Incluidos
+
+`;
+  if (issues.length === 0) {
+    markdown += `*No hay tickets asociados a esta versi\xF3n.*
+`;
+  } else {
+    const grouped = {};
+    for (const issue of issues) {
+      const type = issue.type_name || "Otros";
+      if (!grouped[type]) grouped[type] = [];
+      grouped[type].push(issue);
+    }
+    for (const [type, typeIssues] of Object.entries(grouped)) {
+      markdown += `### ${type}
+`;
+      for (const issue of typeIssues) {
+        markdown += `- **PROY-${issue.key_number}**: ${issue.title}
+`;
+      }
+      markdown += `
+`;
+    }
+  }
+  return {
+    version,
+    releaseNotesMarkdown: markdown
+  };
+});
+
+const releaseNotes_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: releaseNotes_get
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const index$2 = defineEventHandler(async (event) => {
+  const method = event.node.req.method;
+  const projectId = getRouterParam(event, "id");
+  if (!projectId) {
+    throw createError({ statusCode: 400, statusMessage: "Project ID is required" });
+  }
+  if (method === "GET") {
+    return await db.selectFrom("project_versions").selectAll().where("project_id", "=", projectId).orderBy("created_at", "desc").execute();
+  }
+  if (method === "POST") {
+    const body = await readBody(event);
+    if (!body.name) {
+      throw createError({ statusCode: 400, statusMessage: "Name is required" });
+    }
+    return await db.insertInto("project_versions").values({
+      project_id: projectId,
+      name: body.name,
+      description: body.description || null,
+      status: body.status || "UNRELEASED",
+      release_date: body.release_date ? new Date(body.release_date) : null
+    }).returningAll().executeTakeFirst();
+  }
+});
+
+const index$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: index$2
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const index = defineEventHandler(async (event) => {
@@ -4260,5 +4455,64 @@ function renderHTMLDocument(html) {
 const renderer = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: handler
+}, Symbol.toStringTag, { value: 'Module' }));
+
+class WorkflowEngine {
+  /**
+   * Valida y ejecuta una transición de estado de un ticket.
+   * @param issueId ID de la incidencia
+   * @param fromColumnId Columna origen
+   * @param toColumnId Columna destino
+   * @param currentUserId ID del usuario que intenta la transición
+   */
+  static async executeTransition(issueId, fromColumnId, toColumnId, currentUserId) {
+    if (fromColumnId === toColumnId) return;
+    const issue = await db.selectFrom("issues").selectAll().where("id", "=", issueId).executeTakeFirst();
+    if (!issue) throw createError({ statusCode: 404, statusMessage: "Issue no encontrado" });
+    let workflowId = null;
+    const issueType = await db.selectFrom("issue_types").select("workflow_id").where("id", "=", issue.issue_type_id).executeTakeFirst();
+    if (issueType == null ? void 0 : issueType.workflow_id) {
+      workflowId = issueType.workflow_id;
+    } else {
+      const project = await db.selectFrom("projects").select("default_workflow_id").where("id", "=", issue.project_id).executeTakeFirst();
+      workflowId = project == null ? void 0 : project.default_workflow_id;
+    }
+    if (!workflowId) {
+      return;
+    }
+    const transition = await db.selectFrom("workflow_transitions").selectAll().where("workflow_id", "=", workflowId).where("from_column_id", "=", fromColumnId).where("to_column_id", "=", toColumnId).executeTakeFirst();
+    if (!transition) {
+      throw createError({ statusCode: 403, statusMessage: "Transici\xF3n no permitida por el Workflow del proyecto." });
+    }
+    const rules = await db.selectFrom("workflow_rules").selectAll().where("transition_id", "=", transition.id).execute();
+    const conditions = rules.filter((r) => r.rule_type === "CONDITION");
+    const postActions = rules.filter((r) => r.rule_type === "POST_ACTION");
+    for (const condition of conditions) {
+      switch (condition.action_key) {
+        case "ONLY_ASSIGNEE":
+          if (issue.assignee_id !== currentUserId) {
+            throw createError({ statusCode: 403, statusMessage: "Workflow restrictivo: Solo el assignee puede realizar esta transici\xF3n." });
+          }
+          break;
+        case "REQUIRE_ASSIGNEE":
+          if (!issue.assignee_id) {
+            throw createError({ statusCode: 403, statusMessage: "Workflow restrictivo: El ticket debe estar asignado antes de moverlo." });
+          }
+          break;
+        case "ROLE_ADMIN":
+          const member = await db.selectFrom("project_members").select("role").where("project_id", "=", issue.project_id).where("user_id", "=", currentUserId).executeTakeFirst();
+          if ((member == null ? void 0 : member.role) !== "ADMIN") {
+            throw createError({ statusCode: 403, statusMessage: "Workflow restrictivo: Solo administradores pueden realizar esta acci\xF3n." });
+          }
+          break;
+      }
+    }
+    return postActions;
+  }
+}
+
+const workflowEngine = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  WorkflowEngine: WorkflowEngine
 }, Symbol.toStringTag, { value: 'Module' }));
 //# sourceMappingURL=index.mjs.map

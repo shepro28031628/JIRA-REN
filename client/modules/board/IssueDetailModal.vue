@@ -42,9 +42,45 @@
                   v-model="localIssue.description" 
                   class="editable-desc" 
                   placeholder="Agrega una descripción detallada..." 
-                  rows="6"
+                  rows="4"
                   @blur="saveChanges('description')"
                 ></textarea>
+              </div>
+
+              <!-- Sección de Sub-tareas / Checklist -->
+              <div class="section mt-5 border-t border-purple-100/60 pt-4">
+                <div class="flex items-center justify-between mb-2">
+                  <h4 class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-700">
+                    <CheckSquare class="w-4 h-4 text-purple-600" /> Sub-tareas
+                  </h4>
+                  <span class="text-xs text-slate-500 font-medium">
+                    {{ completedSubtasksCount }} de {{ subtasks.length }} completadas
+                  </span>
+                </div>
+
+                <!-- Barra de progreso de subtareas -->
+                <div v-if="subtasks.length > 0" class="w-full bg-slate-200/60 rounded-full h-1.5 mb-3 overflow-hidden border border-slate-200/40">
+                  <div class="bg-gradient-to-r from-purple-500 to-indigo-500 h-full transition-all duration-300" :style="{ width: subtaskProgressPercent + '%' }"></div>
+                </div>
+
+                <!-- Lista de Subtareas -->
+                <div class="subtask-list flex flex-col gap-1.5 mb-3">
+                  <div v-for="subtask in subtasks" :key="subtask.id" class="flex items-center justify-between p-2 rounded-lg bg-white/80 border border-slate-200/80 hover:border-purple-200 transition-colors shadow-2xs">
+                    <label class="flex items-center gap-2.5 cursor-pointer flex-1">
+                      <input type="checkbox" :checked="subtask.completed" @change="toggleSubtask(subtask)" class="w-4 h-4 rounded text-purple-600 focus:ring-purple-500 cursor-pointer" />
+                      <span class="text-xs text-slate-700 font-medium" :class="{ 'line-through text-slate-400': subtask.completed }">{{ subtask.title }}</span>
+                    </label>
+                    <button @click="deleteSubtask(subtask.id)" class="text-slate-400 hover:text-red-500 p-1 rounded transition-colors" title="Eliminar sub-tarea">
+                      <Trash2 class="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Input para agregar nueva subtarea -->
+                <div class="flex items-center gap-2">
+                  <input v-model="newSubtaskTitle" placeholder="Agregar una sub-tarea..." class="flex-1 bg-white/70 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-700 outline-none focus:border-purple-400 shadow-2xs" @keyup.enter="addSubtask" />
+                  <button @click="addSubtask" class="btn-primary-glow text-xs py-1.5 px-3 font-semibold" :disabled="!newSubtaskTitle.trim()">+ Agregar</button>
+                </div>
               </div>
             </div>
 
@@ -158,6 +194,39 @@
                 <ChevronDown class="select-icon w-4 h-4" stroke-width="1.5" />
               </div>
             </div>
+
+            <!-- Épica Vinculada -->
+            <div class="sidebar-section">
+              <label class="flex items-center gap-1 text-purple-700 font-semibold">
+                <Zap class="w-3.5 h-3.5 text-purple-600" /> Épica
+              </label>
+              <div class="custom-select-wrapper">
+                <select v-model="localIssue.epic_id" @change="saveChanges('epic_id')">
+                  <option :value="null">Sin Épica</option>
+                  <option v-for="epic in epicsList" :key="epic.id" :value="epic.id">
+                    {{ epic.title }}
+                  </option>
+                </select>
+                <ChevronDown class="select-icon w-4 h-4" stroke-width="1.5" />
+              </div>
+            </div>
+
+            <!-- Etiquetas (Labels) -->
+            <div class="sidebar-section">
+              <label class="flex items-center gap-1 text-indigo-700 font-semibold">
+                <Tag class="w-3.5 h-3.5 text-indigo-500" /> Etiquetas
+              </label>
+              <div class="flex flex-wrap gap-1 mb-2">
+                <span v-for="lbl in issueLabels" :key="lbl.id" class="px-2 py-0.5 text-[10px] font-bold rounded-md text-white shadow-xs" :style="{ backgroundColor: lbl.color }">
+                  {{ lbl.name }}
+                </span>
+                <span v-if="issueLabels.length === 0" class="text-[11px] text-slate-400 italic">Sin etiquetas</span>
+              </div>
+              <div class="flex gap-1">
+                <input v-model="newLabelName" placeholder="Nueva etiqueta..." class="flex-1 bg-white/70 border border-slate-200 rounded-md px-2 py-1 text-xs text-slate-700 outline-none focus:border-purple-400" @keyup.enter="addLabel" />
+                <button @click="addLabel" class="bg-purple-600 text-white rounded-md px-2 py-1 text-xs font-semibold hover:bg-purple-700 active:scale-95 transition-all">+</button>
+              </div>
+            </div>
             
             <!-- Time Tracking Section (Pro Max) -->
             <div class="sidebar-section">
@@ -255,7 +324,7 @@
 import { ref, watch, computed, onBeforeUnmount } from 'vue';
 import { $fetch } from 'ofetch';
 import { cn } from '../../utils/cn';
-import { Trash2, X, ChevronDown, Clock, Play, Pause, GitBranch, ArrowRight } from 'lucide-vue-next';
+import { Trash2, X, ChevronDown, Clock, Play, Pause, GitBranch, ArrowRight, CheckSquare, Zap, Tag } from 'lucide-vue-next';
 import AuditTimeline from '../../components/history/AuditTimeline.vue';
 
 const props = defineProps<{
@@ -263,7 +332,8 @@ const props = defineProps<{
   issue: any;
   projectKey: string;
   columns: any[];
-  users?: any[]; // Lista de usuarios del proyecto (opcional por ahora)
+  users?: any[];
+  epicsList?: any[];
 }>();
 
 const emit = defineEmits(['close', 'update']);
@@ -273,8 +343,96 @@ const isSaving = ref(false);
 const activeTab = ref('details');
 
 const comments = ref<any[]>([]);
-const activityLogs = ref<any[]>([]); // Added for mock audit logs
+const activityLogs = ref<any[]>([]);
 const newCommentText = ref('');
+
+// Sub-tareas
+const subtasks = ref<any[]>([]);
+const newSubtaskTitle = ref('');
+
+const completedSubtasksCount = computed(() => subtasks.value.filter(s => s.completed).length);
+const subtaskProgressPercent = computed(() => subtasks.value.length ? Math.round((completedSubtasksCount.value / subtasks.value.length) * 100) : 0);
+
+const fetchSubtasks = async () => {
+  if (!localIssue.value?.id) return;
+  try {
+    subtasks.value = await $fetch(`/api/issues/${localIssue.value.id}/subtasks`);
+  } catch (e) {
+    console.error('Error al cargar subtareas', e);
+  }
+};
+
+const addSubtask = async () => {
+  if (!newSubtaskTitle.value.trim() || !localIssue.value?.id) return;
+  try {
+    const created = await $fetch(`/api/issues/${localIssue.value.id}/subtasks`, {
+      method: 'POST',
+      body: { title: newSubtaskTitle.value.trim() }
+    });
+    subtasks.value.push(created);
+    newSubtaskTitle.value = '';
+  } catch (e) {
+    console.error('Error al agregar subtarea', e);
+  }
+};
+
+const toggleSubtask = async (subtask: any) => {
+  subtask.completed = !subtask.completed;
+  try {
+    await $fetch(`/api/issues/${localIssue.value.id}/subtasks`, {
+      method: 'PUT',
+      body: { subtaskId: subtask.id, completed: subtask.completed }
+    });
+  } catch (e) {
+    subtask.completed = !subtask.completed;
+  }
+};
+
+const deleteSubtask = async (subtaskId: string) => {
+  try {
+    await $fetch(`/api/issues/${localIssue.value.id}/subtasks`, {
+      method: 'DELETE',
+      body: { subtaskId }
+    });
+    subtasks.value = subtasks.value.filter(s => s.id !== subtaskId);
+  } catch (e) {
+    console.error('Error al eliminar subtarea', e);
+  }
+};
+
+// Etiquetas (Labels)
+const issueLabels = ref<any[]>([]);
+const newLabelName = ref('');
+
+const fetchLabels = async () => {
+  if (!localIssue.value?.id) return;
+  try {
+    issueLabels.value = await $fetch(`/api/issues/${localIssue.value.id}/labels`);
+  } catch (e) {
+    console.error('Error al cargar etiquetas', e);
+  }
+};
+
+const addLabel = async () => {
+  if (!newLabelName.value.trim() || !localIssue.value?.id || !localIssue.value?.project_id) return;
+  try {
+    const created = await $fetch(`/api/projects/${localIssue.value.project_id}/labels`, {
+      method: 'POST',
+      body: { name: newLabelName.value.trim() }
+    });
+    const currentIds = issueLabels.value.map(l => l.id);
+    if (!currentIds.includes(created.id)) {
+      currentIds.push(created.id);
+    }
+    issueLabels.value = await $fetch(`/api/issues/${localIssue.value.id}/labels`, {
+      method: 'POST',
+      body: { labelIds: currentIds }
+    });
+    newLabelName.value = '';
+  } catch (e) {
+    console.error('Error al agregar etiqueta', e);
+  }
+};
 
 // Time Travel State
 const showTimeTravel = ref(false);
@@ -287,7 +445,9 @@ const openTimeTravel = (log: any) => {
 
 watch(() => props.issue, (newVal) => {
   if (newVal) {
-    localIssue.value = JSON.parse(JSON.stringify(newVal)); // Clone to avoid direct mutation
+    localIssue.value = JSON.parse(JSON.stringify(newVal));
+    fetchSubtasks();
+    fetchLabels();
   }
 }, { immediate: true, deep: true });
 

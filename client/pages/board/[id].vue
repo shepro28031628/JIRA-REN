@@ -72,8 +72,22 @@
           <span class="text-xs font-medium">Etiquetas</span>
           <ChevronDown class="w-3 h-3 opacity-50 group-hover:opacity-100" />
         </button>
-        <div class="flex-1"></div>
-        <button v-if="hasActiveFilters" class="text-xs font-medium text-purple-600 hover:text-purple-700 px-3 py-1 transition-colors" @click="clearFilters">
+        
+        <div class="h-4 w-[1px] bg-white/50 mx-1"></div>
+        <div class="relative flex-1 flex items-center">
+          <input 
+             v-model="jqlQuery"
+             @keyup.enter="executeJQL"
+             type="text" 
+             placeholder="JQL: priority = 'HIGH' AND assignee = currentUser()" 
+             class="w-full bg-white/40 border border-white/50 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder:text-slate-400/70"
+          />
+          <button @click="executeJQL" class="absolute right-2 text-purple-600 hover:text-purple-800 bg-white/50 p-1 rounded">
+             <Search class="w-3 h-3" stroke-width="3" />
+          </button>
+        </div>
+
+        <button v-if="hasActiveFilters || jqlQuery" class="text-xs font-medium text-purple-600 hover:text-purple-700 px-3 py-1 transition-colors" @click="clearFilters">
           Limpiar filtros
         </button>
       </div>
@@ -167,6 +181,7 @@
       :projectKey="project?.key || ''"
       :columns="columns"
       :users="projectUsers"
+      :epics-list="epicsList"
       @close="showDetailModal = false"
       @update="updateIssue"
     />
@@ -220,7 +235,7 @@ watch(() => boardStore.issues, (newIssues) => {
     map[col.id] = [...newIssues.filter(i => i.column_id === col.id).sort((a, b) => a.position - b.position)];
   });
   localColumnIssues.value = map;
-}, { deep: true });
+const epicsList = computed(() => boardStore.issues.filter((i: any) => i.type === 'EPIC'));
 
 const getColumnIssues = (columnId: string) => {
   if (!localColumnIssues.value[columnId]) {
@@ -258,11 +273,27 @@ const toggleFilter = (type: 'priority' | 'assignee' | 'tags', value: string) => 
 const clearFilters = () => {
   activeFilters.value = { priority: [], assignee: [], tags: [] };
   activePopover.value = null;
+  jqlQuery.value = '';
+  loadData();
 };
 
 const toggleSearch = () => {
   // Disparar evento para CommandMenu global
   window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }));
+};
+
+const jqlQuery = ref('');
+const executeJQL = async () => {
+  if (!jqlQuery.value.trim()) {
+    return loadData(); // reset if empty
+  }
+  try {
+    const results = await $fetch(`/api/projects/${projectId}/search?jql=${encodeURIComponent(jqlQuery.value)}`);
+    boardStore.issues = results as any[];
+  } catch (e: any) {
+    console.error('Error JQL:', e);
+    toast.error(e.response?.data?.statusMessage || e.response?.data?.message || 'Error en sintaxis JQL');
+  }
 };
 
 // Ocultar popovers al hacer click fuera (mocked for simplicity)
@@ -337,8 +368,11 @@ const onDragChange = async (event: any, toColumnId: string) => {
         method: 'PUT',
         body: { action: 'move', toColumnId, newPosition }
       });
-    } catch (e) {
+    } catch (e: any) {
       console.error('Error moviendo', e);
+      toast.error(e.response?.data?.statusMessage || 'Transición bloqueada por el Workflow');
+      // Revertir optimismo recargando
+      loadData();
     }
   }
 };

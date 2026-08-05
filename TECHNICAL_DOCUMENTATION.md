@@ -121,6 +121,17 @@ Constituyen el corazón del Nitro Server. Aquí reside el "Control del Usuario M
 
 ---
 
+## 🚀 10. Evolución a Enterprise (Funcionalidades Jira Software)
+
+Para igualar y superar las capacidades core de Jira Software, el ecosistema tiene planificado implementar la siguiente arquitectura extendida:
+
+* **Motor de JQL (Jira Query Language):** Implementación de un parseador AST para ejecutar búsquedas complejas (ej: `project = "REN" AND status = "En Progreso" AND assignee = currentUser()`) que será integrado directamente en el compilador de Kysely para traducción a SQL dinámico.
+* **Workflows Engine (Flujos Personalizados):** Un motor de máquina de estados finitos (FSM) que valide transiciones restringidas, ejecute validadores (condiciones de paso) y dispare post-acciones automatizadas en la base de datos y UI.
+* **Custom Fields & Issue Types:** Estructura EAV (Entity-Attribute-Value) o columnas JSONB indexadas para soportar jerarquías completas (Épica > Tarea > Subtarea) y campos dinámicos tipados (Fechas, Selectores, Usuarios).
+* **Gestión de Versiones y Releases:** Modelo relacional de empaquetado de issues vinculadas a artefactos de versión (SemVer), acoplado con un generador automatizado de Release Notes.
+
+---
+
 ## 📊 9. Diagramas de Arquitectura y Flujos (JIRA-REN)
 
 ### 9.1 Diagrama de Arquitectura General del Sistema

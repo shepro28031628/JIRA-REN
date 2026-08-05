@@ -21,7 +21,7 @@
         <NuxtLink :to="`/projects/${projectId}/reports`" class="nav-item active">Reportes</NuxtLink>
       </nav>
 
-      <div class="actions" v-if="sprints.length > 0">
+      <div class="actions flex items-center gap-2" v-if="sprints.length > 0">
         <div class="relative">
           <select v-model="selectedSprintId" class="premium-select" @change="fetchBurndown">
             <option v-for="sprint in sprints" :key="sprint.id" :value="sprint.id">
@@ -30,6 +30,15 @@
           </select>
           <ChevronDown class="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-purple-600 pointer-events-none" />
         </div>
+        <button @click="exportReport('csv')" class="px-3 py-1.5 rounded-lg bg-white/80 border border-purple-200 text-xs font-bold text-purple-700 hover:bg-purple-50 transition-all flex items-center gap-1.5 shadow-2xs" title="Exportar CSV">
+          <Download class="w-3.5 h-3.5" /> CSV
+        </button>
+        <button @click="exportReport('json')" class="px-3 py-1.5 rounded-lg bg-white/80 border border-purple-200 text-xs font-bold text-purple-700 hover:bg-purple-50 transition-all flex items-center gap-1.5 shadow-2xs" title="Exportar JSON">
+          <Download class="w-3.5 h-3.5" /> JSON
+        </button>
+        <button @click="exportReport('pdf')" class="px-3 py-1.5 rounded-lg bg-purple-600 text-white text-xs font-bold hover:bg-purple-700 transition-all flex items-center gap-1.5 shadow-xs" title="Imprimir / Exportar PDF">
+          <Download class="w-3.5 h-3.5" /> PDF
+        </button>
       </div>
     </header>
 
@@ -198,7 +207,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useRoute } from '#app';
-import { ArrowLeft, TrendingUp, PieChart, Activity, DollarSign, Users, ChevronDown } from 'lucide-vue-next';
+import { ArrowLeft, TrendingUp, PieChart, Activity, DollarSign, Users, ChevronDown, Download } from 'lucide-vue-next';
 
 definePageMeta({
   layout: 'project'
@@ -206,6 +215,15 @@ definePageMeta({
 
 const route = useRoute();
 const projectId = route.params.id as string;
+
+const exportReport = (format: string) => {
+  if (format === 'pdf') {
+    window.print();
+  } else {
+    const url = `/api/projects/${projectId}/export?format=${format}${selectedSprintId.value ? '&sprintId=' + selectedSprintId.value : ''}`;
+    window.open(url, '_blank');
+  }
+};
 
 const loading = ref(true);
 const project = ref<any>(null);
