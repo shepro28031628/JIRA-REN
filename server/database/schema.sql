@@ -112,6 +112,7 @@ CREATE TABLE issues (
     reporter_id UUID REFERENCES users(id) ON DELETE SET NULL,
     assignee_id UUID REFERENCES users(id) ON DELETE SET NULL,
     estimated_minutes INT DEFAULT 0,
+    story_points NUMERIC DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT unique_project_issue_key UNIQUE (project_id, key_number)

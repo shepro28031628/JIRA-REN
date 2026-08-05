@@ -130,6 +130,7 @@ export interface IssuesTable {
   reporter_id: string | null;
   assignee_id: string | null;
   estimated_minutes: number | null;
+  story_points: number | null;
   created_at: Generated<Date>;
   updated_at: Generated<Date>;
 }

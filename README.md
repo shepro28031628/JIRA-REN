@@ -62,14 +62,35 @@ Para los power-users, JIRA-REN esconde una Terminal de Comandos Flotante. Pulsan
 
 ---
 
-## 🎯 Funcionalidades para clonar Jira Software
+## 📐 Diagramación UML & Documentación Arquitectónica
 
-Como parte del proceso de evolución de la herramienta hacia un sistema Enterprise comparable con Jira Software, se contemplan las siguientes capacidades extendidas:
+El proyecto cuenta con una especificación técnica y arquitectónica completa compuesta por **9 Diagramas UML estandarizados** en formato Mermaid.
 
-* **Motor de JQL (Jira Query Language):** Implementa un parseador que permita hacer búsquedas avanzadas en la barra o en la CommandConsole con sintaxis como: `project = "REN" AND status = "En Progreso" AND assignee = currentUser()`.
-* **Flujos de trabajo personalizados (Workflows Engine):** Diseña un creador de flujos donde las tareas no solo pasen de columna en columna, sino que tengan transiciones restringidas, condiciones (ej. solo el asignado puede mover a QA) y post-acciones (ej. cambiar automáticamente el asignado al mover a "Review").
-* **Tipos de incidencias y campos personalizados (Custom Fields):** Soporte para múltiples tipos de tickets (Épica, Tarea, Subtarea, Bug) con campos dinámicos específicos (listas desplegables, fechas, campos numéricos).
-* **Gestión de Versiones y Releases:** Un módulo para agrupar issues bajo números de versión (ej. v1.0.0) y generar informes de notas de lanzamiento (Release Notes).
+👉 **[Ver Documento Completo de Diagramas UML (UML_DIAGRAMS.md)](file:///d:/Documents/GitHub/JIRA-REN/UML_DIAGRAMS.md)**
+
+Incluye:
+1. **Diagrama de Componentes (C4 Model)**
+2. **Modelo Entidad-Relación de la BD (ERD completo)**
+3. **Diagrama de Casos de Uso**
+4. **Diagrama de Clases del Dominio y Servicios**
+5. **Diagrama de Secuencia: Parseo y Ejecución JQL**
+6. **Diagrama de Secuencia: Transición de Estados y Automatizaciones**
+7. **Diagrama de Estado: Ciclo de Vida de una Incidencia**
+8. **Diagrama de Despliegue e Infraestructura**
+9. **Diagrama de Actividades: Flujo de Exportación de Informes**
+
+---
+
+## 🎯 Funcionalidades Avanzadas de Jira Software
+
+JIRA-REN cuenta con las siguientes capacidades Enterprise completamente operativas:
+
+* **Sub-tareas & Jerarquía Profunda:** Desglose de Historias/Tareas en subtareas con casillas de verificación, cálculo de porcentaje de avance en tiempo real y vinculación visual de Épicas con distintivos (badges) personalizados.
+* **Automatizaciones & Workflows Personalizados:** Reglas automáticas en transiciones (ej: reseteo automático de tiempo faltante a 0 al mover a *Done/Listo* y notificaciones al usuario al reasignar incidencias).
+* **Motor de JQL (Jira Query Language):** Parseador léxico que transpila consultas de búsqueda avanzadas como `project = ALFA AND priority = HIGH AND status = "En Progreso" AND label = frontend`.
+* **Etiquetas (Labels) y Componentes:** Categorización avanzada por etiquetas personalizadas (`frontend`, `backend`, `ui`, `bugfix`) y componentes de proyecto.
+* **Exportación de Informes:** Descarga de reportes de tareas y sprints en formatos **CSV**, **JSON** y **PDF**.
+* **Gestión de Versiones y Releases:** Módulo para agrupar issues bajo números de versión y generar Release Notes automáticos.
 
 ---
 

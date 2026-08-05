@@ -72,16 +72,69 @@
           </div>
         </div>
 
+        <!-- Selector de Reportes Ágiles -->
+        <div class="mb-6 bg-white/40 backdrop-blur-xl border border-white/60 p-1.5 rounded-2xl shadow-sm flex flex-wrap gap-2 w-max">
+          <button 
+            @click="activeReportTab = 'burndown'" 
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-1.5"
+            :class="activeReportTab === 'burndown' ? 'bg-white text-purple-700 shadow-sm border border-purple-100' : 'text-slate-600 hover:bg-white/50'"
+          >
+            <Activity class="w-4 h-4 text-purple-600" /> Burndown Chart
+          </button>
+          <button 
+            @click="activeReportTab = 'burnup'" 
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-1.5"
+            :class="activeReportTab === 'burnup' ? 'bg-white text-purple-700 shadow-sm border border-purple-100' : 'text-slate-600 hover:bg-white/50'"
+          >
+            <TrendingUp class="w-4 h-4 text-indigo-600" /> Burnup Chart
+          </button>
+          <button 
+            @click="activeReportTab = 'velocity'" 
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-1.5"
+            :class="activeReportTab === 'velocity' ? 'bg-white text-purple-700 shadow-sm border border-purple-100' : 'text-slate-600 hover:bg-white/50'"
+          >
+            <BarChart2 class="w-4 h-4 text-emerald-600" /> Velocity Chart
+          </button>
+          <button 
+            @click="activeReportTab = 'cfd'" 
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-1.5"
+            :class="activeReportTab === 'cfd' ? 'bg-white text-purple-700 shadow-sm border border-purple-100' : 'text-slate-600 hover:bg-white/50'"
+          >
+            <Layers class="w-4 h-4 text-amber-600" /> Cumulative Flow (CFD)
+          </button>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
-          <!-- Velocidad de Sprint (Burndown) -->
+          <!-- Gráfico Ágil Principal -->
           <div class="glass-widget lg:col-span-2 p-6 flex flex-col"
                v-motion
                :initial="{ opacity: 0, scale: 0.95 }"
                :enter="{ opacity: 1, scale: 1, transition: { delay: 400, type: 'spring' } }">
-            <div class="flex items-center gap-2 mb-6">
-              <Activity class="w-5 h-5 text-purple-600" />
-              <h3 class="text-lg font-bold text-slate-800">Velocidad de Sprint</h3>
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center gap-2">
+                <Activity v-if="activeReportTab === 'burndown'" class="w-5 h-5 text-purple-600" />
+                <TrendingUp v-if="activeReportTab === 'burnup'" class="w-5 h-5 text-indigo-600" />
+                <BarChart2 v-if="activeReportTab === 'velocity'" class="w-5 h-5 text-emerald-600" />
+                <Layers v-if="activeReportTab === 'cfd'" class="w-5 h-5 text-amber-600" />
+                <h3 class="text-lg font-bold text-slate-800">
+                  <span v-if="activeReportTab === 'burndown'">Burndown Chart (Trabajo Pendiente vs Tiempo)</span>
+                  <span v-if="activeReportTab === 'burnup'">Burnup Chart (Alcance vs Completado)</span>
+                  <span v-if="activeReportTab === 'velocity'">Velocity Chart (Velocidad por Sprint)</span>
+                  <span v-if="activeReportTab === 'cfd'">Cumulative Flow Diagram (Flujo Acumulado CFD)</span>
+                </h3>
+              </div>
+            </div>
+
+            <!-- Visualización Velocity Chart (Barras) -->
+            <div v-if="activeReportTab === 'velocity' && agileData?.velocity" class="flex-1 min-h-[300px] flex items-end gap-6 justify-around p-6 bg-white/30 rounded-xl border border-purple-100/50">
+              <div v-for="(v, idx) in agileData.velocity" :key="idx" class="flex flex-col items-center gap-2 flex-1 max-w-[80px]">
+                <div class="w-full flex items-end gap-1.5 h-48 bg-slate-100/60 rounded-xl p-1 justify-center border border-slate-200/50">
+                  <div class="bg-purple-300 w-full rounded-lg transition-all duration-500" :style="{ height: Math.min(100, v.committed * 10) + '%' }" :title="`Comprometidos: ${v.committed} pts`"></div>
+                  <div class="bg-emerald-500 w-full rounded-lg transition-all duration-500 shadow-sm" :style="{ height: Math.min(100, v.completed * 10) + '%' }" :title="`Completados: ${v.completed} pts`"></div>
+                </div>
+                <span class="text-[11px] font-bold text-slate-700 truncate w-full text-center">{{ v.sprintName }}</span>
+              </div>
             </div>
             <div class="flex-1 min-h-[300px] relative w-full h-full flex items-end justify-center overflow-visible pb-4">
               <!-- Grid background -->
@@ -207,7 +260,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useRoute } from '#app';
-import { ArrowLeft, TrendingUp, PieChart, Activity, DollarSign, Users, ChevronDown, Download } from 'lucide-vue-next';
+import { ArrowLeft, TrendingUp, PieChart, Activity, DollarSign, Users, ChevronDown, Download, BarChart2, Layers } from 'lucide-vue-next';
 
 definePageMeta({
   layout: 'project'
@@ -215,6 +268,9 @@ definePageMeta({
 
 const route = useRoute();
 const projectId = route.params.id as string;
+
+const activeReportTab = ref<'burndown' | 'burnup' | 'velocity' | 'cfd'>('burndown');
+const agileData = ref<any>(null);
 
 const exportReport = (format: string) => {
   if (format === 'pdf') {

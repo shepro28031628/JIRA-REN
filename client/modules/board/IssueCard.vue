@@ -17,6 +17,7 @@
         <span class="issue-key text-xs text-txt-secondary font-medium">{{ projectKey }}-{{ issue.key_number }}</span>
       </div>
       <div class="footer-right flex items-center gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
+        <span v-if="issue.story_points" class="px-1.5 py-0.5 text-[10px] font-extrabold rounded-full bg-purple-100 text-purple-700 border border-purple-200 shadow-2xs" title="Story Points">{{ issue.story_points }}</span>
         <span :class="['tag-priority', issue.priority.toLowerCase()]">{{ issue.priority }}</span>
         <div class="avatar w-5 h-5 rounded-full bg-brand-default border border-border-subtle flex items-center justify-center text-[9px] font-bold text-white" v-if="issue.assignee_id" :title="issue.assignee_id">
           {{ issue.assignee_id.substring(0, 1).toUpperCase() }}

@@ -37,7 +37,8 @@
             />
             <h3>{{ sprint.name }}</h3>
             <span class="sprint-badge" :class="sprint.status.toLowerCase()">{{ sprint.status }}</span>
-            <span class="text-xs text-slate-400 font-medium ml-2">{{ getSprintIssues(sprint.id).length }} tareas</span>
+            <span class="text-xs text-slate-500 font-medium ml-2">{{ getSprintIssues(sprint.id).length }} tareas</span>
+            <span class="text-xs font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded-md ml-1" title="Puntos de Historia acumulados">⚡ {{ getSprintPoints(sprint.id) }} pts</span>
           </div>
           
           <!-- Barra de Progreso Minimalista -->
@@ -50,7 +51,7 @@
           </div>
 
           <button v-if="sprint.status === 'PENDING'" class="btn-secondary btn-sm" @click.stop="startSprint(sprint)">Iniciar Sprint</button>
-          <button v-if="sprint.status === 'ACTIVE'" class="btn-secondary btn-sm" @click.stop="completeSprint(sprint)">Completar Sprint</button>
+          <button v-if="sprint.status === 'ACTIVE'" class="btn-primary-glow btn-sm" @click.stop="openCompleteModal(sprint)">Completar Sprint</button>
         </div>
         
         <div v-show="!collapsedSprints[sprint.id]" v-motion :initial="{ opacity: 0, height: 0 }" :enter="{ opacity: 1, height: 'auto', transition: { duration: 300 } }">
@@ -73,7 +74,9 @@
                 <span class="issue-key">{{ project?.key }}-{{ element.key_number }}</span>
                 <span class="issue-title">{{ element.title }}</span>
                 <div class="spacer"></div>
-                <!-- Priority icon instead of text if preferred, or text + icon -->
+                <span v-if="element.story_points" class="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-purple-100 text-purple-700 border border-purple-200 mr-2 shadow-2xs" title="Story Points">
+                  {{ element.story_points }} pts
+                </span>
                 <div class="flex items-center gap-1 issue-priority" :class="element.priority.toLowerCase()">
                   <AlertCircle class="w-3.5 h-3.5" stroke-width="2" />
                   <span>{{ element.priority }}</span>
@@ -151,6 +154,51 @@
       @close="showDetailModal = false"
       @update="updateIssue"
     />
+
+    <!-- Modal Cierre Formal de Sprint -->
+    <Transition name="modal-fade">
+      <div v-if="showCompleteSprintModal" class="modal-overlay" @click.self="showCompleteSprintModal = false">
+        <div class="premium-modal max-w-md">
+          <div class="modal-header">
+            <h3 class="text-lg font-bold text-slate-800">Cierre Formal de Sprint</h3>
+            <button type="button" class="btn-icon" @click="showCompleteSprintModal = false">
+              <X class="w-5 h-5" stroke-width="1.5" />
+            </button>
+          </div>
+          <div class="modal-body p-4 flex flex-col gap-4">
+            <p class="text-sm text-slate-600">
+              Estás a punto de completar el sprint <strong>{{ sprintToComplete?.name }}</strong>.
+            </p>
+            <div class="bg-purple-50/70 border border-purple-100 rounded-xl p-3 flex justify-around text-center">
+              <div>
+                <span class="text-xs text-slate-500 uppercase font-semibold">Completadas</span>
+                <p class="text-xl font-bold text-emerald-600">{{ completedCountInSprint }}</p>
+              </div>
+              <div class="w-[1px] bg-purple-200"></div>
+              <div>
+                <span class="text-xs text-slate-500 uppercase font-semibold">Pendientes</span>
+                <p class="text-xl font-bold text-amber-600">{{ pendingCountInSprint }}</p>
+              </div>
+            </div>
+
+            <div v-if="pendingCountInSprint > 0" class="flex flex-col gap-2">
+              <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">Mover incidencias no completadas a:</label>
+              <select v-model="targetSprintForPending" class="premium-select text-xs">
+                <option :value="null">Backlog General</option>
+                <option v-for="s in otherPendingSprints" :key="s.id" :value="s.id">
+                  {{ s.name }} (Futuro)
+                </option>
+              </select>
+            </div>
+
+            <div class="flex justify-end gap-2 mt-4">
+              <button class="btn-secondary text-xs" @click="showCompleteSprintModal = false">Cancelar</button>
+              <button class="btn-primary-glow text-xs font-bold" @click="executeCloseSprint">Confirmar y Cerrar Sprint</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -158,9 +206,12 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute } from '#app';
 import { useBoardStore } from '../../../stores/board.store';
+import { useToast } from '../../../composables/useToast';
 import draggable from 'vuedraggable';
-import { ArrowLeft, ChevronDown, CheckSquare, Bug, Bookmark, Zap, AlertCircle } from 'lucide-vue-next';
+import { ArrowLeft, ChevronDown, CheckSquare, Bug, Bookmark, Zap, AlertCircle, X } from 'lucide-vue-next';
 import IssueDetailModal from '../../../modules/board/IssueDetailModal.vue';
+
+const toast = useToast();
 
 const route = useRoute();
 const boardStore = useBoardStore();
@@ -263,15 +314,49 @@ const startSprint = async (sprint: any) => {
   }
 };
 
-const completeSprint = async (sprint: any) => {
+const getSprintPoints = (sprintId: string) => {
+  return getSprintIssues(sprintId).reduce((sum: number, i: any) => sum + (Number(i.story_points) || 0), 0);
+};
+
+// Modal Cierre Formal de Sprint
+const showCompleteSprintModal = ref(false);
+const sprintToComplete = ref<any>(null);
+const targetSprintForPending = ref<string | null>(null);
+
+const completedCountInSprint = computed(() => {
+  if (!sprintToComplete.value) return 0;
+  const issues = getSprintIssues(sprintToComplete.value.id);
+  return issues.filter(i => i.column_id && (i.column_name?.toLowerCase().includes('done') || i.column_name?.toLowerCase().includes('listo'))).length;
+});
+
+const pendingCountInSprint = computed(() => {
+  if (!sprintToComplete.value) return 0;
+  return getSprintIssues(sprintToComplete.value.id).length - completedCountInSprint.value;
+});
+
+const otherPendingSprints = computed(() => {
+  return sprints.value.filter(s => s.id !== sprintToComplete.value?.id && s.status === 'PENDING');
+});
+
+const openCompleteModal = (sprint: any) => {
+  sprintToComplete.value = sprint;
+  targetSprintForPending.value = null;
+  showCompleteSprintModal.value = true;
+};
+
+const executeCloseSprint = async () => {
+  if (!sprintToComplete.value) return;
   try {
-    const updated = await $fetch(`/api/sprints/${sprint.id}`, {
-      method: 'PATCH',
-      body: { status: 'COMPLETED', end_date: new Date() }
+    const res: any = await $fetch(`/api/sprints/${sprintToComplete.value.id}/close`, {
+      method: 'POST',
+      body: { targetSprintId: targetSprintForPending.value }
     });
-    Object.assign(sprint, updated);
-  } catch (e) {
-    console.error(e);
+    sprintToComplete.value.status = 'COMPLETED';
+    showCompleteSprintModal.value = false;
+    await loadData();
+    toast.success(`Sprint completado. ${res.movedCount} tareas trasladadas.`);
+  } catch (e: any) {
+    toast.error(e.response?.data?.statusMessage || 'Error al completar sprint');
   }
 };
 

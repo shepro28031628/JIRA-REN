@@ -211,6 +211,21 @@
               </div>
             </div>
 
+            <!-- Puntos de Historia (Story Points) -->
+            <div class="sidebar-section">
+              <label class="flex items-center gap-1 text-emerald-700 font-semibold">
+                <Hash class="w-3.5 h-3.5 text-emerald-600" /> Story Points
+              </label>
+              <input 
+                type="number" 
+                v-model.number="localIssue.story_points" 
+                @blur="saveChanges('story_points')"
+                min="0"
+                placeholder="0"
+                class="w-full bg-white/70 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-700 font-bold outline-none focus:border-purple-400"
+              />
+            </div>
+
             <!-- Etiquetas (Labels) -->
             <div class="sidebar-section">
               <label class="flex items-center gap-1 text-indigo-700 font-semibold">
@@ -324,7 +339,7 @@
 import { ref, watch, computed, onBeforeUnmount } from 'vue';
 import { $fetch } from 'ofetch';
 import { cn } from '../../utils/cn';
-import { Trash2, X, ChevronDown, Clock, Play, Pause, GitBranch, ArrowRight, CheckSquare, Zap, Tag } from 'lucide-vue-next';
+import { Trash2, X, ChevronDown, Clock, Play, Pause, GitBranch, ArrowRight, CheckSquare, Zap, Tag, Hash } from 'lucide-vue-next';
 import AuditTimeline from '../../components/history/AuditTimeline.vue';
 
 const props = defineProps<{

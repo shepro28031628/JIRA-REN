@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // Sanitizamos el body para solo permitir campos válidos para PATCH
-  const allowedFields = ['title', 'description', 'type', 'priority', 'assignee_id', 'column_id', 'sprint_id', 'epic_id', 'parent_id', 'estimated_minutes'];
+  const allowedFields = ['title', 'description', 'type', 'priority', 'assignee_id', 'column_id', 'sprint_id', 'epic_id', 'parent_id', 'estimated_minutes', 'story_points'];
   const updates: any = {};
 
   for (const key of Object.keys(body)) {

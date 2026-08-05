@@ -43,13 +43,19 @@
               </div>
             </div>
           </div>
-          <div class="input-group" v-if="columns && columns.length > 0">
-            <label>Columna Inicial</label>
-            <div class="custom-select-wrapper">
-              <select v-model="form.column_id">
-                <option v-for="col in columns" :key="col.id" :value="col.id">{{ col.name }}</option>
-              </select>
-              <svg class="select-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          <div class="form-row mt-3">
+            <div class="input-group" v-if="columns && columns.length > 0">
+              <label>Columna Inicial</label>
+              <div class="custom-select-wrapper">
+                <select v-model="form.column_id">
+                  <option v-for="col in columns" :key="col.id" :value="col.id">{{ col.name }}</option>
+                </select>
+                <svg class="select-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+            <div class="input-group">
+              <label>Puntos de Historia (Story Points)</label>
+              <input type="number" v-model.number="form.story_points" min="0" placeholder="Ej: 1, 2, 3, 5, 8" />
             </div>
           </div>
           <div class="modal-actions">
@@ -82,7 +88,8 @@ const form = reactive({
   description: '',
   type: 'TASK',
   priority: 'MEDIUM',
-  column_id: ''
+  column_id: '',
+  story_points: 0
 });
 
 // Inicializar column_id por defecto

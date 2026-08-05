@@ -111,6 +111,7 @@ export class IssueService {
     epic_id: string;
     parent_id: string;
     estimated_minutes: number;
+    story_points: number;
   }>) {
     if (Object.keys(updates).length === 0) return null;
 
