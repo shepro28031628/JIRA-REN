@@ -58,12 +58,107 @@
           </div>
         </div>
 
-        <div v-if="activeTab === 'custom-fields'" class="p-6 bg-white/40 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm text-center py-12">
-          <div class="text-4xl mb-4">📋</div>
-          <h2 class="text-xl font-bold text-slate-800 mb-2">Campos Personalizados</h2>
-          <p class="text-slate-500 mb-6 max-w-md mx-auto">Define nuevos campos (texto, fecha, números) y asócialos a Tipos de Incidencia específicos.</p>
-          <div class="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-lg text-sm font-semibold">
-            <span>Próximamente en la UI (Esquema BD listo)</span>
+        <!-- Campos Personalizados -->
+        <div v-if="activeTab === 'custom-fields'" class="p-6 bg-white/40 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm">
+          <div class="flex justify-between items-center mb-6">
+            <div>
+              <h2 class="text-xl font-bold text-slate-800">Campos Personalizados por Proyecto</h2>
+              <p class="text-xs text-slate-500">Crea campos personalizados para extender los datos de tus incidencias.</p>
+            </div>
+          </div>
+
+          <!-- Formulario de creación de campo -->
+          <div class="bg-white/60 p-4 rounded-xl border border-purple-100 mb-6 flex flex-wrap gap-3 items-end shadow-2xs">
+            <div class="flex-1 min-w-[200px]">
+              <label class="text-xs font-bold text-slate-700 block mb-1">Nombre del Campo</label>
+              <input v-model="newFieldName" placeholder="Ej: Ambientes de Pruebas, Fecha Límite" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-700 outline-none focus:border-purple-400" />
+            </div>
+            <div class="w-44">
+              <label class="text-xs font-bold text-slate-700 block mb-1">Tipo de Campo</label>
+              <select v-model="newFieldType" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-700 outline-none focus:border-purple-400">
+                <option value="TEXT">Texto Corto</option>
+                <option value="NUMBER">Número</option>
+                <option value="DATE">Fecha</option>
+                <option value="SELECT">Lista Desplegable (Select)</option>
+              </select>
+            </div>
+            <button @click="createCustomField" class="btn-primary-glow text-xs py-2 px-4" :disabled="!newFieldName.trim()">
+              + Crear Campo
+            </button>
+          </div>
+
+          <!-- Lista de Campos Existentes -->
+          <div class="flex flex-col gap-2">
+            <div v-for="cf in customFields" :key="cf.id" class="flex items-center justify-between p-3 rounded-xl bg-white/70 border border-slate-200/70 hover:border-purple-200 transition-all shadow-2xs">
+              <div class="flex items-center gap-3">
+                <FileText class="w-4 h-4 text-purple-600" />
+                <div>
+                  <span class="text-sm font-bold text-slate-800">{{ cf.name }}</span>
+                  <span class="text-xs text-slate-400 font-medium block">Tipo: {{ cf.field_type }}</span>
+                </div>
+              </div>
+              <button @click="deleteCustomField(cf.id)" class="text-slate-400 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-50 transition-colors">
+                <Trash2 class="w-4 h-4" />
+              </button>
+            </div>
+            <div v-if="customFields.length === 0" class="text-center py-8 text-xs text-slate-400 italic">
+              No se han creado campos personalizados para este proyecto.
+            </div>
+          </div>
+        </div>
+
+        <!-- Esquema de Permisos (RBAC Granular) -->
+        <div v-if="activeTab === 'permissions'" class="p-6 bg-white/40 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm">
+          <h2 class="text-xl font-bold text-slate-800 mb-2">Matriz de Permisos Granular (Permission Scheme)</h2>
+          <p class="text-xs text-slate-500 mb-6">Define qué acciones puede ejecutar cada rol dentro de este proyecto.</p>
+
+          <div class="space-y-6" v-if="permissionsData">
+            <div v-for="role in ['ADMIN', 'MEMBER', 'VIEWER']" :key="role" class="bg-white/60 p-4 rounded-xl border border-purple-100/70 shadow-2xs">
+              <div class="flex items-center justify-between mb-3 border-b border-purple-100 pb-2">
+                <span class="text-xs font-black uppercase tracking-wider text-purple-700 bg-purple-100 px-2.5 py-1 rounded-md">Rol {{ role }}</span>
+                <span class="text-xs text-slate-400 font-medium">{{ (permissionsData.rolePermissions[role] || []).length }} permisos asignados</span>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <label v-for="perm in permissionsData.allPermissions" :key="perm.key" class="flex items-start gap-2.5 p-2 rounded-lg hover:bg-white/80 transition-colors cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    :checked="(permissionsData.rolePermissions[role] || []).includes(perm.key)" 
+                    @change="togglePermission(role, perm.key)" 
+                    class="mt-0.5 w-4 h-4 rounded text-purple-600 focus:ring-purple-500 cursor-pointer"
+                  />
+                  <div>
+                    <span class="text-xs font-bold text-slate-700 block">{{ perm.label }}</span>
+                    <span class="text-[11px] text-slate-400 leading-snug block">{{ perm.description }}</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Esquema de Notificaciones (Notification Scheme) -->
+        <div v-if="activeTab === 'notifications'" class="p-6 bg-white/40 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm">
+          <h2 class="text-xl font-bold text-slate-800 mb-2">Esquema de Notificaciones (Notification Scheme)</h2>
+          <p class="text-xs text-slate-500 mb-6">Configura los destinatarios automáticos de alertas según eventos de incidencias.</p>
+
+          <div class="space-y-4" v-if="notificationsData">
+            <div v-for="evt in notificationsData.schemes" :key="evt.event_key" class="bg-white/60 p-4 rounded-xl border border-purple-100/70 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-2xs">
+              <div>
+                <span class="text-sm font-bold text-slate-800 block">{{ evt.name }}</span>
+                <span class="text-xs text-slate-400 font-mono">Evento: {{ evt.event_key }}</span>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <label v-for="rec in notificationsData.availableRecipients" :key="rec.key" class="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-lg border border-slate-200 hover:border-purple-200 text-xs cursor-pointer font-medium text-slate-700">
+                  <input 
+                    type="checkbox" 
+                    :checked="evt.recipients.includes(rec.key)" 
+                    @change="toggleNotificationRecipient(evt.event_key, rec.key)" 
+                    class="w-3.5 h-3.5 rounded text-purple-600 focus:ring-purple-500 cursor-pointer"
+                  />
+                  {{ rec.label }}
+                </label>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -82,7 +177,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRoute } from '#app';
-import { ArrowLeft, Settings, ShieldAlert, Users, Database, GitMerge, FileText, Package } from 'lucide-vue-next';
+import { useToast } from '../../../composables/useToast';
+import { ArrowLeft, Settings, ShieldAlert, Users, Database, GitMerge, FileText, Package, Lock, Bell, Trash2 } from 'lucide-vue-next';
 import FeatureGrid from '../../../modules/settings/components/FeatureGrid.vue';
 import DataImporter from '../../../modules/settings/components/DataImporter.vue';
 import ReleasesConfig from '../../../modules/settings/components/ReleasesConfig.vue';
@@ -95,6 +191,7 @@ definePageMeta({
 const route = useRoute();
 const projectId = route.params.id as string;
 const authStore = useAuthStore();
+const toast = useToast();
 
 const project = ref<any>(null);
 const loading = ref(true);
@@ -102,17 +199,115 @@ const activeTab = ref('general');
 
 const tabs = ref([
   { id: 'general', name: 'General', icon: Settings },
-  { id: 'workflows', name: 'Workflows', icon: GitMerge },
+  { id: 'permissions', name: 'Esquema de Permisos', icon: Lock },
+  { id: 'notifications', name: 'Esquema de Notificaciones', icon: Bell },
   { id: 'custom-fields', name: 'Campos Personalizados', icon: FileText },
   { id: 'releases', name: 'Versiones (Releases)', icon: Package },
   { id: 'import', name: 'Importar Datos', icon: Database }
 ]);
 
+// --- Campos Personalizados ---
+const customFields = ref<any[]>([]);
+const newFieldName = ref('');
+const newFieldType = ref('TEXT');
+
+const fetchCustomFields = async () => {
+  try {
+    customFields.value = await $fetch(`/api/projects/${projectId}/custom-fields`);
+  } catch (e) { console.error(e); }
+};
+
+const createCustomField = async () => {
+  if (!newFieldName.value.trim()) return;
+  try {
+    const created = await $fetch(`/api/projects/${projectId}/custom-fields`, {
+      method: 'POST',
+      body: { name: newFieldName.value.trim(), field_type: newFieldType.value }
+    });
+    customFields.value.push(created);
+    newFieldName.value = '';
+    toast.success('Campo personalizado creado');
+  } catch (e) { toast.error('Error al crear campo'); }
+};
+
+const deleteCustomField = async (id: string) => {
+  try {
+    await $fetch(`/api/projects/${projectId}/custom-fields`, {
+      method: 'DELETE',
+      body: { customFieldId: id }
+    });
+    customFields.value = customFields.value.filter(c => c.id !== id);
+    toast.success('Campo eliminado');
+  } catch (e) { toast.error('Error al eliminar'); }
+};
+
+// --- Esquema de Permisos ---
+const permissionsData = ref<any>(null);
+
+const fetchPermissions = async () => {
+  try {
+    permissionsData.value = await $fetch(`/api/projects/${projectId}/permissions`);
+  } catch (e) { console.error(e); }
+};
+
+const togglePermission = async (role: string, permKey: string) => {
+  const currentPerms: string[] = permissionsData.value.rolePermissions[role] || [];
+  let updatedPerms: string[];
+  if (currentPerms.includes(permKey)) {
+    updatedPerms = currentPerms.filter(p => p !== permKey);
+  } else {
+    updatedPerms = [...currentPerms, permKey];
+  }
+  permissionsData.value.rolePermissions[role] = updatedPerms;
+
+  try {
+    await $fetch(`/api/projects/${projectId}/permissions`, {
+      method: 'PUT',
+      body: { role, permissions: updatedPerms }
+    });
+    toast.success('Permisos actualizados');
+  } catch (e) { toast.error('Error actualizando permisos'); }
+};
+
+// --- Esquema de Notificaciones ---
+const notificationsData = ref<any>(null);
+
+const fetchNotifications = async () => {
+  try {
+    notificationsData.value = await $fetch(`/api/projects/${projectId}/notification-schemes`);
+  } catch (e) { console.error(e); }
+};
+
+const toggleNotificationRecipient = async (eventKey: string, recipientKey: string) => {
+  const scheme = notificationsData.value.schemes.find((s: any) => s.event_key === eventKey);
+  if (!scheme) return;
+
+  let updated: string[];
+  if (scheme.recipients.includes(recipientKey)) {
+    updated = scheme.recipients.filter((r: string) => r !== recipientKey);
+  } else {
+    updated = [...scheme.recipients, recipientKey];
+  }
+  scheme.recipients = updated;
+
+  try {
+    await $fetch(`/api/projects/${projectId}/notification-schemes`, {
+      method: 'PUT',
+      body: { event_key: eventKey, recipients: updated }
+    });
+    toast.success('Esquema de notificaciones guardado');
+  } catch (e) { toast.error('Error al guardar esquema'); }
+};
+
 const loadData = async () => {
   try {
     project.value = await $fetch(`/api/projects/${projectId}`);
+    await Promise.all([
+      fetchCustomFields(),
+      fetchPermissions(),
+      fetchNotifications()
+    ]);
     
-    // Si el usuario es master admin, mostramos la tab de Features
     if (authStore.user?.is_master_admin) {
       tabs.value.push({ id: 'features', name: 'Módulos (Master)', icon: ShieldAlert });
     }

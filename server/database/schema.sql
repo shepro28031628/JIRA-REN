@@ -211,3 +211,54 @@ CREATE TABLE activity_logs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Tabla de Esquemas de Permisos (Permission Schemes)
+CREATE TABLE permission_schemes (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    role VARCHAR(20) NOT NULL CHECK (role IN ('ADMIN', 'MEMBER', 'VIEWER')),
+    permissions JSONB DEFAULT '["VIEW_PROJECT", "TRANSITION_ISSUES", "CREATE_ISSUES"]',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT unique_project_role_perm UNIQUE (project_id, role)
+);
+
+-- Tabla de Esquemas de Notificación (Notification Schemes)
+CREATE TABLE notification_schemes (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    event_key VARCHAR(50) NOT NULL, -- Ej: 'ISSUE_CREATED', 'ISSUE_ASSIGNED', 'COMMENT_ADDED'
+    recipients JSONB DEFAULT '["ASSIGNEE", "REPORTER"]',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT unique_project_event_notif UNIQUE (project_id, event_key)
+);
+
+-- Tabla de Filtros Guardados (Saved JQL Filters)
+CREATE TABLE saved_filters (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    name VARCHAR(100) NOT NULL,
+    jql_query TEXT NOT NULL,
+    is_shared BOOLEAN DEFAULT FALSE,
+    created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla de Motor de Automatizaciones Sin Código (Automation Rules)
+CREATE TABLE automation_rules (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    name VARCHAR(100) NOT NULL,
+    trigger_event VARCHAR(50) NOT NULL, -- Ej: 'ALL_SUBTASKS_DONE', 'STATUS_CHANGE', 'ISSUE_CREATED'
+    condition_config JSONB DEFAULT '{}',
+    action_config JSONB DEFAULT '{}',
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla de Seguidores / Notificadores (Watchers)
+CREATE TABLE issue_watchers (
+    issue_id UUID REFERENCES issues(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (issue_id, user_id)
+);
+

@@ -23,6 +23,8 @@ export interface Database {
   issue_comments: IssueCommentsTable;
   notifications: NotificationsTable;
   project_pages: ProjectPagesTable;
+  permission_schemes: PermissionSchemesTable;
+  notification_schemes: NotificationSchemesTable;
 }
 
 export interface UsersTable {
@@ -226,4 +228,20 @@ export interface ProjectPagesTable {
   author_id: string | null;
   created_at: Generated<Date>;
   updated_at: Generated<Date>;
+}
+
+export interface PermissionSchemesTable {
+  id: Generated<string>;
+  project_id: string;
+  role: 'ADMIN' | 'MEMBER' | 'VIEWER';
+  permissions: Generated<any>;
+  created_at: Generated<Date>;
+}
+
+export interface NotificationSchemesTable {
+  id: Generated<string>;
+  project_id: string;
+  event_key: string;
+  recipients: Generated<any>;
+  created_at: Generated<Date>;
 }

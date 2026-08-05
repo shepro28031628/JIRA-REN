@@ -82,6 +82,47 @@
                   <button @click="addSubtask" class="btn-primary-glow text-xs py-1.5 px-3 font-semibold" :disabled="!newSubtaskTitle.trim()">+ Agregar</button>
                 </div>
               </div>
+
+              <!-- Sección de Campos Personalizados Dinámicos -->
+              <div v-if="projectCustomFields.length > 0" class="section mt-5 border-t border-purple-100/60 pt-4">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700 mb-3 flex items-center gap-1.5">
+                  <FileText class="w-4 h-4 text-purple-600" /> Campos Personalizados
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div v-for="cf in projectCustomFields" :key="cf.id" class="flex flex-col gap-1">
+                    <label class="text-xs font-semibold text-slate-600">{{ cf.name }}</label>
+                    <input 
+                      v-if="cf.field_type === 'TEXT'" 
+                      v-model="customValuesMap[cf.id]" 
+                      @blur="saveCustomValue(cf.id)" 
+                      placeholder="Escribe un valor..." 
+                      class="bg-white/70 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 outline-none focus:border-purple-400 shadow-2xs" 
+                    />
+                    <input 
+                      v-else-if="cf.field_type === 'NUMBER'" 
+                      type="number" 
+                      v-model.number="customValuesMap[cf.id]" 
+                      @blur="saveCustomValue(cf.id)" 
+                      placeholder="0" 
+                      class="bg-white/70 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 outline-none focus:border-purple-400 shadow-2xs" 
+                    />
+                    <input 
+                      v-else-if="cf.field_type === 'DATE'" 
+                      type="date" 
+                      v-model="customValuesMap[cf.id]" 
+                      @change="saveCustomValue(cf.id)" 
+                      class="bg-white/70 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 outline-none focus:border-purple-400 shadow-2xs" 
+                    />
+                    <input 
+                      v-else 
+                      v-model="customValuesMap[cf.id]" 
+                      @blur="saveCustomValue(cf.id)" 
+                      placeholder="Valor..." 
+                      class="bg-white/70 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 outline-none focus:border-purple-400 shadow-2xs" 
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- Panel Actividad -->
@@ -339,7 +380,7 @@
 import { ref, watch, computed, onBeforeUnmount } from 'vue';
 import { $fetch } from 'ofetch';
 import { cn } from '../../utils/cn';
-import { Trash2, X, ChevronDown, Clock, Play, Pause, GitBranch, ArrowRight, CheckSquare, Zap, Tag, Hash } from 'lucide-vue-next';
+import { Trash2, X, ChevronDown, Clock, Play, Pause, GitBranch, ArrowRight, CheckSquare, Zap, Tag, Hash, FileText } from 'lucide-vue-next';
 import AuditTimeline from '../../components/history/AuditTimeline.vue';
 
 const props = defineProps<{
@@ -458,11 +499,51 @@ const openTimeTravel = (log: any) => {
   showTimeTravel.value = true;
 };
 
+// Campos Personalizados Dinámicos
+const projectCustomFields = ref<any[]>([]);
+const customValuesMap = ref<Record<string, any>>({});
+
+const fetchCustomFieldsAndValues = async () => {
+  if (!localIssue.value?.id || !localIssue.value?.project_id) return;
+  try {
+    const [cFields, cVals]: [any[], any[]] = await Promise.all([
+      $fetch(`/api/projects/${localIssue.value.project_id}/custom-fields`),
+      $fetch(`/api/issues/${localIssue.value.id}/custom-values`)
+    ]);
+    projectCustomFields.value = cFields;
+    const map: Record<string, any> = {};
+    cVals.forEach(v => {
+      map[v.custom_field_id] = v.value_text || v.value_number || v.value_date;
+    });
+    customValuesMap.value = map;
+  } catch (e) {
+    console.error('Error al cargar campos personalizados', e);
+  }
+};
+
+const saveCustomValue = async (customFieldId: string) => {
+  if (!localIssue.value?.id) return;
+  const val = customValuesMap.value[customFieldId];
+  try {
+    await $fetch(`/api/issues/${localIssue.value.id}/custom-values`, {
+      method: 'POST',
+      body: {
+        customFieldId,
+        valueText: typeof val === 'string' ? val : null,
+        valueNumber: typeof val === 'number' ? val : null
+      }
+    });
+  } catch (e) {
+    console.error('Error guardando valor personalizado', e);
+  }
+};
+
 watch(() => props.issue, (newVal) => {
   if (newVal) {
     localIssue.value = JSON.parse(JSON.stringify(newVal));
     fetchSubtasks();
     fetchLabels();
+    fetchCustomFieldsAndValues();
   }
 }, { immediate: true, deep: true });
 
