@@ -79,6 +79,22 @@ export default defineEventHandler(async (event) => {
     };
   });
 
+  // --- D. CONTROL CHART DATA (CYCLE TIME) ---
+  const completedIssues = issues.filter(i => i.column_id && doneColumnIds.includes(i.column_id));
+  const cycleTimes = completedIssues.map(i => {
+    const created = new Date(i.created_at).getTime();
+    const updated = new Date(i.updated_at).getTime();
+    const diffDays = Math.max(0.5, Number(((updated - created) / (1000 * 3600 * 24)).toFixed(1)));
+    return {
+      issueKey: `${project?.key}-${i.key_number}`,
+      title: i.title,
+      cycleTimeDays: diffDays
+    };
+  });
+  const avgCycleTimeDays = cycleTimes.length > 0
+    ? Number((cycleTimes.reduce((s, c) => s + c.cycleTimeDays, 0) / cycleTimes.length).toFixed(1))
+    : 2.5;
+
   return {
     project: { key: project?.key, name: project?.name },
     activeSprint: activeSprint ? { id: activeSprint.id, name: activeSprint.name, status: activeSprint.status } : null,
@@ -96,6 +112,10 @@ export default defineEventHandler(async (event) => {
     cfd: {
       labels: ['Semana 1', 'Semana 2', 'Semana 3'],
       series: cfdSeries
+    },
+    controlChart: {
+      avgCycleTimeDays,
+      issues: cycleTimes
     }
   };
 });

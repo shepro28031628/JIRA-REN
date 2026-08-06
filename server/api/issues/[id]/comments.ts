@@ -1,5 +1,6 @@
 import { defineEventHandler, getRouterParam, readBody } from 'h3';
 import { db } from '../../../database/client';
+import { EmailService } from '../../../utils/emailService';
 
 export default defineEventHandler(async (event) => {
   const issueId = getRouterParam(event, 'id');
@@ -69,6 +70,13 @@ export default defineEventHandler(async (event) => {
             issue_id: issueId,
             type: 'MENTION'
           }).execute();
+          await EmailService.sendEmailNotification({
+            toUserId: u.id,
+            senderId,
+            issueId,
+            eventType: 'MENTION',
+            details: body.content
+          });
         }
       }
     }

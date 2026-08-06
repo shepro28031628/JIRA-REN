@@ -45,8 +45,8 @@
           <p class="text-slate-500">Opciones generales (WIP)</p>
         </div>
 
-        <div v-if="activeTab === 'features'" class="transition-all duration-300">
-          <FeatureGrid />
+        <div v-if="activeTab === 'workflows'" class="transition-all duration-300">
+          <WorkflowDesigner />
         </div>
         
         <!-- Motor de Automatizaciones Sin Código -->
@@ -234,6 +234,7 @@ import { ArrowLeft, Settings, ShieldAlert, Users, Database, GitMerge, FileText, 
 import FeatureGrid from '../../../modules/settings/components/FeatureGrid.vue';
 import DataImporter from '../../../modules/settings/components/DataImporter.vue';
 import ReleasesConfig from '../../../modules/settings/components/ReleasesConfig.vue';
+import WorkflowDesigner from '../../../modules/settings/components/WorkflowDesigner.vue';
 import { useAuthStore } from '../../../stores/auth.store';
 
 definePageMeta({
@@ -251,6 +252,7 @@ const activeTab = ref('general');
 
 const tabs = ref([
   { id: 'general', name: 'General', icon: Settings },
+  { id: 'workflows', name: 'Motor de Workflows', icon: GitMerge },
   { id: 'automations', name: 'Automatizaciones Sin Código', icon: Zap },
   { id: 'permissions', name: 'Esquema de Permisos', icon: Lock },
   { id: 'notifications', name: 'Esquema de Notificaciones', icon: Bell },

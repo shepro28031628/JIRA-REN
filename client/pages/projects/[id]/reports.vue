@@ -102,6 +102,13 @@
           >
             <Layers class="w-4 h-4 text-amber-600" /> Cumulative Flow (CFD)
           </button>
+          <button 
+            @click="activeReportTab = 'control'" 
+            class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-1.5"
+            :class="activeReportTab === 'control' ? 'bg-white text-purple-700 shadow-sm border border-purple-100' : 'text-slate-600 hover:bg-white/50'"
+          >
+            <Clock class="w-4 h-4 text-blue-600" /> Control Chart (Cycle Time)
+          </button>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -117,12 +124,31 @@
                 <TrendingUp v-if="activeReportTab === 'burnup'" class="w-5 h-5 text-indigo-600" />
                 <BarChart2 v-if="activeReportTab === 'velocity'" class="w-5 h-5 text-emerald-600" />
                 <Layers v-if="activeReportTab === 'cfd'" class="w-5 h-5 text-amber-600" />
+                <Clock v-if="activeReportTab === 'control'" class="w-5 h-5 text-blue-600" />
                 <h3 class="text-lg font-bold text-slate-800">
                   <span v-if="activeReportTab === 'burndown'">Burndown Chart (Trabajo Pendiente vs Tiempo)</span>
                   <span v-if="activeReportTab === 'burnup'">Burnup Chart (Alcance vs Completado)</span>
                   <span v-if="activeReportTab === 'velocity'">Velocity Chart (Velocidad por Sprint)</span>
                   <span v-if="activeReportTab === 'cfd'">Cumulative Flow Diagram (Flujo Acumulado CFD)</span>
+                  <span v-if="activeReportTab === 'control'">Control Chart (Medición de Tiempo de Ciclo - Cycle Time)</span>
                 </h3>
+              </div>
+            </div>
+
+            <!-- Visualización Control Chart (Cycle Time) -->
+            <div v-if="activeReportTab === 'control' && agileData?.controlChart" class="flex-1 min-h-[300px] flex flex-col gap-4 p-4 bg-white/30 rounded-xl border border-purple-100/50">
+              <div class="flex items-center justify-between bg-blue-50/70 border border-blue-100 p-3 rounded-xl">
+                <span class="text-xs font-bold text-slate-700">Tiempo Medio de Ciclo (Average Cycle Time):</span>
+                <span class="text-lg font-black text-blue-700 font-mono">{{ agileData.controlChart.avgCycleTimeDays }} días</span>
+              </div>
+              <div class="flex flex-col gap-2 max-h-56 overflow-y-auto">
+                <div v-for="cIssue in agileData.controlChart.issues" :key="cIssue.issueKey" class="p-2.5 bg-white/70 rounded-lg border border-slate-200 flex justify-between items-center text-xs">
+                  <div>
+                    <span class="font-mono font-bold text-purple-700 block">{{ cIssue.issueKey }}</span>
+                    <span class="text-slate-700 font-medium truncate block max-w-xs">{{ cIssue.title }}</span>
+                  </div>
+                  <span class="font-mono font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-md text-[11px]">{{ cIssue.cycleTimeDays }}d tiempo ciclo</span>
+                </div>
               </div>
             </div>
 
@@ -260,7 +286,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useRoute } from '#app';
-import { ArrowLeft, TrendingUp, PieChart, Activity, DollarSign, Users, ChevronDown, Download, BarChart2, Layers } from 'lucide-vue-next';
+import { ArrowLeft, TrendingUp, PieChart, Activity, DollarSign, Users, ChevronDown, Download, BarChart2, Layers, Clock } from 'lucide-vue-next';
 
 definePageMeta({
   layout: 'project'
@@ -269,7 +295,7 @@ definePageMeta({
 const route = useRoute();
 const projectId = route.params.id as string;
 
-const activeReportTab = ref<'burndown' | 'burnup' | 'velocity' | 'cfd'>('burndown');
+const activeReportTab = ref<'burndown' | 'burnup' | 'velocity' | 'cfd' | 'control'>('burndown');
 const agileData = ref<any>(null);
 
 const exportReport = (format: string) => {

@@ -41,6 +41,16 @@
 
       <!-- Sidebar Navigation -->
       <nav class="flex-1 py-4 px-3 flex flex-col gap-1 overflow-y-auto">
+        <!-- Dashboard de Gadgets -->
+        <NuxtLink
+          :to="`/projects/${projectId}/dashboard`"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-500 hover:bg-white/60 hover:text-purple-600 transition-all duration-300 group relative overflow-hidden"
+          active-class="bg-white/80 !text-purple-700 shadow-sm border border-white/60 font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1.5 before:bg-gradient-to-b before:from-purple-400 before:to-purple-600 before:rounded-r-md"
+        >
+          <LayoutGrid class="shrink-0 group-hover:text-purple-600 w-5 h-5 transition-colors" stroke-width="2" />
+          <span v-show="!isCollapsed" class="text-sm whitespace-nowrap">Dashboard</span>
+        </NuxtLink>
+
         <!-- Tablero (Board) -->
         <NuxtLink
           v-if="projectFeatures.kanban"
@@ -158,7 +168,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useRoute } from '#app';
-import { LayoutDashboard, CalendarRange, FileText, Users, Bell, PanelLeftClose, PanelLeft, Settings, LifeBuoy, LogOut } from 'lucide-vue-next';
+import { LayoutDashboard, CalendarRange, FileText, Users, Bell, PanelLeftClose, PanelLeft, Settings, LifeBuoy, LogOut, LayoutGrid } from 'lucide-vue-next';
 import CommandMenu from '../components/CommandMenu.vue';
 import ToastContainer from '../components/ToastContainer.vue';
 import ThemeSelector from '../components/ThemeSelector.vue';
